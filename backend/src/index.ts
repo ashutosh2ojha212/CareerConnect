@@ -27,6 +27,22 @@ app.use('/api/companies', companyRoutes)
 app.use('/api/jobs', jobRoutes)
 app.use('/api/applications', applicationRoutes)
 
+// Root endpoint - Backend status
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'Carrier Connect Backend is working! 🚀',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      companies: '/api/companies',
+      jobs: '/api/jobs',
+      applications: '/api/applications'
+    }
+  })
+})
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Carrier Connect API is running' })

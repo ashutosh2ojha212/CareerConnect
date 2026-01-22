@@ -10,7 +10,7 @@ export default function GoogleButton({ onClick, isLoading = false, text = 'Conti
       type="button"
       onClick={onClick}
       disabled={isLoading}
-      className="w-full h-11 bg-white text-gray-700 font-medium rounded-xl border border-gray-200 hover:bg-gray-50 hover:border-gray-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-sm hover:shadow-md flex items-center justify-center gap-3"
+      className="w-full h-11 bg-white text-gray-700 font-medium rounded-xl border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:ring-1 hover:ring-gray-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-sm flex items-center justify-center gap-3"
     >
       {isLoading ? (
         <svg
@@ -59,4 +59,3 @@ export default function GoogleButton({ onClick, isLoading = false, text = 'Conti
     </button>
   )
 }
-

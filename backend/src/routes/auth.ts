@@ -1,7 +1,9 @@
 import express from 'express'
 import { PrismaClient } from '@prisma/client'
+import crypto from 'crypto'
 import { hashPassword, comparePassword } from '../utils/bcrypt'
 import { generateToken } from '../utils/jwt'
+import { sendPasswordResetEmail } from '../utils/email'
 
 const router = express.Router()
 const prisma = new PrismaClient()
@@ -96,41 +98,267 @@ router.post('/login', async (req, res, next) => {
   }
 })
 
-// Forgot Password (placeholder - implement email service later)
+// Forgot Password - Generate token and send email
 router.post('/forgot-password', async (req, res, next) => {
   try {
     const { email } = req.body
 
+    console.log('🔐 Forgot password request for email:', email)
+
     if (!email) {
-      return res.status(400).json({ message: 'Email is required' })
+      return res.status(400).json({ success: false, message: 'Email is required' })
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ success: false, message: 'Invalid email format' })
     }
 
     const user = await prisma.user.findUnique({
       where: { email },
     })
 
+    // Return 404 if user does NOT exist (as per requirements)
     if (!user) {
-      // Don't reveal if user exists
-      return res.json({ message: 'If the email exists, a reset link has been sent' })
+      console.log('❌ User not found for email:', email)
+      return res.status(404).json({ 
+        success: false, 
+        message: 'This email is not registered. Please sign up first.' 
+      })
     }
 
-    // TODO: Send password reset email
-    // For now, just return success
-    res.json({ message: 'If the email exists, a reset link has been sent' })
+    console.log('✅ User found, generating reset token...')
+
+    // Generate secure random token
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000) // 15 minutes
+
+    console.log('🔑 Generated token (first 10 chars):', resetToken.substring(0, 10) + '...')
+    console.log('⏰ Token expires at:', resetTokenExpiry.toISOString())
+
+    // Save token to database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetPasswordToken: resetToken,
+        resetPasswordExpires: resetTokenExpiry,
+      },
+    })
+
+    console.log('💾 Token saved to database')
+
+    // Send password reset email
+    try {
+      await sendPasswordResetEmail(user.email, resetToken)
+      console.log('✅ Password reset email sent successfully')
+      res.json({ 
+        success: true, 
+        message: "We've sent a password reset link to your email." 
+      })
+    } catch (emailError: any) {
+      console.error('❌ Email sending failed:', emailError.message)
+      console.error('Full error details:', emailError)
+      
+      // Log detailed error for debugging
+      if (emailError.code === 'EAUTH') {
+        console.error('🔴 AUTHENTICATION ERROR - Check your SMTP credentials!')
+        console.error('   Make sure you\'re using a Gmail App Password, not your regular password')
+        console.error('   Get App Password from: https://myaccount.google.com/apppasswords')
+      }
+      
+      // Return error with details (in development, show more info)
+      const errorMessage = process.env.NODE_ENV === 'development' 
+        ? `Failed to send email: ${emailError.message}` 
+        : 'Failed to send reset email. Please check your email configuration or try again later.'
+      
+      return res.status(500).json({ 
+        success: false, 
+        message: errorMessage,
+        error: process.env.NODE_ENV === 'development' ? {
+          code: emailError.code,
+          message: emailError.message,
+        } : undefined
+      })
+    }
+  } catch (error: any) {
+    console.error('❌ Error in forgot-password route:', error)
+    next(error)
+  }
+})
+
+// Get Reset Password - Validate token
+router.get('/reset-password/:token', async (req, res, next) => {
+  try {
+    const { token } = req.params
+
+    if (!token) {
+      return res.status(400).json({ message: 'Token is required' })
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: {
+          gt: new Date(), // Token not expired
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+      },
+    })
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token' })
+    }
+
+    res.json({ valid: true, email: user.email })
   } catch (error) {
     next(error)
   }
 })
 
-// Google OAuth
-router.post('/google', async (req, res, next) => {
+// Reset Password - Update password with token
+router.post('/reset-password', async (req, res, next) => {
   try {
-    const { idToken, email, name, picture } = req.body
+    const { token, newPassword } = req.body
 
-    // For now, accept email and name directly
-    // In production, verify idToken with Google's API
+    console.log('🔐 Reset password request received')
+    console.log('   Token (first 10 chars):', token ? token.substring(0, 10) + '...' : 'missing')
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Token and new password are required' })
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' })
+    }
+
+    // Find user with valid token
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: {
+          gt: new Date(), // Token not expired
+        },
+      },
+    })
+
+    if (!user) {
+      console.log('❌ Invalid or expired token')
+      return res.status(400).json({ success: false, message: 'Invalid or expired token' })
+    }
+
+    console.log('✅ Valid token found for user:', user.email)
+
+    // Hash new password
+    const hashedPassword = await hashPassword(newPassword)
+
+    // Update password and clear reset token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      },
+    })
+
+    console.log('✅ Password reset successfully for user:', user.email)
+    res.json({ success: true, message: 'Password reset successfully' })
+  } catch (error: any) {
+    console.error('❌ Error in reset-password route:', error)
+    next(error)
+  }
+})
+
+// Google OAuth - Initiate OAuth flow
+router.get('/google', (req, res) => {
+  const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+  const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3001/api/auth/google/callback'
+  const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
+
+  if (!GOOGLE_CLIENT_ID) {
+    return res.status(500).json({ 
+      message: 'Google OAuth not configured. Please set GOOGLE_CLIENT_ID in backend/.env' 
+    })
+  }
+
+  // Build Google OAuth URL
+  const params = new URLSearchParams({
+    client_id: GOOGLE_CLIENT_ID,
+    redirect_uri: GOOGLE_REDIRECT_URI,
+    response_type: 'code',
+    scope: 'openid email profile',
+    access_type: 'offline',
+    prompt: 'consent',
+    state: req.query.state as string || 'default', // Optional: pass state for redirect
+  })
+
+  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
+  
+  // Redirect to Google
+  res.redirect(googleAuthUrl)
+})
+
+// Google OAuth - Callback handler
+router.get('/google/callback', async (req, res, next) => {
+  try {
+    const { code, state } = req.query
+    const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+    const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+    const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3001/api/auth/google/callback'
+    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
+
+    if (!code) {
+      return res.redirect(`${FRONTEND_URL}/signin?error=oauth_cancelled`)
+    }
+
+    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+      return res.redirect(`${FRONTEND_URL}/signin?error=oauth_not_configured`)
+    }
+
+    // Exchange authorization code for tokens
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        code: code as string,
+        client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET,
+        redirect_uri: GOOGLE_REDIRECT_URI,
+        grant_type: 'authorization_code',
+      }),
+    })
+
+    if (!tokenResponse.ok) {
+      const error = await tokenResponse.json()
+      console.error('Google token exchange error:', error)
+      return res.redirect(`${FRONTEND_URL}/signin?error=token_exchange_failed`)
+    }
+
+    const tokens = await tokenResponse.json()
+    const { access_token } = tokens
+
+    // Get user info from Google
+    const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+
+    if (!userInfoResponse.ok) {
+      return res.redirect(`${FRONTEND_URL}/signin?error=userinfo_failed`)
+    }
+
+    const userInfo = await userInfoResponse.json()
+    const { email, name, picture } = userInfo
+
     if (!email || !name) {
-      return res.status(400).json({ message: 'Email and name are required' })
+      return res.redirect(`${FRONTEND_URL}/signin?error=missing_user_info`)
     }
 
     // Check if user exists
@@ -140,15 +368,13 @@ router.post('/google', async (req, res, next) => {
 
     if (!user) {
       // Create new user with Google OAuth
-      // Note: For Google OAuth, we don't store a password
-      // In production, you'd want to add an oauthProvider field or use a separate OAuth table
-      const hashedPassword = await hashPassword(Math.random().toString(36) + Date.now().toString()) // Temporary secure password
+      const hashedPassword = await hashPassword(Math.random().toString(36) + Date.now().toString())
       
       user = await prisma.user.create({
         data: {
           name,
           email,
-          password: hashedPassword, // In production, use a separate OAuth table
+          password: hashedPassword,
         },
         select: {
           id: true,
@@ -159,41 +385,24 @@ router.post('/google', async (req, res, next) => {
       })
     }
 
-    // Generate token
+    // Generate JWT token
     const token = generateToken(user.id)
 
-    res.json({
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-      token,
-    })
-  } catch (error: any) {
-    // Handle unique constraint violation (email already exists)
-    if (error.code === 'P2002') {
-      // User already exists, try to sign them in
-      const user = await prisma.user.findUnique({
-        where: { email: req.body.email },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-        },
-      })
+    // Redirect to frontend with token
+    const redirectUrl = new URL(`${FRONTEND_URL}/auth/callback`)
+    redirectUrl.searchParams.set('token', token)
+    redirectUrl.searchParams.set('user', JSON.stringify({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    }))
 
-      if (user) {
-        const token = generateToken(user.id)
-        return res.json({
-          user,
-          token,
-        })
-      }
-    }
-    next(error)
+    res.redirect(redirectUrl.toString())
+  } catch (error: any) {
+    console.error('Google OAuth callback error:', error)
+    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
+    res.redirect(`${FRONTEND_URL}/signin?error=oauth_error`)
   }
 })
 

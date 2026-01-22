@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import CareerConnectLogo from '../../components/logo/CareerConnectLogo'
@@ -10,8 +10,10 @@ interface ForgotPasswordData {
 }
 
 export default function ForgotPassword() {
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [userNotFound, setUserNotFound] = useState(false)
   const {
     register,
     handleSubmit,
@@ -20,12 +22,32 @@ export default function ForgotPassword() {
 
   const onSubmit = async (data: ForgotPasswordData) => {
     setIsLoading(true)
+    setUserNotFound(false)
+    setIsSubmitted(false)
+    
     try {
-      await authService.forgotPassword(data.email)
-      setIsSubmitted(true)
-      toast.success('Password reset email sent! Check your inbox.')
+      const response = await authService.forgotPassword(data.email)
+      
+      if (response.success) {
+        setIsSubmitted(true)
+        toast.success("We've sent a password reset link to your email.")
+      } else {
+        toast.error(response.message || 'Failed to send reset email')
+      }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to send reset email. Please try again.')
+      console.error('Forgot password error:', error)
+      
+      // Check if user not found (404)
+      if (error.response?.status === 404) {
+        setUserNotFound(true)
+        toast.error('This email is not registered. Please sign up first.')
+      } else if (error.response?.status === 500) {
+        // Email service error
+        toast.error(error.response?.data?.message || 'Failed to send reset email. Please try again later.')
+      } else {
+        // Other errors
+        toast.error(error.response?.data?.message || 'An error occurred. Please try again.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -34,20 +56,21 @@ export default function ForgotPassword() {
   if (isSubmitted) {
     return (
       <div className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div
+        {/* Background Image with Blur */}
+        <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1521790361593-509c7a6b6fa8?q=80&w=1800&auto=format')`,
+            backgroundImage: `url('/background.png')`,
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-indigo-900/70 to-purple-900/80"></div>
+          {/* Deeper blur overlay */}
+          <div className="fixed inset-0 bg-black/10 backdrop-blur-[6px] z-0"></div>
         </div>
 
         <div className="relative w-full max-w-md z-10">
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-8 sm:p-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white/50 p-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex justify-center mb-6">
-              <CareerConnectLogo size={64} />
+              <CareerConnectLogo size={72} />
             </div>
             <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
               <svg
@@ -64,14 +87,14 @@ export default function ForgotPassword() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h2>
-            <p className="text-sm text-gray-600 mb-6">
+            <h2 className="text-3xl font-semibold text-gray-900 mb-2">Check your email</h2>
+            <p className="text-sm text-gray-600 mb-8">
               We've sent a password reset link to your email address. Please check your inbox and
               follow the instructions to reset your password.
             </p>
             <Link
               to="/signin"
-              className="inline-flex items-center justify-center w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:opacity-90 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 transition-all duration-200 shadow-lg shadow-blue-500/25"
+              className="inline-flex items-center justify-center w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-2xl hover:opacity-90 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 transition-all duration-200 shadow-lg shadow-blue-500/20"
             >
               Back to Sign In
             </Link>
@@ -83,31 +106,28 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div
+      {/* Background Image with Blur */}
+      <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1521790361593-509c7a6b6fa8?q=80&w=1800&auto=format')`,
+          backgroundImage: `url('/background.png')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-indigo-900/70 to-purple-900/80"></div>
-      </div>
-
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+        {/* Deeper blur overlay */}
+        <div className="fixed inset-0 bg-black/10 backdrop-blur-[6px] z-0"></div>
       </div>
 
       <div className="relative w-full max-w-md z-10">
-        {/* Auth Card with smooth entrance animation */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-8 sm:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        {/* Premium Auth Card */}
+        <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
-          <div className="text-center mb-8">
-            <div className="flex justify-center mb-6">
-              <CareerConnectLogo size={64} />
+          <div className="text-center mb-10">
+            <div className="flex justify-center mb-5">
+              <div className="drop-shadow-md">
+                <CareerConnectLogo size={72} />
+              </div>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-semibold text-gray-900 mb-2">
               Reset your password
             </h1>
             <p className="text-sm text-gray-600">
@@ -136,7 +156,7 @@ export default function ForgotPassword() {
                     message: 'Invalid email address',
                   },
                 })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all duration-200 text-sm"
+                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
                 placeholder="you@example.com"
                 aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? 'email-error' : undefined}
@@ -163,11 +183,41 @@ export default function ForgotPassword() {
               )}
             </div>
 
+            {/* User Not Found Message */}
+            {userNotFound && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                <div className="flex items-start gap-3">
+                  <svg
+                    className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-red-800 mb-2">
+                      This email is not registered. Please sign up first.
+                    </p>
+                    <Link
+                      to="/signup"
+                      className="inline-flex items-center justify-center w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:opacity-90 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 transition-all duration-200 shadow-md"
+                    >
+                      Go to Sign Up
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:opacity-90 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-lg shadow-blue-500/25"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-2xl hover:opacity-90 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-lg shadow-blue-500/20"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -200,7 +250,7 @@ export default function ForgotPassword() {
           </form>
 
           {/* Sign In Link */}
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-8 text-center text-sm text-gray-600">
             Remember your password?{' '}
             <Link
               to="/signin"
@@ -211,26 +261,6 @@ export default function ForgotPassword() {
           </p>
         </div>
       </div>
-
-      <style>{`
-        @keyframes blob {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-      `}</style>
     </div>
   )
 }

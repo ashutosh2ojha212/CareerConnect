@@ -4,6 +4,8 @@ import { useAuthStore } from './store/authStore'
 import SignIn from './pages/auth/SignIn'
 import SignUp from './pages/auth/SignUp'
 import ForgotPassword from './pages/auth/ForgotPassword'
+import ResetPassword from './pages/auth/ResetPassword'
+import OAuthCallback from './pages/auth/OAuthCallback'
 import RoleSelection from './pages/RoleSelection'
 import JobSeekerDashboard from './pages/jobSeeker/Dashboard'
 import EmployeeDashboard from './pages/employee/Dashboard'
@@ -17,6 +19,8 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/auth/callback" element={<OAuthCallback />} />
         <Route
           path="/role-selection"
           element={

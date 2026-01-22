@@ -33,8 +33,9 @@ export const authService = {
     return response.data
   },
 
-  forgotPassword: async (email: string): Promise<void> => {
-    await api.post('/auth/forgot-password', { email })
+  forgotPassword: async (email: string): Promise<{ success: boolean; message: string }> => {
+    const response = await api.post<{ success: boolean; message: string }>('/auth/forgot-password', { email })
+    return response.data
   },
 
   googleAuth: async (): Promise<AuthResponse> => {

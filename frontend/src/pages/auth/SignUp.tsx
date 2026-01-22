@@ -6,7 +6,6 @@ import CareerConnectLogo from '../../components/logo/CareerConnectLogo'
 import GoogleButton from '../../components/GoogleButton'
 import { authService, SignUpData } from '../../lib/auth'
 import { useAuthStore } from '../../store/authStore'
-import api from '../../lib/api'
 
 export default function SignUp() {
   const navigate = useNavigate()
@@ -22,26 +21,10 @@ export default function SignUp() {
 
   const password = watch('password')
 
-  const handleGoogleAuth = async () => {
+  const handleGoogleAuth = () => {
     setIsGoogleLoading(true)
-    try {
-      // In production, integrate with @react-oauth/google or Google Identity Services
-      // For now, this demonstrates the flow
-      const response = await api.post('/auth/google', {
-        idToken: 'mock-google-token',
-        email: 'user@gmail.com',
-        name: 'Google User',
-        picture: '',
-      })
-      
-      setAuth(response.data.user, response.data.token)
-      toast.success('Account created with Google successfully!')
-      navigate('/role-selection')
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to sign up with Google')
-    } finally {
-      setIsGoogleLoading(false)
-    }
+    const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001'
+    window.location.href = `${backendUrl}/api/auth/google`
   }
 
   const onSubmit = async (data: SignUpData) => {
@@ -60,31 +43,26 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div
+      {/* Background Image */}
+      <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1521790361593-509c7a6b6fa8?q=80&w=1800&auto=format')`,
+          backgroundImage: `url('/background.png')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-indigo-900/70 to-purple-900/80"></div>
-      </div>
-
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+        {/* Subtle overlay for better readability */}
+        <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
       <div className="relative w-full max-w-md z-10">
-        {/* Auth Card with smooth entrance animation */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-8 sm:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        {/* Premium Auth Card */}
+        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white/50 p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <div className="flex justify-center mb-6">
-              <CareerConnectLogo size={64} />
+              <CareerConnectLogo size={72} />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-semibold text-gray-900 mb-2">
               Create your account
             </h1>
             <p className="text-sm text-gray-600">
@@ -107,7 +85,7 @@ export default function SignUp() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">Or continue with email</span>
+              <span className="px-4 bg-white/80 text-gray-500">Or continue with email</span>
             </div>
           </div>
 
@@ -132,7 +110,7 @@ export default function SignUp() {
                     message: 'Name must be at least 2 characters',
                   },
                 })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all duration-200 text-sm"
+                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
                 placeholder="John Doe"
                 aria-invalid={errors.name ? 'true' : 'false'}
                 aria-describedby={errors.name ? 'name-error' : undefined}
@@ -178,7 +156,7 @@ export default function SignUp() {
                     message: 'Invalid email address',
                   },
                 })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all duration-200 text-sm"
+                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
                 placeholder="you@example.com"
                 aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? 'email-error' : undefined}
@@ -224,7 +202,7 @@ export default function SignUp() {
                     message: 'Password must be at least 6 characters',
                   },
                 })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all duration-200 text-sm"
+                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
                 placeholder="••••••••"
                 aria-invalid={errors.password ? 'true' : 'false'}
                 aria-describedby={errors.password ? 'password-error' : undefined}
@@ -268,7 +246,7 @@ export default function SignUp() {
                   validate: (value) =>
                     value === password || 'Passwords do not match',
                 } as any)}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all duration-200 text-sm"
+                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
                 placeholder="••••••••"
                 aria-invalid={errors.confirmPassword ? 'true' : 'false'}
                 aria-describedby={
@@ -301,7 +279,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:opacity-90 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-lg shadow-blue-500/25 mt-2"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-2xl hover:opacity-90 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-lg shadow-blue-500/20 mt-2"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -334,7 +312,7 @@ export default function SignUp() {
           </form>
 
           {/* Sign In Link */}
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-8 text-center text-sm text-gray-600">
             Already have an account?{' '}
             <Link
               to="/signin"
@@ -345,26 +323,6 @@ export default function SignUp() {
           </p>
         </div>
       </div>
-
-      <style>{`
-        @keyframes blob {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-      `}</style>
     </div>
   )
 }
