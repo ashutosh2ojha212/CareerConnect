@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import CareerConnectLogo from '../../components/logo/CareerConnectLogo'
 import GoogleButton from '../../components/GoogleButton'
 import { authService, SignInData } from '../../lib/auth'
 import { useAuthStore } from '../../store/authStore'
@@ -56,9 +55,27 @@ export default function SignIn() {
         <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
           <div className="text-center mb-10">
-            <div className="flex justify-center mb-5">
-              <div className="drop-shadow-md">
-                <CareerConnectLogo size={72} />
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                {/* Subtle gradient badge background */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
+                {/* Logo with enhanced styling */}
+                <div className="relative drop-shadow-md">
+                  <img
+                    src="/logo.png"
+                    alt="CareerConnect"
+                    width={280}
+                    height={100}
+                    className="object-contain mx-auto"
+                    loading="eager"
+                    decoding="sync"
+                    style={{
+                      width: '280px',
+                      height: '100px',
+                      imageRendering: 'crisp-edges',
+                    }}
+                  />
+                </div>
               </div>
             </div>
             <h1 className="text-3xl font-semibold text-gray-900 mb-2">
@@ -84,7 +101,7 @@ export default function SignIn() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white/80 text-gray-500">Or continue with email</span>
+              <span className="px-4 bg-white/80 text-gray-500">Or</span>
             </div>
           </div>
 

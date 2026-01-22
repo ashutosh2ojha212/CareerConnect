@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import CareerConnectLogo from '../../components/logo/CareerConnectLogo'
 import api from '../../lib/api'
 
 interface ResetPasswordData {
@@ -121,9 +120,27 @@ export default function ResetPassword() {
 
         <div className="relative w-full max-w-md z-10">
           <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex justify-center mb-5">
-              <div className="drop-shadow-md">
-                <CareerConnectLogo size={72} />
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                {/* Subtle gradient badge background */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
+                {/* Logo with enhanced styling */}
+                <div className="relative drop-shadow-md">
+                  <img
+                    src="/logo.png"
+                    alt="CareerConnect"
+                    width={280}
+                    height={100}
+                    className="object-contain mx-auto"
+                    loading="eager"
+                    decoding="sync"
+                    style={{
+                      width: '280px',
+                      height: '100px',
+                      imageRendering: 'crisp-edges',
+                    }}
+                  />
+                </div>
               </div>
             </div>
             <h1 className="text-3xl font-semibold text-gray-900 mb-2">Invalid Link</h1>
@@ -160,9 +177,27 @@ export default function ResetPassword() {
         <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
           <div className="text-center mb-10">
-            <div className="flex justify-center mb-5">
-              <div className="drop-shadow-md">
-                <CareerConnectLogo size={72} />
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                {/* Subtle gradient badge background */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
+                {/* Logo with enhanced styling */}
+                <div className="relative drop-shadow-md">
+                  <img
+                    src="/logo.png"
+                    alt="CareerConnect"
+                    width={280}
+                    height={100}
+                    className="object-contain mx-auto"
+                    loading="eager"
+                    decoding="sync"
+                    style={{
+                      width: '280px',
+                      height: '100px',
+                      imageRendering: 'crisp-edges',
+                    }}
+                  />
+                </div>
               </div>
             </div>
             <h1 className="text-3xl font-semibold text-gray-900 mb-2">
