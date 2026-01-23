@@ -6,6 +6,7 @@ import authRoutes from './routes/auth'
 import companyRoutes from './routes/companies'
 import jobRoutes from './routes/jobs'
 import applicationRoutes from './routes/applications'
+import referrerRoutes from './routes/referrer'
 import { errorHandler } from './middleware/errorHandler'
 
 dotenv.config()
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/companies', companyRoutes)
 app.use('/api/jobs', jobRoutes)
 app.use('/api/applications', applicationRoutes)
+app.use('/api/referrer', referrerRoutes)
 
 // Root endpoint - Backend status
 app.get('/', (req, res) => {
@@ -38,7 +40,8 @@ app.get('/', (req, res) => {
       auth: '/api/auth',
       companies: '/api/companies',
       jobs: '/api/jobs',
-      applications: '/api/applications'
+      applications: '/api/applications',
+      referrer: '/api/referrer'
     }
   })
 })

@@ -1,50 +1,74 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import api from '../../lib/api'
 
-interface FormField {
-  id: string
-  label: string
-  type: 'text' | 'email' | 'tel' | 'number' | 'textarea' | 'file'
-  required: boolean
-}
-
 interface JobPostForm {
+  companyName: string
   title: string
-  description: string
-  companyId: string
-  formFields: FormField[]
+  experience: number
+  location: string
+  skills: string[]
+  description?: string
 }
 
 export default function CreateJobPost() {
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [skills, setSkills] = useState<string[]>([])
+  const [skillInput, setSkillInput] = useState('')
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm<JobPostForm>({
     defaultValues: {
-      formFields: [
-        { id: 'name', label: 'Full Name', type: 'text', required: true },
-        { id: 'email', label: 'Email', type: 'email', required: true },
-        { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true },
-      ],
+      companyName: '',
+      experience: undefined,
+      location: '',
+      skills: [],
+      description: '',
     },
   })
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'formFields',
-  })
+  const addSkill = () => {
+    const trimmedSkill = skillInput.trim()
+    if (trimmedSkill && !skills.includes(trimmedSkill)) {
+      setSkills([...skills, trimmedSkill])
+      setSkillInput('')
+    }
+  }
+
+  const removeSkill = (skillToRemove: string) => {
+    setSkills(skills.filter((skill) => skill !== skillToRemove))
+  }
+
+  const handleSkillKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      addSkill()
+    }
+  }
 
   const onSubmit = async (data: JobPostForm) => {
+    // Validate skills
+    if (skills.length === 0) {
+      toast.error('Please add at least one required skill')
+      return
+    }
+
     setIsSubmitting(true)
     try {
-      const response = await api.post('/jobs', data)
+      const payload = {
+        companyName: data.companyName,
+        title: data.title,
+        experience: Number(data.experience),
+        location: data.location,
+        skills: skills,
+        description: data.description || null,
+      }
+      const response = await api.post('/jobs', payload)
       toast.success('Job post created successfully!')
       navigate(`/employee/job/${response.data.id}`)
     } catch (error: any) {
@@ -52,15 +76,6 @@ export default function CreateJobPost() {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const addFormField = () => {
-    append({
-      id: `field_${Date.now()}`,
-      label: '',
-      type: 'text',
-      required: false,
-    })
   }
 
   return (
@@ -79,10 +94,27 @@ export default function CreateJobPost() {
         <h1 className="text-3xl font-semibold text-gray-900 mb-8">Create Job Post</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          {/* Basic Job Info */}
-          <div className="space-y-6">
+          {/* Job Information Section */}
+          <div className="space-y-8">
             <h2 className="text-xl font-semibold text-gray-900">Job Information</h2>
 
+            {/* Company Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Company Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                {...register('companyName', { required: 'Company name is required' })}
+                className="w-full h-12 px-4 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200"
+                placeholder="e.g., Google, TCS, Infosys"
+              />
+              {errors.companyName && (
+                <p className="mt-1.5 text-sm text-red-600">{errors.companyName.message}</p>
+              )}
+            </div>
+
+            {/* Job Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Job Title <span className="text-red-500">*</span>
@@ -98,99 +130,135 @@ export default function CreateJobPost() {
               )}
             </div>
 
+            {/* Minimum Years of Experience */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Job Description <span className="text-red-500">*</span>
+                Minimum Years of Experience <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                min="0"
+                {...register('experience', {
+                  required: 'Minimum years of experience is required',
+                  valueAsNumber: true,
+                  validate: (value) => {
+                    if (isNaN(value) || value < 0) {
+                      return 'Experience must be a positive number'
+                    }
+                    return true
+                  },
+                })}
+                className="w-full h-12 px-4 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200"
+                placeholder="e.g., 2"
+              />
+              {errors.experience && (
+                <p className="mt-1.5 text-sm text-red-600">{errors.experience.message}</p>
+              )}
+            </div>
+
+            {/* Job Location */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Job Location <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                {...register('location', { required: 'Job location is required' })}
+                className="w-full h-12 px-4 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200"
+                placeholder="e.g., Bangalore, Pune"
+              />
+              {errors.location && (
+                <p className="mt-1.5 text-sm text-red-600">{errors.location.message}</p>
+              )}
+            </div>
+
+            {/* Required Skills */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Required Skills <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2 mb-3">
+                <input
+                  type="text"
+                  value={skillInput}
+                  onChange={(e) => setSkillInput(e.target.value)}
+                  onKeyPress={handleSkillKeyPress}
+                  className="flex-1 h-12 px-4 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200"
+                  placeholder="e.g., React"
+                />
+                <button
+                  type="button"
+                  onClick={addSkill}
+                  className="h-12 w-12 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 active:scale-[0.97] transition-all duration-200 flex items-center justify-center shadow-md"
+                  title="Add Skill"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                </button>
+              </div>
+              {skills.length === 0 && (
+                <p className="mt-1.5 text-sm text-red-600">At least one skill is required</p>
+              )}
+              {skills.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {skills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium shadow-sm"
+                    >
+                      {skill}
+                      <button
+                        type="button"
+                        onClick={() => removeSkill(skill)}
+                        className="hover:text-indigo-900 transition-colors ml-0.5"
+                        title="Remove skill"
+                      >
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Job Description */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Job Description
               </label>
               <textarea
-                {...register('description', { required: 'Description is required' })}
+                {...register('description')}
                 rows={6}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 resize-none"
                 placeholder="Describe the job position, requirements, and benefits..."
               />
-              {errors.description && (
-                <p className="mt-1.5 text-sm text-red-600">{errors.description.message}</p>
-              )}
             </div>
           </div>
 
-          {/* Custom Form Fields */}
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-gray-900">
-                Application Form Fields
-              </h2>
-              <button
-                type="button"
-                onClick={addFormField}
-                className="text-indigo-600 hover:text-indigo-700 font-medium text-sm transition-colors"
-              >
-                + Add Field
-              </button>
-            </div>
-
-            <p className="text-sm text-gray-600">
-              Define the fields that job seekers need to fill when applying for this position.
-            </p>
-
-            <div className="space-y-4">
-              {fields.map((field, index) => (
-                <div key={field.id} className="border border-gray-200 rounded-xl p-5 bg-gray-50/50">
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Field Label
-                      </label>
-                      <input
-                        type="text"
-                        {...register(`formFields.${index}.label` as const, {
-                          required: 'Label is required',
-                        })}
-                        className="w-full h-11 px-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200"
-                        placeholder="e.g., Years of Experience"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Field Type
-                      </label>
-                      <select
-                        {...register(`formFields.${index}.type` as const)}
-                        className="w-full h-11 px-3 border border-gray-200 rounded-xl bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200"
-                      >
-                        <option value="text">Text</option>
-                        <option value="email">Email</option>
-                        <option value="tel">Phone</option>
-                        <option value="number">Number</option>
-                        <option value="textarea">Textarea</option>
-                        <option value="file">File (PDF)</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        {...register(`formFields.${index}.required` as const)}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">Required</span>
-                    </label>
-                    {fields.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => remove(index)}
-                        className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
+          {/* Action Buttons */}
           <div className="flex gap-4 pt-4">
             <button
               type="button"

@@ -5,6 +5,8 @@ import { authService } from '../../lib/auth'
 import JobPosts from './JobPosts'
 import CreateJobPost from './CreateJobPost'
 import JobApplicants from './JobApplicants'
+import SetupReferralForm from './SetupReferralForm'
+import EditJobPost from './EditJobPost'
 
 export default function EmployeeDashboard() {
   const navigate = useNavigate()
@@ -122,7 +124,7 @@ export default function EmployeeDashboard() {
       </nav>
 
       {/* Main Content Container */}
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         {/* Premium Tabs */}
         <div className="w-full flex items-center gap-10 mt-12 border-b border-gray-200">
           <button
@@ -146,6 +148,8 @@ export default function EmployeeDashboard() {
           <Routes>
             <Route index element={<JobPosts />} />
             <Route path="create" element={<CreateJobPost />} />
+            <Route path="edit/:id" element={<EditJobPost />} />
+            <Route path="setup-form" element={<SetupReferralForm />} />
             <Route path="job/:jobId" element={<JobApplicants />} />
           </Routes>
         </main>

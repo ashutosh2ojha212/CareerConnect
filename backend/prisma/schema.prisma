@@ -25,6 +25,7 @@ model User {
   employeeProfile EmployeeProfile?
   applications    ReferralApplication[]
   jobPosts        JobPost[]
+  referralForm    ReferralForm?
 }
 
 model Company {
@@ -58,7 +59,11 @@ model EmployeeProfile {
 model JobPost {
   id          String   @id @default(uuid())
   title       String
-  description String
+  companyName String   // Company name for the job post
+  description String?
+  experience  Int?     // Minimum years of experience
+  location    String?  // Job location
+  skills      String?  // JSON array of skills
   companyId   String
   userId      String // The referrer who posted it
   createdAt   DateTime @default(now())
@@ -106,5 +111,19 @@ model ReferralApplication {
   @@index([userId])
   @@index([jobPostId])
   @@index([employeeId])
+}
+
+model ReferralForm {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  formTitle String   @default("Referral Application Form")
+  fields    String   // JSON array of field objects
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
