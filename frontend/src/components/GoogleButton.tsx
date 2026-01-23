@@ -10,11 +10,11 @@ export default function GoogleButton({ onClick, isLoading = false, text = 'Conti
       type="button"
       onClick={onClick}
       disabled={isLoading}
-      className="w-full h-11 bg-white text-gray-700 font-medium rounded-xl border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:ring-1 hover:ring-gray-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-sm flex items-center justify-center gap-3"
+      className="w-full h-12 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-medium rounded-xl border border-gray-300 dark:border-gray-700 shadow-sm hover:ring hover:ring-gray-300/40 dark:hover:ring-gray-600/40 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gray-300/50 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-3"
     >
       {isLoading ? (
         <svg
-          className="animate-spin h-5 w-5 text-gray-600"
+          className="animate-spin h-5 w-5 text-gray-600 dark:text-gray-400"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"

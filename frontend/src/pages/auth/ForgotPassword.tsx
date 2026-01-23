@@ -68,28 +68,17 @@ export default function ForgotPassword() {
 
         <div className="relative w-full max-w-md z-10">
           <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white/50 p-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                {/* Subtle gradient badge background */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
-                {/* Logo with enhanced styling */}
-                <div className="relative drop-shadow-md">
-                  <img
-                    src="/logo.png"
-                    alt="CareerConnect"
-                    width={280}
-                    height={100}
-                    className="object-contain mx-auto"
-                    style={{
-                      width: '280px',
-                      height: '100px',
-                      imageRendering: 'crisp-edges',
-                    }}
-                    loading="eager"
-                    decoding="sync"
-                  />
-                </div>
-              </div>
+            <div className="flex justify-center mb-6 scale-125 md:scale-150">
+              <img
+                src="/logo.png"
+                alt="CareerConnect"
+                className="h-16 sm:h-20 md:h-24 w-auto object-contain drop-shadow-lg"
+                style={{
+                  imageRendering: 'crisp-edges',
+                }}
+                loading="eager"
+                decoding="sync"
+              />
             </div>
             <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
               <svg
@@ -141,28 +130,17 @@ export default function ForgotPassword() {
         <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
           <div className="text-center mb-10">
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                {/* Subtle gradient badge background */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
-                {/* Logo with enhanced styling */}
-                <div className="relative drop-shadow-md">
-                  <img
-                    src="/logo.png"
-                    alt="CareerConnect"
-                    width={280}
-                    height={100}
-                    className="object-contain mx-auto"
-                    style={{
-                      width: '280px',
-                      height: '100px',
-                      imageRendering: 'crisp-edges',
-                    }}
-                    loading="eager"
-                    decoding="sync"
-                  />
-                </div>
-              </div>
+            <div className="flex justify-center mb-6 scale-125 md:scale-150">
+              <img
+                src="/logo.png"
+                alt="CareerConnect"
+                className="h-16 sm:h-20 md:h-24 w-auto object-contain drop-shadow-lg"
+                style={{
+                  imageRendering: 'crisp-edges',
+                }}
+                loading="eager"
+                decoding="sync"
+              />
             </div>
             <h1 className="text-3xl font-semibold text-gray-900 mb-2">
               Reset your password

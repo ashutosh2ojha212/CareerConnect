@@ -42,49 +42,38 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
-      {/* Background Image */}
+      {/* Animated Background Image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url('/background.png')`,
         }}
-      >
-        {/* Subtle overlay for better readability */}
-        <div className="absolute inset-0 bg-black/20"></div>
-      </div>
+      />
 
-      <div className="relative w-full max-w-md z-10">
+      {/* Animated Gradient Overlay */}
+      <div className="fixed inset-0 bg-gradient-to-br from-white/10 via-indigo-200/10 to-purple-300/10 dark:from-black/40 dark:via-indigo-900/20 dark:to-purple-900/20 animate-gradientMove backdrop-blur-[12px] z-0"></div>
+
+      <div className="relative w-full max-w-md md:max-w-lg z-10">
         {/* Premium Auth Card */}
-        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white/50 p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          {/* Logo Section */}
-          <div className="text-center mb-10">
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                {/* Subtle gradient badge background */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-xl"></div>
-                {/* Logo with enhanced styling */}
-                <div className="relative drop-shadow-md">
-                  <img
-                    src="/logo.png"
-                    alt="CareerConnect"
-                    width={280}
-                    height={100}
-                    className="object-contain mx-auto"
-                    loading="eager"
-                    decoding="sync"
-                    style={{
-                      width: '280px',
-                      height: '100px',
-                      imageRendering: 'crisp-edges',
-                    }}
-                  />
-                </div>
-              </div>
+        <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] border border-white/50 dark:border-white/10 p-10 md:p-12 transition-all duration-300 animate-fadeInUp">
+          {/* Logo Section - Wider Logo with Scale */}
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-6 scale-125 md:scale-150">
+              <img
+                src="/logo.png"
+                alt="CareerConnect"
+                className="h-16 sm:h-20 md:h-24 w-auto object-contain drop-shadow-lg"
+                style={{
+                  imageRendering: 'crisp-edges',
+                }}
+                loading="eager"
+                decoding="sync"
+              />
             </div>
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-2xl sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
               Create your account
-            </h1>
-            <p className="text-sm text-gray-600">
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Get started with Carrier Connect today
             </p>
           </div>
@@ -101,10 +90,10 @@ export default function SignUp() {
           {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
+              <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white/80 text-gray-500">Or</span>
+              <span className="px-4 bg-white/80 dark:bg-gray-900/80 text-gray-400 dark:text-gray-500">Or continue with email</span>
             </div>
           </div>
 
@@ -114,7 +103,7 @@ export default function SignUp() {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
               >
                 Full name
               </label>
@@ -129,7 +118,7 @@ export default function SignUp() {
                     message: 'Name must be at least 2 characters',
                   },
                 })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
+                className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="John Doe"
                 aria-invalid={errors.name ? 'true' : 'false'}
                 aria-describedby={errors.name ? 'name-error' : undefined}
@@ -137,7 +126,7 @@ export default function SignUp() {
               {errors.name && (
                 <p
                   id="name-error"
-                  className="mt-1.5 text-xs text-red-600 flex items-center gap-1"
+                  className="mt-1.5 text-xs text-red-600 dark:text-red-400 flex items-center gap-1"
                   role="alert"
                 >
                   <svg
@@ -160,7 +149,7 @@ export default function SignUp() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
               >
                 Email address
               </label>
@@ -175,7 +164,7 @@ export default function SignUp() {
                     message: 'Invalid email address',
                   },
                 })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
+                className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="you@example.com"
                 aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? 'email-error' : undefined}
@@ -183,7 +172,7 @@ export default function SignUp() {
               {errors.email && (
                 <p
                   id="email-error"
-                  className="mt-1.5 text-xs text-red-600 flex items-center gap-1"
+                  className="mt-1.5 text-xs text-red-600 dark:text-red-400 flex items-center gap-1"
                   role="alert"
                 >
                   <svg
@@ -206,7 +195,7 @@ export default function SignUp() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
               >
                 Password
               </label>
@@ -221,7 +210,7 @@ export default function SignUp() {
                     message: 'Password must be at least 6 characters',
                   },
                 })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
+                className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="••••••••"
                 aria-invalid={errors.password ? 'true' : 'false'}
                 aria-describedby={errors.password ? 'password-error' : undefined}
@@ -229,7 +218,7 @@ export default function SignUp() {
               {errors.password && (
                 <p
                   id="password-error"
-                  className="mt-1.5 text-xs text-red-600 flex items-center gap-1"
+                  className="mt-1.5 text-xs text-red-600 dark:text-red-400 flex items-center gap-1"
                   role="alert"
                 >
                   <svg
@@ -252,7 +241,7 @@ export default function SignUp() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
               >
                 Confirm password
               </label>
@@ -265,7 +254,7 @@ export default function SignUp() {
                   validate: (value) =>
                     value === password || 'Passwords do not match',
                 } as any)}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
+                className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="••••••••"
                 aria-invalid={errors.confirmPassword ? 'true' : 'false'}
                 aria-describedby={
@@ -275,7 +264,7 @@ export default function SignUp() {
               {errors.confirmPassword && (
                 <p
                   id="confirmPassword-error"
-                  className="mt-1.5 text-xs text-red-600 flex items-center gap-1"
+                  className="mt-1.5 text-xs text-red-600 dark:text-red-400 flex items-center gap-1"
                   role="alert"
                 >
                   <svg
@@ -298,7 +287,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-2xl hover:opacity-90 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-lg shadow-blue-500/20 mt-2"
+              className="w-full h-12 text-base font-medium bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:opacity-90 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-md hover:shadow-lg mt-2"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -331,17 +320,51 @@ export default function SignUp() {
           </form>
 
           {/* Sign In Link */}
-          <p className="mt-8 text-center text-sm text-gray-600">
+          <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
             Already have an account?{' '}
             <Link
               to="/signin"
-              className="text-blue-600 hover:text-blue-700 hover:underline font-medium transition-colors"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline font-medium transition-colors"
             >
               Sign in
             </Link>
           </p>
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes gradientMove {
+          0% {
+            background-position: 0% 0%;
+          }
+          50% {
+            background-position: 100% 100%;
+          }
+          100% {
+            background-position: 0% 0%;
+          }
+        }
+
+        .animate-fadeInUp {
+          animation: fadeInUp 0.35s ease-out;
+        }
+
+        .animate-gradientMove {
+          background-size: 200% 200%;
+          animation: gradientMove 12s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   )
 }
