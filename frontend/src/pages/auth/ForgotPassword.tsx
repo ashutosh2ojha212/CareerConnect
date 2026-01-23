@@ -87,9 +87,6 @@ export default function ForgotPassword() {
                     }}
                     loading="eager"
                     decoding="sync"
-                    style={{
-                      imageRendering: 'crisp-edges',
-                    }}
                   />
                 </div>
               </div>
@@ -163,9 +160,6 @@ export default function ForgotPassword() {
                     }}
                     loading="eager"
                     decoding="sync"
-                    style={{
-                      imageRendering: 'crisp-edges',
-                    }}
                   />
                 </div>
               </div>
