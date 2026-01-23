@@ -113,10 +113,18 @@ export default function SignUp() {
                 autoComplete="name"
                 {...register('name', {
                   required: 'Name is required',
-                  minLength: {
-                    value: 2,
-                    message: 'Name must be at least 2 characters',
-                  },
+                  validate: {
+                    notEmpty: (value) => value.trim() !== '' || 'Name cannot be empty',
+                    minLength: (value) => value.trim().length >= 2 || 'Name must be at least 2 characters',
+                    maxLength: (value) => value.length <= 100 || 'Name is too long (max 100 characters)',
+                    validFormat: (value) => {
+                      // Allow letters, spaces, hyphens, apostrophes, and periods
+                      const nameRegex = /^[a-zA-Z\s'-\.]+$/
+                      return nameRegex.test(value.trim()) || 'Name can only contain letters, spaces, hyphens, apostrophes, and periods'
+                    },
+                    noConsecutiveSpaces: (value) => !/\s{2,}/.test(value) || 'Name cannot contain consecutive spaces',
+                    noLeadingTrailingSpaces: (value) => value.trim() === value || 'Name cannot start or end with spaces',
+                  }
                 })}
                 className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="John Doe"
@@ -159,10 +167,23 @@ export default function SignUp() {
                 autoComplete="email"
                 {...register('email', {
                   required: 'Email is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address',
-                  },
+                  validate: {
+                    notEmpty: (value) => value.trim() !== '' || 'Email cannot be empty',
+                    noSpaces: (value) => !/\s/.test(value) || 'Email cannot contain spaces',
+                    validFormat: (value) => {
+                      // Comprehensive email regex
+                      const emailRegex = /^[a-zA-Z0-9]([a-zA-Z0-9._-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$/
+                      return emailRegex.test(value) || 'Please enter a valid email address'
+                    },
+                    maxLength: (value) => value.length <= 254 || 'Email is too long (max 254 characters)',
+                    noConsecutiveDots: (value) => !/\.{2,}/.test(value) || 'Email cannot contain consecutive dots',
+                    validDomain: (value) => {
+                      const parts = value.split('@')
+                      if (parts.length !== 2) return 'Invalid email format'
+                      const domain = parts[1]
+                      return domain.includes('.') && domain.split('.').length >= 2 || 'Invalid email domain'
+                    }
+                  }
                 })}
                 className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="you@example.com"
@@ -205,10 +226,16 @@ export default function SignUp() {
                 autoComplete="new-password"
                 {...register('password', {
                   required: 'Password is required',
-                  minLength: {
-                    value: 6,
-                    message: 'Password must be at least 6 characters',
-                  },
+                  validate: {
+                    notEmpty: (value) => value.trim() !== '' || 'Password cannot be empty',
+                    minLength: (value) => value.length >= 8 || 'Password must be at least 8 characters',
+                    maxLength: (value) => value.length <= 128 || 'Password is too long (max 128 characters)',
+                    hasUpperCase: (value) => /[A-Z]/.test(value) || 'Password must contain at least one uppercase letter',
+                    hasLowerCase: (value) => /[a-z]/.test(value) || 'Password must contain at least one lowercase letter',
+                    hasNumber: (value) => /[0-9]/.test(value) || 'Password must contain at least one number',
+                    hasSpecialChar: (value) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value) || 'Password must contain at least one special character',
+                    noSpaces: (value) => !/\s/.test(value) || 'Password cannot contain spaces',
+                  }
                 })}
                 className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="••••••••"
@@ -251,8 +278,10 @@ export default function SignUp() {
                 autoComplete="new-password"
                 {...register('confirmPassword', {
                   required: 'Please confirm your password',
-                  validate: (value) =>
-                    value === password || 'Passwords do not match',
+                  validate: {
+                    matches: (value) => value === password || 'Passwords do not match',
+                    notEmpty: (value) => value.trim() !== '' || 'Please confirm your password',
+                  }
                 } as any)}
                 className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="••••••••"

@@ -110,10 +110,23 @@ export default function SignIn() {
                 autoComplete="email"
                 {...register('email', {
                   required: 'Email is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address',
-                  },
+                  validate: {
+                    notEmpty: (value) => value.trim() !== '' || 'Email cannot be empty',
+                    noSpaces: (value) => !/\s/.test(value) || 'Email cannot contain spaces',
+                    validFormat: (value) => {
+                      // Comprehensive email regex
+                      const emailRegex = /^[a-zA-Z0-9]([a-zA-Z0-9._-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$/
+                      return emailRegex.test(value) || 'Please enter a valid email address'
+                    },
+                    maxLength: (value) => value.length <= 254 || 'Email is too long (max 254 characters)',
+                    noConsecutiveDots: (value) => !/\.{2,}/.test(value) || 'Email cannot contain consecutive dots',
+                    validDomain: (value) => {
+                      const parts = value.split('@')
+                      if (parts.length !== 2) return 'Invalid email format'
+                      const domain = parts[1]
+                      return domain.includes('.') && domain.split('.').length >= 2 || 'Invalid email domain'
+                    }
+                  }
                 })}
                 className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="you@example.com"
@@ -164,10 +177,13 @@ export default function SignIn() {
                 autoComplete="current-password"
                 {...register('password', {
                   required: 'Password is required',
-                  minLength: {
-                    value: 6,
-                    message: 'Password must be at least 6 characters',
-                  },
+                  validate: {
+                    notEmpty: (value) => value.trim() !== '' || 'Password cannot be empty',
+                    minLength: (value) => value.length >= 6 || 'Password must be at least 6 characters',
+                    maxLength: (value) => value.length <= 128 || 'Password is too long (max 128 characters)',
+                    noSpaces: (value) => !/\s/.test(value) || 'Password cannot contain spaces',
+                    noOnlySpaces: (value) => value.trim().length > 0 || 'Password cannot be only spaces',
+                  }
                 })}
                 className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="••••••••"

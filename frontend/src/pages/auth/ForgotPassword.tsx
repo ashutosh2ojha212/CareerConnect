@@ -166,10 +166,23 @@ export default function ForgotPassword() {
                 autoComplete="email"
                 {...register('email', {
                   required: 'Email is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address',
-                  },
+                  validate: {
+                    notEmpty: (value) => value.trim() !== '' || 'Email cannot be empty',
+                    noSpaces: (value) => !/\s/.test(value) || 'Email cannot contain spaces',
+                    validFormat: (value) => {
+                      // Comprehensive email regex
+                      const emailRegex = /^[a-zA-Z0-9]([a-zA-Z0-9._-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$/
+                      return emailRegex.test(value) || 'Please enter a valid email address'
+                    },
+                    maxLength: (value) => value.length <= 254 || 'Email is too long (max 254 characters)',
+                    noConsecutiveDots: (value) => !/\.{2,}/.test(value) || 'Email cannot contain consecutive dots',
+                    validDomain: (value) => {
+                      const parts = value.split('@')
+                      if (parts.length !== 2) return 'Invalid email format'
+                      const domain = parts[1]
+                      return domain.includes('.') && domain.split('.').length >= 2 || 'Invalid email domain'
+                    }
+                  }
                 })}
                 className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
                 placeholder="you@example.com"
