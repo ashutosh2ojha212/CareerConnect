@@ -67,13 +67,16 @@ export default function CreateJobPost() {
     <div className="max-w-4xl mx-auto">
       <button
         onClick={() => navigate('/employee')}
-        className="mb-4 text-primary-600 hover:text-primary-700 font-medium"
+        className="mb-6 text-indigo-600 hover:text-indigo-700 font-medium transition-colors flex items-center gap-2"
       >
-        ← Back to Job Posts
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Job Posts
       </button>
 
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Create Job Post</h1>
+      <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] p-8 border border-gray-100">
+        <h1 className="text-3xl font-semibold text-gray-900 mb-8">Create Job Post</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Basic Job Info */}
@@ -87,11 +90,11 @@ export default function CreateJobPost() {
               <input
                 type="text"
                 {...register('title', { required: 'Job title is required' })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                className="w-full h-12 px-4 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200"
                 placeholder="e.g., Senior Software Engineer"
               />
               {errors.title && (
-                <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+                <p className="mt-1.5 text-sm text-red-600">{errors.title.message}</p>
               )}
             </div>
 
@@ -102,11 +105,11 @@ export default function CreateJobPost() {
               <textarea
                 {...register('description', { required: 'Description is required' })}
                 rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 resize-none"
                 placeholder="Describe the job position, requirements, and benefits..."
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+                <p className="mt-1.5 text-sm text-red-600">{errors.description.message}</p>
               )}
             </div>
           </div>
@@ -120,7 +123,7 @@ export default function CreateJobPost() {
               <button
                 type="button"
                 onClick={addFormField}
-                className="text-primary-600 hover:text-primary-700 font-medium text-sm"
+                className="text-indigo-600 hover:text-indigo-700 font-medium text-sm transition-colors"
               >
                 + Add Field
               </button>
@@ -132,7 +135,7 @@ export default function CreateJobPost() {
 
             <div className="space-y-4">
               {fields.map((field, index) => (
-                <div key={field.id} className="border border-gray-200 rounded-lg p-4">
+                <div key={field.id} className="border border-gray-200 rounded-xl p-5 bg-gray-50/50">
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -143,7 +146,7 @@ export default function CreateJobPost() {
                         {...register(`formFields.${index}.label` as const, {
                           required: 'Label is required',
                         })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                        className="w-full h-11 px-3 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200"
                         placeholder="e.g., Years of Experience"
                       />
                     </div>
@@ -153,7 +156,7 @@ export default function CreateJobPost() {
                       </label>
                       <select
                         {...register(`formFields.${index}.type` as const)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                        className="w-full h-11 px-3 border border-gray-200 rounded-xl bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200"
                       >
                         <option value="text">Text</option>
                         <option value="email">Email</option>
@@ -165,11 +168,11 @@ export default function CreateJobPost() {
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
-                    <label className="flex items-center">
+                    <label className="flex items-center cursor-pointer">
                       <input
                         type="checkbox"
                         {...register(`formFields.${index}.required` as const)}
-                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
                       />
                       <span className="ml-2 text-sm text-gray-700">Required</span>
                     </label>
@@ -177,7 +180,7 @@ export default function CreateJobPost() {
                       <button
                         type="button"
                         onClick={() => remove(index)}
-                        className="text-red-600 hover:text-red-700 text-sm font-medium"
+                        className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
                       >
                         Remove
                       </button>
@@ -192,14 +195,14 @@ export default function CreateJobPost() {
             <button
               type="button"
               onClick={() => navigate('/employee')}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition"
+              className="flex-1 h-12 px-4 border border-gray-300 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 transition-all duration-200"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:opacity-90 active:scale-[0.97] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-md"
             >
               {isSubmitting ? 'Creating...' : 'Create Job Post'}
             </button>
@@ -209,4 +212,3 @@ export default function CreateJobPost() {
     </div>
   )
 }
-
