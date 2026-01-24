@@ -9,6 +9,7 @@ interface JobPost {
   description: string
   experience?: number
   location?: string
+  skills?: string[] | string
   company: {
     name: string
   }
@@ -27,9 +28,14 @@ interface ReferralForm {
   }>
 }
 
-export default function JobPosts() {
+interface JobPostsProps {
+  searchQuery?: string
+}
+
+export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
   const navigate = useNavigate()
   const [jobPosts, setJobPosts] = useState<JobPost[]>([])
+  const [allJobPosts, setAllJobPosts] = useState<JobPost[]>([])
   const [referralForm, setReferralForm] = useState<ReferralForm | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isFormLoading, setIsFormLoading] = useState(true)
@@ -42,14 +48,57 @@ export default function JobPosts() {
   const fetchJobPosts = async () => {
     try {
       const response = await api.get('/jobs/my-posts')
+      setAllJobPosts(response.data)
       setJobPosts(response.data)
     } catch (error) {
       console.error('Failed to fetch job posts:', error)
+      setAllJobPosts([])
       setJobPosts([])
     } finally {
       setIsLoading(false)
     }
   }
+
+  // Filter job posts based on search query
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setJobPosts(allJobPosts)
+      return
+    }
+
+    const query = searchQuery.toLowerCase().trim()
+    const filtered = allJobPosts.filter((post) => {
+      const title = (post.title || '').toLowerCase()
+      const companyName = (post.companyName || post.company?.name || '').toLowerCase()
+      const location = (post.location || '').toLowerCase()
+      const experience = post.experience?.toString() || ''
+      const skills = post.skills || []
+      
+      // Parse skills - handle both array and string formats
+      let skillsArray: string[] = []
+      if (Array.isArray(skills)) {
+        skillsArray = skills.map(s => String(s).toLowerCase())
+      } else if (typeof skills === 'string') {
+        try {
+          const parsed = JSON.parse(skills)
+          skillsArray = Array.isArray(parsed) ? parsed.map((s: any) => String(s).toLowerCase()) : []
+        } catch {
+          // If not JSON, treat as comma-separated string
+          skillsArray = skills.toLowerCase().split(',').map(s => s.trim()).filter(Boolean)
+        }
+      }
+
+      return (
+        title.includes(query) ||
+        companyName.includes(query) ||
+        location.includes(query) ||
+        experience.includes(query) ||
+        skillsArray.some(skill => skill.includes(query))
+      )
+    })
+
+    setJobPosts(filtered)
+  }, [searchQuery, allJobPosts])
 
   const fetchReferralForm = async () => {
     try {
@@ -98,6 +147,25 @@ export default function JobPosts() {
         {jobPosts.length === 0 ? (
         /* Premium Empty State */
         <div className="max-w-4xl mx-auto mt-16 bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-10 text-center flex flex-col items-center justify-center border border-gray-100">
+          {searchQuery ? (
+            <>
+              <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md mb-6">
+                <svg
+                  className="h-10 w-10 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">No job posts found</h2>
+              <p className="text-gray-600 text-base">
+                No job posts found for "{searchQuery}". Try adjusting your search terms.
+              </p>
+            </>
+          ) : (
+            <>
           {/* Illustration Icon */}
           <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md mb-6">
             <svg
@@ -115,21 +183,23 @@ export default function JobPosts() {
             </svg>
           </div>
 
-          {/* Main Text */}
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-            No job posts yet
-          </h2>
-          <p className="text-gray-600 text-base mb-8">
-            You haven't created any job posts. Start by creating your first one!
-          </p>
+              {/* Main Text */}
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                No job posts yet
+              </h2>
+              <p className="text-gray-600 text-base mb-8">
+                You haven't created any job posts. Start by creating your first one!
+              </p>
 
-          {/* Button */}
-          <button
-            onClick={() => navigate('/employee/create')}
-            className="h-12 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200"
-          >
-            Create Job Post
-          </button>
+              {/* Button */}
+              <button
+                onClick={() => navigate('/employee/create')}
+                className="h-12 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200"
+              >
+                Create Job Post
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

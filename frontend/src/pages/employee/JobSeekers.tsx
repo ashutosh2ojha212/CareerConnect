@@ -1,6 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { useDebounce } from '../../hooks/useDebounce'
 import api from '../../lib/api'
 
 interface JobSeekerProfile {
@@ -108,30 +106,19 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
   )
 }
 
-export default function JobSeekers() {
-  const [searchParams, setSearchParams] = useSearchParams()
+interface JobSeekersProps {
+  searchQuery?: string
+}
+
+export default function JobSeekers({ searchQuery = '' }: JobSeekersProps) {
   const [profiles, setProfiles] = useState<JobSeekerProfile[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
   const [selectedProfile, setSelectedProfile] = useState<JobSeekerProfile | null>(null)
-  const debouncedSearch = useDebounce(searchQuery, 300)
-
-  // Update URL when search changes (but not on initial load)
-  useEffect(() => {
-    const urlSearch = searchParams.get('search') || ''
-    if (debouncedSearch !== urlSearch) {
-      if (debouncedSearch) {
-        setSearchParams({ search: debouncedSearch }, { replace: true })
-      } else {
-        setSearchParams({}, { replace: true })
-      }
-    }
-  }, [debouncedSearch, setSearchParams, searchParams])
 
   const fetchJobSeekers = useCallback(async () => {
     try {
       setIsLoading(true)
-      const params = debouncedSearch ? `?search=${encodeURIComponent(debouncedSearch)}` : ''
+      const params = searchQuery.trim() ? `?search=${encodeURIComponent(searchQuery.trim())}` : ''
       const response = await api.get(`/job-seekers${params}`)
       setProfiles(response.data)
     } catch (error) {
@@ -140,7 +127,7 @@ export default function JobSeekers() {
     } finally {
       setIsLoading(false)
     }
-  }, [debouncedSearch])
+  }, [searchQuery])
 
   useEffect(() => {
     fetchJobSeekers()
@@ -189,10 +176,10 @@ export default function JobSeekers() {
             </svg>
           </div>
           <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-            {debouncedSearch ? `No candidates found for "${debouncedSearch}"` : 'No job seeker profiles available yet'}
+            {searchQuery.trim() ? `No candidates found for "${searchQuery}"` : 'No job seeker profiles available yet'}
           </h2>
           <p className="text-gray-600 text-base">
-            {debouncedSearch
+            {searchQuery.trim()
               ? 'Try adjusting your search terms'
               : 'Profiles will appear once candidates start using the platform.'}
           </p>

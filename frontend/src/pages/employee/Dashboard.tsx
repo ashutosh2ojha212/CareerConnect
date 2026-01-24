@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../lib/auth'
+import SearchBar from '../../components/SearchBar'
 import JobSeekers from './JobSeekers'
 import JobPosts from './JobPosts'
 import CreateJobPost from './CreateJobPost'
@@ -14,7 +15,8 @@ export default function EmployeeDashboard() {
   const location = useLocation()
   const { user } = useAuthStore()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [candidateSearchQuery, setCandidateSearchQuery] = useState('')
+  const [jobPostSearchQuery, setJobPostSearchQuery] = useState('')
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Get user initials for avatar
@@ -79,31 +81,40 @@ export default function EmployeeDashboard() {
     return location.pathname.startsWith(path)
   }
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
+  // Determine active tab and search mode
+  const getActiveTab = () => {
+    if (isActive('/employee/job-seekers')) return 'browse-candidates'
+    if (isActive('/employee/create')) return 'create-job-post'
+    if (isActive('/employee')) return 'my-job-posts'
+    return 'my-job-posts' // default
   }
 
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      // Navigate to job seekers tab with search query
-      if (searchQuery.trim()) {
-        navigate(`/employee/job-seekers?search=${encodeURIComponent(searchQuery.trim())}`)
-      } else {
-        navigate('/employee/job-seekers')
-      }
-    }
+  const activeTab = getActiveTab()
+
+  // Get search mode based on active tab
+  const getSearchMode = (): 'candidate' | 'jobpost' | 'hidden' => {
+    if (activeTab === 'browse-candidates') return 'candidate'
+    if (activeTab === 'my-job-posts') return 'jobpost'
+    return 'hidden'
   }
 
-  // Sync search query with URL when on job-seekers page
+  const handleCandidateSearch = (query: string) => {
+    setCandidateSearchQuery(query)
+  }
+
+  const handleJobPostSearch = (query: string) => {
+    setJobPostSearchQuery(query)
+  }
+
+  // Clear search when switching tabs
   useEffect(() => {
-    if (location.pathname === '/employee/job-seekers') {
-      const params = new URLSearchParams(location.search)
-      const searchParam = params.get('search')
-      if (searchParam) {
-        setSearchQuery(searchParam)
-      }
+    if (activeTab !== 'browse-candidates') {
+      setCandidateSearchQuery('')
     }
-  }, [location])
+    if (activeTab !== 'my-job-posts') {
+      setJobPostSearchQuery('')
+    }
+  }, [activeTab])
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fefefe] via-[#faf9f7] to-[#f5f4f2]">
@@ -130,27 +141,26 @@ export default function EmployeeDashboard() {
           </button>
         </div>
 
-        {/* Center: Search Bar */}
-        <div className="flex-1 max-w-2xl mx-8">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onKeyDown={handleSearchKeyDown}
-              placeholder="Search job seekers by skills, role, or experience…"
-              className="w-full h-11 px-4 pl-10 pr-4 border border-gray-300 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200 text-sm"
-            />
-            <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-        </div>
+        {/* Center: Context-Aware Search Bar */}
+        {activeTab === 'browse-candidates' && (
+          <SearchBar
+            mode="candidate"
+            placeholder="Search job seekers by skills, role, or experience…"
+            onSearch={handleCandidateSearch}
+            initialValue={candidateSearchQuery}
+          />
+        )}
+        {activeTab === 'my-job-posts' && (
+          <SearchBar
+            mode="jobpost"
+            placeholder="Search your job posts by title, company name, or location…"
+            onSearch={handleJobPostSearch}
+            initialValue={jobPostSearchQuery}
+          />
+        )}
+        {activeTab === 'create-job-post' && (
+          <SearchBar mode="hidden" placeholder="" onSearch={() => {}} />
+        )}
 
         {/* Right: Avatar Dropdown */}
         <div className="flex items-center gap-4" ref={dropdownRef}>
@@ -206,8 +216,8 @@ export default function EmployeeDashboard() {
         {/* Routes Content */}
         <main className="mt-8">
           <Routes>
-            <Route path="job-seekers" element={<JobSeekers />} />
-            <Route index element={<JobPosts />} />
+            <Route path="job-seekers" element={<JobSeekers searchQuery={candidateSearchQuery} />} />
+            <Route index element={<JobPosts searchQuery={jobPostSearchQuery} />} />
             <Route path="create" element={<CreateJobPost />} />
             <Route path="edit/:id" element={<EditJobPost />} />
             <Route path="setup-form" element={<SetupReferralForm />} />
