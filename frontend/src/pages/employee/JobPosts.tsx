@@ -13,13 +13,27 @@ interface JobPost {
   createdAt: string
 }
 
+interface ReferralForm {
+  id: string
+  formTitle: string
+  fields: Array<{
+    id: string
+    label: string
+    type: string
+    required: boolean
+  }>
+}
+
 export default function JobPosts() {
   const navigate = useNavigate()
   const [jobPosts, setJobPosts] = useState<JobPost[]>([])
+  const [referralForm, setReferralForm] = useState<ReferralForm | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isFormLoading, setIsFormLoading] = useState(true)
 
   useEffect(() => {
     fetchJobPosts()
+    fetchReferralForm()
   }, [])
 
   const fetchJobPosts = async () => {
@@ -34,7 +48,21 @@ export default function JobPosts() {
     }
   }
 
-  if (isLoading) {
+  const fetchReferralForm = async () => {
+    try {
+      const response = await api.get('/referrer/form')
+      if (response.data) {
+        setReferralForm(response.data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch referral form:', error)
+      setReferralForm(null)
+    } finally {
+      setIsFormLoading(false)
+    }
+  }
+
+  if (isLoading || isFormLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -43,21 +71,23 @@ export default function JobPosts() {
   }
 
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">My Job Posts</h1>
-          <p className="text-gray-500 mt-1 text-sm sm:text-base">Manage and track the job openings you've shared.</p>
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-8 mt-6">
+      {/* Main Content - Job Posts Section */}
+      <div className="min-w-0">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">My Job Posts</h1>
+            <p className="text-gray-500 mt-1 text-sm sm:text-base">Manage and track the job openings you've shared.</p>
+          </div>
+          <button
+            onClick={() => navigate('/employee/create')}
+            className="h-12 px-6 sm:px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
+          >
+            + Create New Job Post
+          </button>
         </div>
-        <button
-          onClick={() => navigate('/employee/create')}
-          className="h-12 px-6 sm:px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
-        >
-          + Create New Job Post
-        </button>
-      </div>
 
-      {jobPosts.length === 0 ? (
+        {jobPosts.length === 0 ? (
         /* Premium Empty State */
         <div className="max-w-4xl mx-auto mt-16 bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-10 text-center flex flex-col items-center justify-center border border-gray-100">
           {/* Illustration Icon */}
@@ -117,7 +147,55 @@ export default function JobPosts() {
             </div>
           ))}
         </div>
-      )}
+        )}
+      </div>
+
+      {/* Right Sidebar - Simplified Referral Form Card */}
+      <div className="lg:sticky lg:top-24 h-fit">
+        {!referralForm ? (
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Complete your referral setup</h3>
+                <p className="text-indigo-100 text-sm">
+                  Create the form job seekers will fill when requesting referrals from you.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/employee/setup-form')}
+                className="w-full px-4 py-2.5 bg-white text-indigo-600 font-semibold rounded-xl shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200 text-sm"
+              >
+                Set Up Referral Form
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(0,0,0,0.06)] p-6 border border-gray-100">
+            {/* Edit Form Button - Top */}
+            <button
+              onClick={() => navigate('/employee/setup-form')}
+              className="w-full px-4 py-2 text-sm font-medium border border-indigo-500 text-indigo-600 rounded-xl hover:bg-indigo-50 active:scale-[0.97] transition-all duration-200 mb-4"
+            >
+              Edit Form
+            </button>
+
+            {/* Title and Status */}
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold text-gray-900">
+                {referralForm.formTitle || 'Referral Application Form'}
+              </h3>
+              <div className="flex items-center">
+                <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-green-100 text-green-700 text-xs font-medium">
+                  <svg className="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Form Active
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
