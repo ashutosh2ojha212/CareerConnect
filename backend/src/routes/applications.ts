@@ -2,6 +2,8 @@ import express from 'express'
 import { PrismaClient } from '@prisma/client'
 import { authenticate, AuthRequest } from '../middleware/auth'
 import { upload } from '../utils/upload'
+import path from 'path'
+import fs from 'fs'
 
 const router = express.Router()
 const prisma = new PrismaClient()
@@ -125,20 +127,36 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
 router.post(
   '/:employeeId',
   authenticate,
-  upload.single('resume'),
+  upload.any(), // Accept any file field name
   async (req: AuthRequest, res, next) => {
     try {
       const userId = req.user!.id
       const { employeeId } = req.params
-      const file = req.file
+      const files = req.files as Express.Multer.File[]
+      const file = files && files.length > 0 ? files[0] : null
 
-      // Extract form data (excluding file)
+      // Extract form data (excluding files)
       const formData: Record<string, any> = {}
       Object.keys(req.body).forEach((key) => {
-        if (key !== 'resume') {
-          formData[key] = req.body[key]
-        }
+        formData[key] = req.body[key]
       })
+      
+      // Process uploaded files and add to formData
+      let fileUrl: string | null = null
+      if (files && files.length > 0) {
+        files.forEach((uploadedFile) => {
+          const fileUrlValue = `/uploads/${uploadedFile.filename}`
+          const fieldName = uploadedFile.fieldname || 'resume'
+          
+          // Add file URL to formData with the field name
+          formData[fieldName] = fileUrlValue
+          
+          // Store first file URL in resumeUrl for backward compatibility
+          if (!fileUrl) {
+            fileUrl = fileUrlValue
+          }
+        })
+      }
       
       // Convert formData to JSON string for SQLite
       const formDataJson = JSON.stringify(formData)
@@ -190,7 +208,7 @@ router.post(
             employeeId,
             jobPostId,
             formData: formDataJson,
-            resumeUrl: file ? `/uploads/${file.filename}` : null,
+            resumeUrl: fileUrl, // Store in resumeUrl for backward compatibility
           },
         })
 
@@ -304,6 +322,119 @@ router.get('/:employeeId/form-fields', authenticate, async (req, res, next) => {
     } else {
       res.json(formFields)
     }
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Delete application
+router.delete('/:applicationId', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const { applicationId } = req.params
+    const userId = req.user!.id
+
+    // Find the application and verify ownership
+    const application = await prisma.referralApplication.findUnique({
+      where: { id: applicationId },
+      include: {
+        jobPost: {
+          select: {
+            userId: true,
+          },
+        },
+      },
+    })
+
+    if (!application) {
+      return res.status(404).json({ message: 'Application not found' })
+    }
+
+    // Verify user owns the job post (only job creator can delete)
+    if (!application.jobPost || application.jobPost.userId !== userId) {
+      return res.status(403).json({ message: 'Unauthorized: Only the job creator can delete applications' })
+    }
+
+    // Hard delete the application
+    await prisma.referralApplication.delete({
+      where: { id: applicationId },
+    })
+
+    res.json({ success: true })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Download file from application
+router.get('/:applicationId/files/:fieldId', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const { applicationId, fieldId } = req.params
+    const userId = req.user!.id
+
+    // Find the application and verify ownership
+    const application = await prisma.referralApplication.findUnique({
+      where: { id: applicationId },
+      include: {
+        jobPost: {
+          select: {
+            userId: true,
+          },
+        },
+      },
+    })
+
+    if (!application) {
+      return res.status(404).json({ message: 'Application not found' })
+    }
+
+    // Verify user owns the job post (only job creator can download)
+    if (!application.jobPost || application.jobPost.userId !== userId) {
+      return res.status(403).json({ message: 'Unauthorized: Only the job creator can download files' })
+    }
+
+    // Parse form data to find the file field
+    let parsedFormData: Record<string, any> = {}
+    try {
+      parsedFormData = typeof application.formData === 'string' 
+        ? JSON.parse(application.formData) 
+        : application.formData
+    } catch (e) {
+      parsedFormData = {}
+    }
+
+    // Get file URL from formData or resumeUrl
+    let fileUrl: string | null = null
+
+    // Check if fieldId matches a form field
+    if (parsedFormData[fieldId]) {
+      fileUrl = parsedFormData[fieldId]
+    } else if (fieldId === 'resume' && application.resumeUrl) {
+      fileUrl = application.resumeUrl
+    }
+
+    if (!fileUrl) {
+      return res.status(404).json({ message: 'File not found' })
+    }
+
+    // Remove leading slash if present and construct full path
+    const uploadDir = process.env.UPLOAD_DIR || './uploads'
+    const fileName = fileUrl.startsWith('/uploads/') 
+      ? fileUrl.replace('/uploads/', '') 
+      : fileUrl
+    const filePath = path.join(uploadDir, fileName)
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: 'File not available' })
+    }
+
+    // Set headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', `attachment; filename="${path.basename(filePath)}"`)
+
+    // Stream the file
+    const fileStream = fs.createReadStream(filePath)
+    fileStream.pipe(res)
   } catch (error) {
     next(error)
   }

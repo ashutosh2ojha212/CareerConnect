@@ -150,6 +150,7 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
 router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const { jobId } = req.params
+    const { status } = req.query
     const userId = req.user!.id
 
     // Verify job belongs to user
@@ -164,8 +165,14 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
       return res.status(404).json({ message: 'Job post not found' })
     }
 
+    // Build where clause with optional status filter
+    const whereClause: any = { jobPostId: jobId }
+    if (status && typeof status === 'string' && ['pending', 'approved', 'rejected'].includes(status)) {
+      whereClause.status = status
+    }
+
     const applications = await prisma.referralApplication.findMany({
-      where: { jobPostId: jobId },
+      where: whereClause,
       include: {
         user: {
           select: {
@@ -193,17 +200,31 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
       },
     })
 
-    // Get referral form fields for this job post owner
-    const jobOwner = await prisma.user.findUnique({
-      where: { id: jobPost.userId },
+    // Get job post with custom form fields
+    const jobPostWithFields = await prisma.jobPost.findUnique({
+      where: { id: jobId },
       include: {
-        referralForm: true,
+        customFormFields: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
       },
     })
 
-    const formFields = jobOwner?.referralForm
-      ? JSON.parse(jobOwner.referralForm.fields)
-      : []
+    // Get custom form fields from job post, or fallback to default
+    let baseFormFields = jobPostWithFields?.customFormFields || []
+    
+    // If no custom fields, use default fields
+    if (baseFormFields.length === 0) {
+      baseFormFields = [
+        { id: 'name', label: 'Full Name', type: 'text', required: true, order: 0 },
+        { id: 'email', label: 'Email', type: 'email', required: true, order: 1 },
+        { id: 'phone', label: 'Phone Number', type: 'tel', required: false, order: 2 },
+        { id: 'experience', label: 'Years of Experience', type: 'number', required: false, order: 3 },
+        { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true, order: 4 },
+      ]
+    }
 
     const formattedApplications = applications.map((app) => {
       let parsedFormData = {}
@@ -213,12 +234,52 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
         parsedFormData = {}
       }
 
+      // Build complete form fields list - include all fields from formData
+      const formDataKeys = new Set(Object.keys(parsedFormData))
+      const fieldMap = new Map(baseFormFields.map(f => [f.id, f]))
+      
+      // Add any fields from formData that aren't in baseFormFields
+      formDataKeys.forEach(key => {
+        if (!fieldMap.has(key) && key !== 'jobPostId' && key !== 'employeeId') {
+          // Infer field type and label from key name
+          let type = 'text'
+          let label = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')
+          
+          if (key.toLowerCase().includes('email')) type = 'email'
+          else if (key.toLowerCase().includes('phone') || key.toLowerCase().includes('tel')) type = 'tel'
+          else if (key.toLowerCase().includes('experience') || key.toLowerCase().includes('year')) type = 'number'
+          else if (key.toLowerCase().includes('resume') || key.toLowerCase().includes('file')) type = 'file'
+          
+          fieldMap.set(key, { id: key, label, type, required: false, order: 999 })
+        }
+      })
+
+      // Convert map to array and sort by order
+      const allFormFields = Array.from(fieldMap.values()).sort((a, b) => (a.order || 0) - (b.order || 0))
+
+      // Ensure resume URL is in formData if it exists
+      // Find the resume/file field in formFields
+      const resumeField = allFormFields.find(f => f.type === 'file')
+      
+      if (app.resumeUrl) {
+        // If we have a resume field defined, use its ID
+        if (resumeField && !parsedFormData[resumeField.id]) {
+          parsedFormData[resumeField.id] = app.resumeUrl
+        } else if (!resumeField) {
+          // If no resume field defined but we have a resumeUrl, add it
+          parsedFormData['resume'] = app.resumeUrl
+        } else if (resumeField && parsedFormData[resumeField.id] !== app.resumeUrl) {
+          // Update with actual resumeUrl if different
+          parsedFormData[resumeField.id] = app.resumeUrl
+        }
+      }
+
       return {
         id: app.id,
         name: app.user.name,
         email: app.user.email,
         formData: parsedFormData,
-        formFields: formFields, // Include form field metadata
+        formFields: allFormFields, // Include all form field metadata
         resumeUrl: app.resumeUrl,
         status: app.status,
         createdAt: app.createdAt,

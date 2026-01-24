@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import api from '../../lib/api'
+import ApplicationFieldRow from '../../components/ApplicationFieldRow'
 
 interface FormField {
   id: string
@@ -33,28 +34,61 @@ interface Applicant {
   jobPost?: JobPost | null
 }
 
+type TabStatus = 'pending' | 'approved' | 'rejected'
+
 export default function JobApplicants() {
   const { jobId } = useParams<{ jobId: string }>()
   const navigate = useNavigate()
   const [applicants, setApplicants] = useState<Applicant[]>([])
   const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<TabStatus>('pending')
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     if (jobId) {
-      fetchApplicants(jobId)
+      fetchApplicants(jobId, activeTab)
     }
-  }, [jobId])
+  }, [jobId, activeTab])
 
-  const fetchApplicants = async (id: string) => {
+  const fetchApplicants = async (id: string, status?: TabStatus) => {
     try {
-      const response = await api.get(`/jobs/${id}/applicants`)
+      setIsLoading(true)
+      const url = status 
+        ? `/jobs/${id}/applicants?status=${status}`
+        : `/jobs/${id}/applicants`
+      const response = await api.get(url)
       setApplicants(response.data)
     } catch (error) {
       console.error('Failed to fetch applicants:', error)
       setApplicants([])
+      toast.error('Failed to fetch applicants')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleDelete = async (applicantId: string) => {
+    try {
+      setIsDeleting(true)
+      await api.delete(`/applications/${applicantId}`)
+      
+      // Optimistically remove from UI
+      setApplicants((prev) => prev.filter((app) => app.id !== applicantId))
+      
+      // If deleted applicant was selected, clear selection
+      if (selectedApplicant && selectedApplicant.id === applicantId) {
+        setSelectedApplicant(null)
+      }
+      
+      setShowDeleteConfirm(null)
+      toast.success('Applicant removed successfully')
+    } catch (error: any) {
+      console.error('Failed to delete applicant:', error)
+      toast.error(error.response?.data?.message || 'Failed to delete applicant')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -121,19 +155,45 @@ export default function JobApplicants() {
   const updateStatus = async (applicantId: string, status: 'approved' | 'rejected') => {
     try {
       await api.patch(`/applications/${applicantId}/status`, { status })
-      setApplicants((prev) =>
-        prev.map((app) => (app.id === applicantId ? { ...app, status } : app))
-      )
+      
+      // Remove from current tab's list (optimistic update)
+      setApplicants((prev) => prev.filter((app) => app.id !== applicantId))
+      
+      // If viewing detail page, close it
       if (selectedApplicant && selectedApplicant.id === applicantId) {
-        setSelectedApplicant({ ...selectedApplicant, status })
+        setSelectedApplicant(null)
       }
+      
       toast.success(`Application ${status}!`)
+      
+      // Switch to the appropriate tab and refetch
+      setActiveTab(status)
+      if (jobId) {
+        fetchApplicants(jobId, status)
+      }
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to update status')
+      // On error, refetch current tab to restore state
+      if (jobId) {
+        fetchApplicants(jobId, activeTab)
+      }
     }
   }
 
-  if (isLoading) {
+  const getEmptyStateMessage = (status: TabStatus) => {
+    switch (status) {
+      case 'pending':
+        return 'No pending applicants yet.'
+      case 'approved':
+        return 'No approved applicants yet.'
+      case 'rejected':
+        return 'No rejected applicants yet.'
+      default:
+        return 'No applicants yet.'
+    }
+  }
+
+  if (isLoading && applicants.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -233,69 +293,97 @@ export default function JobApplicants() {
 
           {/* Application Details Section */}
           <div className="bg-white shadow-lg rounded-2xl border border-gray-100 p-6 mb-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Application Details</h3>
-            <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-900 mb-6">Application Details</h3>
+            <div className="space-y-1">
               {selectedApplicant.formFields && selectedApplicant.formFields.length > 0 ? (
-                // Use form field labels if available
+                // Use form field labels if available - maintain order from schema
                 selectedApplicant.formFields.map((field) => {
-                  const value = selectedApplicant.formData[field.id]
-                  if (value === undefined || value === null || value === '') return null
+                  let value = selectedApplicant.formData[field.id]
+                  
+                  // For file fields, prioritize formData value, then resumeUrl
+                  if (field.type === 'file') {
+                    // Check multiple possible field names for resume
+                    if (!value) {
+                      // Try common resume field names
+                      const resumeFieldNames = ['resume', 'resumeUrl', 'file', 'pdf', 'document']
+                      for (const name of resumeFieldNames) {
+                        if (selectedApplicant.formData[name]) {
+                          value = selectedApplicant.formData[name]
+                          break
+                        }
+                      }
+                    }
+                    
+                    // Fallback to resumeUrl if still no value
+                    if (!value && selectedApplicant.resumeUrl) {
+                      value = selectedApplicant.resumeUrl
+                    }
+                  }
+                  
+                  // Determine file URL for file fields
+                  const fileUrl = field.type === 'file' 
+                    ? (value || selectedApplicant.resumeUrl || null)
+                    : undefined
                   
                   return (
-                    <div key={field.id} className="bg-gray-50 rounded-lg px-4 py-3 border border-gray-100">
-                      <p className="text-sm font-medium text-gray-500 mb-1">{field.label}</p>
-                      {field.type === 'file' ? (
-                        <div className="flex items-center gap-2">
-                          <a
-                            href={selectedApplicant.resumeUrl || (typeof value === 'string' ? value : '#')}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors inline-flex items-center gap-2"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            Download Resume
-                          </a>
-                        </div>
-                      ) : (
-                        <p className="text-gray-700">{String(value)}</p>
-                      )}
-                    </div>
+                    <ApplicationFieldRow
+                      key={field.id}
+                      label={field.label}
+                      value={value}
+                      type={field.type as 'text' | 'file' | 'email' | 'tel' | 'number' | 'textarea'}
+                      fileUrl={fileUrl}
+                      applicationId={selectedApplicant.id}
+                      fieldId={field.id}
+                    />
                   )
                 })
               ) : (
                 // Fallback to raw form data if no form fields metadata
                 Object.entries(selectedApplicant.formData)
-                  .filter(([key]) => key !== 'resume' && key !== 'jobPostId' && key !== 'employeeId')
-                  .map(([key, value]) => (
-                    <div key={key} className="bg-gray-50 rounded-lg px-4 py-3 border border-gray-100">
-                      <p className="text-sm font-medium text-gray-500 mb-1">
-                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
-                      </p>
-                      <p className="text-gray-700">{String(value)}</p>
-                    </div>
-                  ))
+                  .filter(([key]) => key !== 'jobPostId' && key !== 'employeeId')
+                  .map(([key, value]) => {
+                    // Determine type from key name
+                    let fieldType: 'text' | 'file' | 'email' | 'tel' | 'number' | 'textarea' = 'text'
+                    let fileUrl: string | undefined = undefined
+                    
+                    if (key.toLowerCase().includes('email')) {
+                      fieldType = 'email'
+                    } else if (key.toLowerCase().includes('phone') || key.toLowerCase().includes('tel')) {
+                      fieldType = 'tel'
+                    } else if (key.toLowerCase().includes('experience') || key.toLowerCase().includes('year')) {
+                      fieldType = 'number'
+                    } else if (key.toLowerCase().includes('resume') || key.toLowerCase().includes('file')) {
+                      fieldType = 'file'
+                      fileUrl = typeof value === 'string' ? value : selectedApplicant.resumeUrl
+                    }
+                    
+                    return (
+                      <ApplicationFieldRow
+                        key={key}
+                        label={key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                        value={value}
+                        type={fieldType}
+                        fileUrl={fileUrl}
+                        applicationId={selectedApplicant.id}
+                        fieldId={key}
+                      />
+                    )
+                  })
               )}
               
-              {/* Resume Link (if not already shown as a field) */}
+              {/* Resume Link (if not already shown as a field and exists) */}
               {selectedApplicant.resumeUrl && 
-               (!selectedApplicant.formFields || 
-                !selectedApplicant.formFields.some(f => f.type === 'file')) && (
-                <div className="bg-gray-50 rounded-lg px-4 py-3 border border-gray-100">
-                  <p className="text-sm font-medium text-gray-500 mb-1">Resume</p>
-                  <a
-                    href={selectedApplicant.resumeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors inline-flex items-center gap-2"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Download Resume
-                  </a>
-                </div>
+               selectedApplicant.formFields &&
+               !selectedApplicant.formFields.some(f => f.type === 'file' || f.id === 'resume') &&
+               !selectedApplicant.formData['resume'] && (
+                <ApplicationFieldRow
+                  label="Resume"
+                  value={selectedApplicant.resumeUrl}
+                  type="file"
+                  fileUrl={selectedApplicant.resumeUrl}
+                  applicationId={selectedApplicant.id}
+                  fieldId="resume"
+                />
               )}
             </div>
           </div>
@@ -330,17 +418,6 @@ export default function JobApplicants() {
                 </p>
               </div>
             )}
-
-            {/* Copy Application Summary Button */}
-            <button
-              onClick={() => copyApplicationSummary(selectedApplicant)}
-              className="w-full h-12 bg-gray-800 text-white rounded-xl font-semibold hover:bg-gray-900 active:scale-[0.97] transition-all duration-200 shadow-md flex items-center justify-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              Copy Details
-            </button>
           </div>
         </div>
       </div>
@@ -361,7 +438,34 @@ export default function JobApplicants() {
 
       <h1 className="text-3xl font-semibold text-gray-900 mb-8">Applicants</h1>
 
-      {applicants.length === 0 ? (
+      {/* Tabs */}
+      <div className="mb-6 border-b border-gray-200">
+        <nav className="flex space-x-8" aria-label="Tabs">
+          {(['pending', 'approved', 'rejected'] as TabStatus[]).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`
+                py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                ${
+                  activeTab === tab
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }
+              `}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Applicants List */}
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        </div>
+      ) : applicants.length === 0 ? (
         <div className="max-w-4xl mx-auto mt-16 bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] p-12 text-center flex flex-col items-center justify-center border border-gray-100">
           <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md mb-6">
             <svg
@@ -378,9 +482,9 @@ export default function JobApplicants() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">No applicants yet</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">No applicants found</h2>
           <p className="text-gray-600 text-base">
-            No job postings here yet. Ready to create one?
+            {getEmptyStateMessage(activeTab)}
           </p>
         </div>
       ) : (
@@ -388,31 +492,90 @@ export default function JobApplicants() {
           {applicants.map((applicant) => (
             <div
               key={applicant.id}
-              onClick={() => setSelectedApplicant(applicant)}
-              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.06)] p-6 cursor-pointer hover:shadow-[0_12px_50px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100"
+              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.06)] p-6 hover:shadow-[0_12px_50px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100 relative"
             >
               <div className="flex justify-between items-start">
-                <div>
+                <div
+                  className="flex-1 cursor-pointer"
+                  onClick={() => setSelectedApplicant(applicant)}
+                >
                   <h3 className="text-lg font-semibold text-gray-900">{applicant.name}</h3>
                   <p className="text-gray-600">{applicant.email}</p>
                   <p className="text-sm text-gray-500 mt-2">
                     Applied on {new Date(applicant.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <span
-                  className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                    applicant.status === 'approved'
-                      ? 'bg-green-100 text-green-800'
-                      : applicant.status === 'rejected'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}
-                >
-                  {applicant.status.charAt(0).toUpperCase() + applicant.status.slice(1)}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                      applicant.status === 'approved'
+                        ? 'bg-green-100 text-green-800'
+                        : applicant.status === 'rejected'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}
+                  >
+                    {applicant.status.charAt(0).toUpperCase() + applicant.status.slice(1)}
+                  </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setShowDeleteConfirm(applicant.id)
+                    }}
+                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Delete applicant"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          onClick={() => !isDeleting && setShowDeleteConfirm(null)}
+        >
+          <div 
+            className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Confirm Deletion</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this application?
+              <br />
+              <span className="font-medium text-red-600">This action cannot be undone.</span>
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteConfirm(null)}
+                disabled={isDeleting}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete(showDeleteConfirm)}
+                disabled={isDeleting}
+                className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 flex items-center gap-2"
+              >
+                {isDeleting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete'
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

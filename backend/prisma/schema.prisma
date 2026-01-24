@@ -15,17 +15,18 @@ model User {
   email                String    @unique
   name                 String
   password             String
-  role                 String?   // "job_seeker" or "referrer"
+  role                 String? // "job_seeker" or "referrer"
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
   // Relations
-  employeeProfile EmployeeProfile?
-  applications    ReferralApplication[]
-  jobPosts        JobPost[]
-  referralForm    ReferralForm?
+  employeeProfile  EmployeeProfile?
+  jobSeekerProfile JobSeekerProfile?
+  applications     ReferralApplication[]
+  jobPosts         JobPost[]
+  referralForm     ReferralForm?
 }
 
 model Company {
@@ -59,33 +60,33 @@ model EmployeeProfile {
 model JobPost {
   id          String   @id @default(uuid())
   title       String
-  companyName String   // Company name for the job post
+  companyName String // Company name for the job post
   description String?
-  experience  Int?     // Minimum years of experience
-  location    String?  // Job location
-  skills      String?  // JSON array of skills
+  experience  Int? // Minimum years of experience
+  location    String? // Job location
+  skills      String? // JSON array of skills
   companyId   String
   userId      String // The referrer who posted it
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
-  company         Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company          Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   customFormFields JobCustomFormField[]
-  applications    ReferralApplication[]
+  applications     ReferralApplication[]
 
   @@index([companyId])
   @@index([userId])
 }
 
 model JobCustomFormField {
-  id       String  @id @default(uuid())
+  id        String  @id @default(uuid())
   jobPostId String
-  label    String
-  type     String  // "text", "email", "tel", "number", "textarea", "file"
-  required Boolean @default(false)
-  order    Int     @default(0)
+  label     String
+  type      String // "text", "email", "tel", "number", "textarea", "file"
+  required  Boolean @default(false)
+  order     Int     @default(0)
 
   // Relations
   jobPost JobPost @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
@@ -94,19 +95,19 @@ model JobCustomFormField {
 }
 
 model ReferralApplication {
-  id        String   @id @default(uuid())
-  jobPostId String?
-  userId    String   // Job seeker
-  employeeId String  // Employee being requested for referral
-  status    String   @default("pending") // "pending", "approved", "rejected"
-  formData  String   @default("{}") // Dynamic form data (JSON string)
-  resumeUrl String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  jobPostId  String?
+  userId     String // Job seeker
+  employeeId String // Employee being requested for referral
+  status     String   @default("pending") // "pending", "approved", "rejected"
+  formData   String   @default("{}") // Dynamic form data (JSON string)
+  resumeUrl  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // Relations
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jobPost  JobPost? @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPost JobPost? @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
 
   @@unique([jobPostId, userId])
   @@index([userId])
@@ -118,7 +119,7 @@ model ReferralForm {
   id        String   @id @default(uuid())
   userId    String   @unique
   formTitle String   @default("Referral Application Form")
-  fields    String   // JSON array of field objects
+  fields    String // JSON array of field objects
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -128,3 +129,22 @@ model ReferralForm {
   @@index([userId])
 }
 
+model JobSeekerProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  fullName        String
+  email           String
+  experience      Int? // Years of experience
+  primaryRole     String? // Current or primary role
+  skills          String? // Comma-separated or JSON array
+  jobPreferences  String? // Desired job role/title
+  profileImageURL String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([primaryRole])
+}
