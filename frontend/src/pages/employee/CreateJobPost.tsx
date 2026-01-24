@@ -52,12 +52,6 @@ export default function CreateJobPost() {
   }
 
   const onSubmit = async (data: JobPostForm) => {
-    // Validate skills
-    if (skills.length === 0) {
-      toast.error('Please add at least one required skill')
-      return
-    }
-
     setIsSubmitting(true)
     try {
       const payload = {
@@ -65,7 +59,7 @@ export default function CreateJobPost() {
         title: data.title,
         experience: Number(data.experience),
         location: data.location,
-        skills: skills,
+        skills: skills.length > 0 ? skills : [],
         description: data.description || null,
       }
       const response = await api.post('/jobs', payload)
@@ -175,7 +169,7 @@ export default function CreateJobPost() {
             {/* Required Skills */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Required Skills <span className="text-red-500">*</span>
+                Required Skills
               </label>
               <div className="flex gap-2 mb-3">
                 <input
@@ -207,9 +201,6 @@ export default function CreateJobPost() {
                   </svg>
                 </button>
               </div>
-              {skills.length === 0 && (
-                <p className="mt-1.5 text-sm text-red-600">At least one skill is required</p>
-              )}
               {skills.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
                   {skills.map((skill, index) => (

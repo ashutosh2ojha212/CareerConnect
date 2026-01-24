@@ -70,8 +70,9 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
       return res.status(400).json({ message: 'Job location is required' })
     }
 
-    if (!skills || !Array.isArray(skills) || skills.length === 0) {
-      return res.status(400).json({ message: 'At least one required skill is required' })
+    // Skills is optional - allow empty array or undefined
+    if (skills !== undefined && skills !== null && !Array.isArray(skills)) {
+      return res.status(400).json({ message: 'Skills must be an array' })
     }
 
     // Get user's company from their employee profile, or create a default one
@@ -117,7 +118,7 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
         description: description || null,
         experience: Number(experience),
         location: location.trim(),
-        skills: JSON.stringify(skills),
+        skills: skills && skills.length > 0 ? JSON.stringify(skills) : null,
         companyId: employeeProfile.companyId,
         userId,
       },
@@ -271,8 +272,9 @@ router.put('/:jobId', authenticate, async (req: AuthRequest, res, next) => {
       return res.status(400).json({ message: 'Job location is required' })
     }
 
-    if (!skills || !Array.isArray(skills) || skills.length === 0) {
-      return res.status(400).json({ message: 'At least one required skill is required' })
+    // Skills is optional - allow empty array or undefined
+    if (skills !== undefined && skills !== null && !Array.isArray(skills)) {
+      return res.status(400).json({ message: 'Skills must be an array' })
     }
 
     const updatedJob = await prisma.jobPost.update({
@@ -283,7 +285,7 @@ router.put('/:jobId', authenticate, async (req: AuthRequest, res, next) => {
         description: description || null,
         experience: Number(experience),
         location: location.trim(),
-        skills: JSON.stringify(skills),
+        skills: skills && skills.length > 0 ? JSON.stringify(skills) : null,
       },
       include: {
         company: {

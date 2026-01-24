@@ -7,7 +7,7 @@ import api from '../../lib/api'
 interface FormField {
   id: string
   label: string
-  type: 'text' | 'email' | 'tel' | 'number' | 'date' | 'file' | 'textarea'
+  type: 'text' | 'number' | 'file'
   required: boolean
 }
 
@@ -30,7 +30,6 @@ export default function SetupReferralForm() {
     defaultValues: {
       fields: [
         { id: 'name', label: 'Full Name', type: 'text', required: true },
-        { id: 'email', label: 'Email', type: 'email', required: true },
         { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true },
       ],
     },
@@ -49,7 +48,15 @@ export default function SetupReferralForm() {
     try {
       const response = await api.get('/referrer/form')
       if (response.data) {
-        setValue('fields', response.data.fields)
+        // Convert any invalid field types to 'text' (for backward compatibility)
+        const sanitizedFields = response.data.fields.map((field: FormField) => {
+          if (field.type === 'text' || field.type === 'number' || field.type === 'file') {
+            return field
+          }
+          // Convert invalid types to 'text'
+          return { ...field, type: 'text' as const }
+        })
+        setValue('fields', sanitizedFields)
         setHasExistingForm(true)
       }
     } catch (error: any) {
@@ -168,11 +175,7 @@ export default function SetupReferralForm() {
                         className="w-full h-11 px-3 border border-gray-200 rounded-xl bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200"
                       >
                         <option value="text">Text</option>
-                        <option value="email">Email</option>
-                        <option value="tel">Phone</option>
                         <option value="number">Number</option>
-                        <option value="date">Date</option>
-                        <option value="textarea">Textarea</option>
                         <option value="file">File Upload</option>
                       </select>
                     </div>
