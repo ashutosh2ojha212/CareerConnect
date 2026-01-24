@@ -26,11 +26,26 @@ export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFo
   const [formFields, setFormFields] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasApplied, setHasApplied] = useState(false)
+  const [applicationStatus, setApplicationStatus] = useState<string | null>(null)
   const { register, handleSubmit } = useForm<FormData>()
 
   useEffect(() => {
     fetchFormFields()
+    checkApplicationStatus()
   }, [])
+
+  const checkApplicationStatus = async () => {
+    try {
+      const response = await api.get(`/applications/check?employeeId=${employee.id}`)
+      if (response.data.hasApplied) {
+        setHasApplied(true)
+        setApplicationStatus(response.data.application?.status || null)
+      }
+    } catch (error) {
+      console.error('Failed to check application status:', error)
+    }
+  }
 
   const fetchFormFields = async () => {
     try {
@@ -71,9 +86,17 @@ export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFo
       })
 
       toast.success('Referral request submitted successfully!')
+      setHasApplied(true)
       onSuccess()
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to submit application')
+      if (error.response?.status === 409) {
+        toast.error('You already applied to this job')
+        setHasApplied(true)
+        // Refresh application status
+        checkApplicationStatus()
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to submit application')
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -125,22 +148,38 @@ export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFo
             </div>
           ))}
 
-          <div className="flex gap-4">
-            <button
-              type="button"
-              onClick={onBack}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Request'}
-            </button>
-          </div>
+          {hasApplied ? (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <svg className="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                </svg>
+                <p className="font-semibold text-yellow-800">Already Applied</p>
+              </div>
+              {applicationStatus && (
+                <p className="text-sm text-yellow-700">
+                  Status: <span className="font-medium capitalize">{applicationStatus}</span>
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={onBack}
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting || hasApplied}
+                className="flex-1 bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Request'}
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

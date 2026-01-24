@@ -174,21 +174,65 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
             email: true,
           },
         },
+        jobPost: {
+          select: {
+            id: true,
+            title: true,
+            companyName: true,
+            experience: true,
+            company: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
       },
     })
 
-    const formattedApplications = applications.map((app) => ({
-      id: app.id,
-      name: app.user.name,
-      email: app.user.email,
-      formData: app.formData,
-      resumeUrl: app.resumeUrl,
-      status: app.status,
-      createdAt: app.createdAt,
-    }))
+    // Get referral form fields for this job post owner
+    const jobOwner = await prisma.user.findUnique({
+      where: { id: jobPost.userId },
+      include: {
+        referralForm: true,
+      },
+    })
+
+    const formFields = jobOwner?.referralForm
+      ? JSON.parse(jobOwner.referralForm.fields)
+      : []
+
+    const formattedApplications = applications.map((app) => {
+      let parsedFormData = {}
+      try {
+        parsedFormData = typeof app.formData === 'string' ? JSON.parse(app.formData) : app.formData
+      } catch (e) {
+        parsedFormData = {}
+      }
+
+      return {
+        id: app.id,
+        name: app.user.name,
+        email: app.user.email,
+        formData: parsedFormData,
+        formFields: formFields, // Include form field metadata
+        resumeUrl: app.resumeUrl,
+        status: app.status,
+        createdAt: app.createdAt,
+        jobPost: app.jobPost
+          ? {
+              id: app.jobPost.id,
+              title: app.jobPost.title,
+              companyName: app.jobPost.companyName,
+              experience: app.jobPost.experience,
+              company: app.jobPost.company,
+            }
+          : null,
+      }
+    })
 
     res.json(formattedApplications)
   } catch (error) {

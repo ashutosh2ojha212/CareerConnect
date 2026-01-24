@@ -6,6 +6,80 @@ import { upload } from '../utils/upload'
 const router = express.Router()
 const prisma = new PrismaClient()
 
+// Check if user has already applied for a job (by jobId)
+router.get('/check', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const userId = req.user!.id
+    const { jobId, employeeId } = req.query
+
+    if (jobId && typeof jobId === 'string') {
+      const existingApplication = await prisma.referralApplication.findFirst({
+        where: {
+          jobPostId: jobId,
+          userId,
+        },
+        select: {
+          id: true,
+          status: true,
+        },
+      })
+
+      return res.json({
+        hasApplied: !!existingApplication,
+        application: existingApplication || null,
+      })
+    }
+
+    // Check by employeeId (get their latest job post)
+    if (employeeId && typeof employeeId === 'string') {
+      const employee = await prisma.employeeProfile.findUnique({
+        where: { userId: employeeId },
+        include: {
+          company: {
+            include: {
+              jobPosts: {
+                take: 1,
+                orderBy: {
+                  createdAt: 'desc',
+                },
+              },
+            },
+          },
+        },
+      })
+
+      if (!employee || !employee.company.jobPosts[0]) {
+        return res.json({
+          hasApplied: false,
+          application: null,
+        })
+      }
+
+      const jobPostId = employee.company.jobPosts[0].id
+      const existingApplication = await prisma.referralApplication.findFirst({
+        where: {
+          jobPostId,
+          userId,
+        },
+        select: {
+          id: true,
+          status: true,
+        },
+      })
+
+      return res.json({
+        hasApplied: !!existingApplication,
+        application: existingApplication || null,
+        jobPostId,
+      })
+    }
+
+    return res.status(400).json({ message: 'jobId or employeeId is required' })
+  } catch (error) {
+    next(error)
+  }
+})
+
 // Get my applications (job seeker)
 router.get('/', authenticate, async (req: AuthRequest, res, next) => {
   try {
@@ -92,20 +166,48 @@ router.post(
 
       const jobPostId = employee.company.jobPosts[0]?.id || null
 
-      const application = await prisma.referralApplication.create({
-        data: {
-          userId,
-          employeeId,
-          jobPostId,
-          formData: formDataJson,
-          resumeUrl: file ? `/uploads/${file.filename}` : null,
-        },
-      })
+      // Check if user has already applied for this job
+      if (jobPostId) {
+        const existingApplication = await prisma.referralApplication.findFirst({
+          where: {
+            jobPostId,
+            userId,
+          },
+        })
 
-      res.status(201).json({
-        id: application.id,
-        message: 'Application submitted successfully',
-      })
+        if (existingApplication) {
+          return res.status(409).json({ 
+            message: 'You have already applied for this job',
+            applicationId: existingApplication.id,
+          })
+        }
+      }
+
+      try {
+        const application = await prisma.referralApplication.create({
+          data: {
+            userId,
+            employeeId,
+            jobPostId,
+            formData: formDataJson,
+            resumeUrl: file ? `/uploads/${file.filename}` : null,
+          },
+        })
+
+        res.status(201).json({
+          id: application.id,
+          message: 'Application submitted successfully',
+        })
+      } catch (error: any) {
+        // Handle unique constraint violation
+        if (error.code === 'P2002' || error.message?.includes('Unique constraint')) {
+          return res.status(409).json({ 
+            message: 'You have already applied for this job',
+          })
+        }
+        throw error
+      }
+
     } catch (error) {
       next(error)
     }

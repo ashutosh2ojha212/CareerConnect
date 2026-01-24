@@ -108,6 +108,7 @@ model ReferralApplication {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   jobPost  JobPost? @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
 
+  @@unique([jobPostId, userId])
   @@index([userId])
   @@index([jobPostId])
   @@index([employeeId])

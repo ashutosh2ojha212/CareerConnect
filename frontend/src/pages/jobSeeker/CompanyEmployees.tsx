@@ -14,10 +14,15 @@ interface Employee {
   }
 }
 
+interface EmployeeWithStatus extends Employee {
+  hasApplied?: boolean
+  applicationStatus?: string
+}
+
 export default function CompanyEmployees() {
   const { companyId } = useParams<{ companyId: string }>()
   const navigate = useNavigate()
-  const [employees, setEmployees] = useState<Employee[]>([])
+  const [employees, setEmployees] = useState<EmployeeWithStatus[]>([])
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -30,26 +35,37 @@ export default function CompanyEmployees() {
   const fetchEmployees = async (id: string) => {
     try {
       const response = await api.get(`/companies/${id}/employees`)
-      setEmployees(response.data)
-    } catch (error) {
+      const employeesData = response.data || []
+
+      // Check application status for each employee
+      const employeesWithStatus = await Promise.all(
+        employeesData.map(async (employee: Employee) => {
+          try {
+            const checkResponse = await api.get(`/applications/check?employeeId=${employee.id}`)
+            return {
+              ...employee,
+              hasApplied: checkResponse.data.hasApplied,
+              applicationStatus: checkResponse.data.application?.status || null,
+            }
+          } catch (error) {
+            return {
+              ...employee,
+              hasApplied: false,
+              applicationStatus: null,
+            }
+          }
+        })
+      )
+
+      setEmployees(employeesWithStatus)
+    } catch (error: any) {
       console.error('Failed to fetch employees:', error)
-      // Mock data
-      setEmployees([
-        {
-          id: '1',
-          name: 'John Doe',
-          email: 'john@example.com',
-          position: 'Senior Software Engineer',
-          company: { id: id, name: 'Tech Corp' },
-        },
-        {
-          id: '2',
-          name: 'Jane Smith',
-          email: 'jane@example.com',
-          position: 'Engineering Manager',
-          company: { id: id, name: 'Tech Corp' },
-        },
-      ])
+      if (error.response?.status === 404) {
+        // Company not found or user is the only employee
+        setEmployees([])
+      } else {
+        setEmployees([])
+      }
     } finally {
       setIsLoading(false)
     }
@@ -73,6 +89,22 @@ export default function CompanyEmployees() {
           navigate('/job-seeker/applications')
         }}
       />
+    )
+  }
+
+  if (!isLoading && employees.length === 0) {
+    return (
+      <div>
+        <button
+          onClick={() => navigate('/job-seeker')}
+          className="mb-4 text-primary-600 hover:text-primary-700 font-medium"
+        >
+          ← Back to Companies
+        </button>
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <p className="text-gray-600">No employees available at this company.</p>
+        </div>
+      </div>
     )
   }
 
@@ -103,12 +135,24 @@ export default function CompanyEmployees() {
               </div>
             </div>
             <p className="text-gray-600 mb-4">{employee.email}</p>
-            <button
-              onClick={() => setSelectedEmployee(employee)}
-              className="w-full bg-primary-600 text-white py-2 rounded-lg font-semibold hover:bg-primary-700 transition"
-            >
-              Request Referral
-            </button>
+            {employee.hasApplied ? (
+              <button
+                disabled
+                className="w-full bg-gray-300 text-gray-600 py-2 rounded-lg font-semibold cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                Already Applied
+              </button>
+            ) : (
+              <button
+                onClick={() => setSelectedEmployee(employee)}
+                className="w-full bg-primary-600 text-white py-2 rounded-lg font-semibold hover:bg-primary-700 transition"
+              >
+                Request Referral
+              </button>
+            )}
           </div>
         ))}
       </div>
