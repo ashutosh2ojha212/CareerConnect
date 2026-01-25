@@ -235,7 +235,7 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
               >
                 {/* Company Name */}
                 <p className="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">
-                  {job.companyName || job.company?.name || 'Company'}
+                  {(job.company?.name && job.company.name !== 'Default Company' ? job.company.name : job.companyName) || 'Company'}
                 </p>
                 
                 {/* Job Title */}

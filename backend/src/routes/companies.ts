@@ -1,10 +1,8 @@
 import express from 'express'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 import { authenticate, AuthRequest } from '../middleware/auth'
 
 const router = express.Router()
-const prisma = new PrismaClient()
-
 // Get all companies (filtered to exclude companies where user is the only employee)
 router.get('/', authenticate, async (req: AuthRequest, res, next) => {
   try {
@@ -31,8 +29,10 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
     })
 
     // Filter out companies where the current user is the only employee
+    // and exclude "Default Company" (used only when employee has no company assigned)
     const filteredCompanies = companies
       .filter((company) => {
+        if (company.name === 'Default Company') return false
         // Get employees excluding the current user
         const otherEmployees = company.employees.filter(
           (emp) => emp.user.id !== userId

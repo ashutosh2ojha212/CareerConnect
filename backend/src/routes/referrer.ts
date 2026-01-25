@@ -1,10 +1,8 @@
 import express from 'express'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 import { authenticate, AuthRequest } from '../middleware/auth'
 
 const router = express.Router()
-const prisma = new PrismaClient()
-
 // Test endpoint to verify route is working
 router.get('/test', (req, res) => {
   res.json({ message: 'Referrer routes are working!' })

@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../prisma-client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                   String    @id @default(uuid())
+  email                String    @unique
+  name                 String
+  password             String
+  role                 String? // "job_seeker" or "referrer"
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  // Relations
+  employeeProfile  EmployeeProfile?
+  jobSeekerProfile JobSeekerProfile?
+  applications     ReferralApplication[]
+  jobPosts         JobPost[]
+  referralForm     ReferralForm?
+}
+
+model Company {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  logo        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  employees EmployeeProfile[]
+  jobPosts  JobPost[]
+}
+
+model EmployeeProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  companyId String
+  position  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+}
+
+model JobPost {
+  id          String   @id @default(uuid())
+  title       String
+  companyName String // Company name for the job post
+  description String?
+  experience  Int? // Minimum years of experience
+  location    String? // Job location
+  skills      String? // JSON array of skills
+  companyId   String
+  userId      String // The referrer who posted it
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  company          Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customFormFields JobCustomFormField[]
+  applications     ReferralApplication[]
+
+  @@index([companyId])
+  @@index([userId])
+}
+
+model JobCustomFormField {
+  id        String  @id @default(uuid())
+  jobPostId String
+  label     String
+  type      String // "text", "email", "tel", "number", "textarea", "file"
+  required  Boolean @default(false)
+  order     Int     @default(0)
+
+  // Relations
+  jobPost JobPost @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
+
+  @@index([jobPostId])
+}
+
+model ReferralApplication {
+  id         String   @id @default(uuid())
+  jobPostId  String?
+  userId     String // Job seeker
+  employeeId String // Employee being requested for referral
+  status     String   @default("pending") // "pending", "approved", "rejected"
+  formData   String   @default("{}") // Dynamic form data (JSON string)
+  resumeUrl  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPost JobPost? @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
+
+  @@unique([jobPostId, userId])
+  @@index([userId])
+  @@index([jobPostId])
+  @@index([employeeId])
+}
+
+model ReferralForm {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  formTitle String   @default("Referral Application Form")
+  fields    String // JSON array of field objects
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model JobSeekerProfile {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  fullName           String
+  email              String
+  experience         Int? // Years of experience
+  primaryRole        String? // Current or primary role / designation
+  skills             String? // JSON array or comma-separated
+  jobPreferences     String? // Preferred job role/title
+  preferredLocations String? // JSON array of location strings
+  profileSummary     String? // Bio / about
+  resumeUrl          String?
+  profileImageURL    String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([primaryRole])
+}

@@ -10,6 +10,7 @@ interface JobSeekerProfile {
   primaryRole: string | null
   skills: string[]
   jobPreferences: string | null
+  preferredLocations?: string[]
   profileImageURL: string | null
   createdAt: string
   updatedAt: string
@@ -212,9 +213,16 @@ export default function JobSeekers({ searchQuery = '' }: JobSeekersProps) {
               </div>
 
               {profile.jobPreferences && (
-                <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                  <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Looking For</p>
+                <div className="mb-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                  <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Preferred Roles</p>
                   <p className="text-sm font-medium text-gray-900">{profile.jobPreferences}</p>
+                </div>
+              )}
+
+              {profile.preferredLocations && profile.preferredLocations.length > 0 && (
+                <div className="mb-3">
+                  <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Preferred Locations</p>
+                  <p className="text-sm font-medium text-gray-700">{profile.preferredLocations.join(', ')}</p>
                 </div>
               )}
 
@@ -243,7 +251,7 @@ export default function JobSeekers({ searchQuery = '' }: JobSeekersProps) {
                 onClick={() => setSelectedProfile(profile)}
                 className="w-full h-11 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-md"
               >
-                View Profile
+                View Full Profile
               </button>
             </div>
           ))}

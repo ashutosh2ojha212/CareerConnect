@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../prisma-client"
 }
 
 datasource db {
@@ -130,17 +131,20 @@ model ReferralForm {
 }
 
 model JobSeekerProfile {
-  id              String   @id @default(uuid())
-  userId          String   @unique
-  fullName        String
-  email           String
-  experience      Int? // Years of experience
-  primaryRole     String? // Current or primary role
-  skills          String? // Comma-separated or JSON array
-  jobPreferences  String? // Desired job role/title
-  profileImageURL String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  fullName         String
+  email            String
+  experience       Int? // Years of experience
+  primaryRole      String? // Current or primary role / designation
+  skills           String? // JSON array or comma-separated
+  jobPreferences   String? // Preferred job role/title
+  preferredLocations String? // JSON array of location strings
+  profileSummary   String? // Bio / about
+  resumeUrl        String?
+  profileImageURL  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

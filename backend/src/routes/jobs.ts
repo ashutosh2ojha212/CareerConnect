@@ -1,10 +1,8 @@
 import express from 'express'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 import { authenticate, AuthRequest } from '../middleware/auth'
 
 const router = express.Router()
-const prisma = new PrismaClient()
-
 // Get my job posts
 router.get('/my-posts', authenticate, async (req: AuthRequest, res, next) => {
   try {
@@ -75,40 +73,31 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
       return res.status(400).json({ message: 'Skills must be an array' })
     }
 
-    // Get user's company from their employee profile, or create a default one
+    // Get user's company from their employee profile, or create one only when truly unassigned
     let employeeProfile = await prisma.employeeProfile.findUnique({
       where: { userId },
-      select: { companyId: true },
+      include: { company: { select: { id: true, name: true } } },
     })
 
-    // If employee profile doesn't exist, create one with a default company
     if (!employeeProfile) {
-      // Get or create a default company
       let defaultCompany = await prisma.company.findFirst({
-        orderBy: { createdAt: 'asc' },
+        where: { name: 'Default Company' },
       })
-
       if (!defaultCompany) {
-        // Create a default company if none exists
         defaultCompany = await prisma.company.create({
           data: {
             name: 'Default Company',
-            description: 'Default company for employees without a profile',
+            description: 'Default company for employees without a company assigned',
           },
         })
       }
-
-      // Create employee profile with default company
       await prisma.employeeProfile.create({
-        data: {
-          userId,
-          companyId: defaultCompany.id,
-        },
+        data: { userId, companyId: defaultCompany.id },
       })
-
-      employeeProfile = {
-        companyId: defaultCompany.id,
-      }
+      employeeProfile = await prisma.employeeProfile.findUnique({
+        where: { userId },
+        include: { company: { select: { id: true, name: true } } },
+      }) as any
     }
 
     const jobPost = await prisma.jobPost.create({
@@ -119,7 +108,7 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
         experience: Number(experience),
         location: location.trim(),
         skills: skills && skills.length > 0 ? JSON.stringify(skills) : null,
-        companyId: employeeProfile.companyId,
+        companyId: employeeProfile!.companyId,
         userId,
       },
       include: {

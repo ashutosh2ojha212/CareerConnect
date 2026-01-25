@@ -109,49 +109,6 @@ export default function JobApplicants() {
     })
   }
 
-  const copyApplicationSummary = (applicant: Applicant) => {
-    let summary = 'Referral Details:\n'
-    summary += `Name: ${applicant.name}\n`
-    summary += `Email: ${applicant.email}\n`
-    
-    if (applicant.jobPost) {
-      summary += `\nJob Information:\n`
-      summary += `Role: ${applicant.jobPost.title}\n`
-      summary += `Company: ${applicant.jobPost.companyName || applicant.jobPost.company?.name}\n`
-    }
-    
-    summary += `Applied On: ${formatDate(applicant.createdAt)}\n`
-    summary += `Status: ${applicant.status.charAt(0).toUpperCase() + applicant.status.slice(1)}\n`
-    
-    summary += `\nApplication Details:\n`
-    
-    if (applicant.formFields && applicant.formFields.length > 0) {
-      applicant.formFields.forEach((field) => {
-        const value = applicant.formData[field.id]
-        if (value !== undefined && value !== null && value !== '') {
-          if (field.type === 'file') {
-            summary += `${field.label}: ${applicant.resumeUrl || 'Not provided'}\n`
-          } else {
-            summary += `${field.label}: ${value}\n`
-          }
-        }
-      })
-    } else {
-      Object.entries(applicant.formData)
-        .filter(([key]) => key !== 'resume' && key !== 'jobPostId' && key !== 'employeeId')
-        .forEach(([key, value]) => {
-          summary += `${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}: ${value}\n`
-        })
-    }
-    
-    if (applicant.resumeUrl) {
-      summary += `\nResume: ${applicant.resumeUrl}\n`
-    }
-
-    navigator.clipboard.writeText(summary)
-    toast.success('Application summary copied to clipboard!')
-  }
-
   const updateStatus = async (applicantId: string, status: 'approved' | 'rejected') => {
     try {
       await api.patch(`/applications/${applicantId}/status`, { status })

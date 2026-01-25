@@ -91,13 +91,6 @@ export default function EmployeeDashboard() {
 
   const activeTab = getActiveTab()
 
-  // Get search mode based on active tab
-  const getSearchMode = (): 'candidate' | 'jobpost' | 'hidden' => {
-    if (activeTab === 'browse-candidates') return 'candidate'
-    if (activeTab === 'my-job-posts') return 'jobpost'
-    return 'hidden'
-  }
-
   const handleCandidateSearch = (query: string) => {
     setCandidateSearchQuery(query)
   }

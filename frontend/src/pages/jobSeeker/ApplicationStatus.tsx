@@ -3,11 +3,13 @@ import api from '../../lib/api'
 
 interface Application {
   id: string
+  jobPostId: string | null
+  jobTitle: string | null
+  companyName: string
   employee: {
+    id?: string
     name: string
-    company: {
-      name: string
-    }
+    company: { name: string }
   }
   status: 'pending' | 'approved' | 'rejected'
   createdAt: string
@@ -24,21 +26,10 @@ export default function ApplicationStatus() {
   const fetchApplications = async () => {
     try {
       const response = await api.get('/applications')
-      setApplications(response.data)
+      setApplications(response.data || [])
     } catch (error) {
       console.error('Failed to fetch applications:', error)
-      // Mock data
-      setApplications([
-        {
-          id: '1',
-          employee: {
-            name: 'John Doe',
-            company: { name: 'Tech Corp' },
-          },
-          status: 'pending',
-          createdAt: new Date().toISOString(),
-        },
-      ])
+      setApplications([])
     } finally {
       setIsLoading(false)
     }
@@ -83,26 +74,35 @@ export default function ApplicationStatus() {
         <div className="space-y-4">
           {applications.map((app) => (
             <div key={app.id} className="group bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 border border-gray-100">
-              <div className="flex justify-between items-start">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    {app.employee.company.name}
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                    {app.jobTitle || 'Referral Application'}
                   </h3>
-                  <p className="text-gray-600 mb-1">Referred by: <span className="font-semibold">{app.employee.name}</span></p>
-                  <p className="text-sm text-gray-500 mt-3 flex items-center gap-1.5">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <p className="text-base font-medium text-gray-700 mb-1">{app.companyName}</p>
+                  <p className="text-sm text-gray-600 mb-2">Referred by: <span className="font-semibold">{app.employee.name}</span></p>
+                  <p className="text-sm text-gray-500 flex items-center gap-1.5">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     Applied on {new Date(app.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <span
-                  className={`px-5 py-2.5 rounded-full text-sm font-bold shadow-sm ${getStatusColor(
-                    app.status
-                  )}`}
-                >
-                  {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
-                </span>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <span
+                    className={`px-5 py-2.5 rounded-full text-sm font-bold shadow-sm ${getStatusColor(
+                      app.status
+                    )}`}
+                  >
+                    {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                  </span>
+                  <button
+                    type="button"
+                    className="px-4 py-2 rounded-xl border-2 border-[#4A4CF0] text-[#4A4CF0] font-semibold text-sm hover:bg-[#4A4CF0]/10 transition-colors"
+                  >
+                    View Application
+                  </button>
+                </div>
               </div>
             </div>
           ))}

@@ -5,6 +5,7 @@ import { authService } from '../../lib/auth'
 import Companies from './Companies'
 import CompanyEmployees from './CompanyEmployees'
 import ApplicationStatus from './ApplicationStatus'
+import MyProfile from './MyProfile'
 
 export default function JobSeekerDashboard() {
   const navigate = useNavigate()
@@ -67,7 +68,8 @@ export default function JobSeekerDashboard() {
 
   const isActive = (path: string) => {
     if (path === '/job-seeker') {
-      return location.pathname === '/job-seeker' || location.pathname === '/job-seeker/'
+      const p = location.pathname
+      return p === '/job-seeker' || p === '/job-seeker/' || p.startsWith('/job-seeker/company/')
     }
     return location.pathname.startsWith(path)
   }
@@ -124,25 +126,35 @@ export default function JobSeekerDashboard() {
       {/* Main Content Container */}
       <div className="max-w-6xl mx-auto px-6">
         {/* Premium Tabs */}
-        <div className="w-full flex items-center justify-center gap-8 mt-10 mb-1 border-b-2 border-gray-200">
+        <div className="w-full flex items-center justify-center gap-6 sm:gap-8 mt-10 mb-1 border-b-2 border-gray-200">
           <button
             onClick={() => navigate('/job-seeker')}
             data-active={isActive('/job-seeker')}
-            className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0] data-[active=true]:border-[#4A4CF0]"
+            className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0]"
           >
             Browse Companies
             {isActive('/job-seeker') && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full" />
             )}
           </button>
           <button
             onClick={() => navigate('/job-seeker/applications')}
             data-active={isActive('/job-seeker/applications')}
-            className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0] data-[active=true]:border-[#4A4CF0]"
+            className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0]"
           >
             My Applications
             {isActive('/job-seeker/applications') && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full" />
+            )}
+          </button>
+          <button
+            onClick={() => navigate('/job-seeker/profile')}
+            data-active={isActive('/job-seeker/profile')}
+            className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0]"
+          >
+            My Profile
+            {isActive('/job-seeker/profile') && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full" />
             )}
           </button>
         </div>
@@ -153,6 +165,7 @@ export default function JobSeekerDashboard() {
             <Route index element={<Companies />} />
             <Route path="company/:companyId" element={<CompanyEmployees />} />
             <Route path="applications" element={<ApplicationStatus />} />
+            <Route path="profile" element={<MyProfile />} />
           </Routes>
         </main>
       </div>

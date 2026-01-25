@@ -1,13 +1,11 @@
 import express from 'express'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 import { authenticate, AuthRequest } from '../middleware/auth'
 import { upload } from '../utils/upload'
 import path from 'path'
 import fs from 'fs'
 
 const router = express.Router()
-const prisma = new PrismaClient()
-
 // Check if user has already applied for a job (by jobId)
 router.get('/check', authenticate, async (req: AuthRequest, res, next) => {
   try {
@@ -92,30 +90,32 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
       include: {
         jobPost: {
           include: {
-            company: {
-              select: {
-                name: true,
-              },
-            },
+            company: { select: { id: true, name: true } },
+            user: { select: { id: true, name: true } },
           },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: { createdAt: 'desc' },
     })
 
-    const formattedApplications = applications.map((app) => ({
-      id: app.id,
-      employee: {
-        name: 'Employee', // TODO: Get employee name from employeeId
-        company: {
-          name: app.jobPost?.company?.name || 'Unknown',
+    const formattedApplications = applications.map((app) => {
+      const companyName = app.jobPost?.company?.name && app.jobPost.company.name !== 'Default Company'
+        ? app.jobPost.company.name
+        : (app.jobPost?.companyName || 'Company')
+      return {
+        id: app.id,
+        jobPostId: app.jobPostId,
+        jobTitle: app.jobPost?.title ?? null,
+        companyName,
+        employee: {
+          id: app.jobPost?.user?.id,
+          name: app.jobPost?.user?.name ?? 'Employee',
+          company: { name: companyName },
         },
-      },
-      status: app.status,
-      createdAt: app.createdAt,
-    }))
+        status: app.status,
+        createdAt: app.createdAt,
+      }
+    })
 
     res.json(formattedApplications)
   } catch (error) {
@@ -195,7 +195,7 @@ router.post(
 
         if (existingApplication) {
           return res.status(409).json({ 
-            message: 'You have already applied for this job',
+            message: 'You have already applied to this job.',
             applicationId: existingApplication.id,
           })
         }
@@ -220,7 +220,7 @@ router.post(
         // Handle unique constraint violation
         if (error.code === 'P2002' || error.message?.includes('Unique constraint')) {
           return res.status(409).json({ 
-            message: 'You have already applied for this job',
+            message: 'You have already applied to this job.',
           })
         }
         throw error

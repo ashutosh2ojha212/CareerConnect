@@ -50,7 +50,7 @@ export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFo
   const fetchFormFields = async () => {
     try {
       // Fetch custom form fields for this employee/company
-      const response = await api.get(`/employees/${employee.id}/form-fields`)
+      const response = await api.get(`/applications/${employee.id}/form-fields`)
       setFormFields(response.data)
     } catch (error) {
       // Default form fields if none exist
@@ -98,7 +98,7 @@ export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFo
       onSuccess()
     } catch (error: any) {
       if (error.response?.status === 409) {
-        toast.error('You already applied to this job')
+        toast.error("You've already applied to this job.")
         setHasApplied(true)
         // Refresh application status
         checkApplicationStatus()
