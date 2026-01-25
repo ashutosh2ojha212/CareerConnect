@@ -242,12 +242,12 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
                 <h3 className="text-xl font-bold text-gray-900 mb-4 pr-2">{job.title}</h3>
 
                 {/* Key Information Grid */}
-                <div className="space-y-3 mb-5">
+                <div className="space-y-3 mb-6">
                   {/* Experience */}
                   {job.experience !== null && job.experience !== undefined && (
                     <div className="flex items-center gap-2.5 text-sm text-gray-700">
                       <svg
-                        className="w-5 h-5 text-gray-400"
+                        className="w-5 h-5 text-gray-400 flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -267,7 +267,7 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
                   {job.location && (
                     <div className="flex items-center gap-2.5 text-sm text-gray-700">
                       <svg
-                        className="w-5 h-5 text-gray-400"
+                        className="w-5 h-5 text-gray-400 flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -290,15 +290,33 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
                   )}
                 </div>
 
+                {/* Divider Line */}
+                <div className="border-t border-gray-100 mb-5" style={{ borderColor: 'rgba(0, 0, 0, 0.07)' }}></div>
+
                 {/* Footer with Applicants Count and CTA */}
-                <div className="flex justify-between items-center pt-5 border-t border-gray-100">
-                  <span className="bg-gradient-to-r from-[#4A4CF0]/10 to-[#6366F1]/10 text-[#4A4CF0] text-xs font-bold px-3 py-1.5 rounded-full border border-[#4A4CF0]/20">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
+                  {/* Applicant Count Badge */}
+                  <span className="inline-flex items-center justify-center h-[36px] px-4 py-0 rounded-xl bg-[#EEF0FF] text-[#4A4CF0] text-xs font-medium border border-[#D4D7FF] cursor-pointer hover:shadow-sm transition-shadow whitespace-nowrap flex-shrink-0">
                     {job.applicantCount} {job.applicantCount === 1 ? 'applicant' : 'applicants'}
                   </span>
-                  <button className="text-[#4A4CF0] hover:text-[#6366F1] font-semibold text-sm transition-colors flex items-center gap-1">
-                    View Details
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  
+                  {/* View Details Button */}
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate(`/employee/job/${job.id}`)
+                    }}
+                    className="inline-flex items-center gap-1.5 text-[#4A4CF0] hover:text-[#6366F1] font-semibold text-sm transition-all duration-200 group whitespace-nowrap flex-shrink-0"
+                  >
+                    <span className="whitespace-nowrap">View Details</span>
+                    <svg 
+                      className="w-4 h-4 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                      style={{ strokeWidth: 2.5 }}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                 </div>
