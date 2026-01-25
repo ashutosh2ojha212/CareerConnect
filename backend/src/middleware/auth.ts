@@ -6,6 +6,7 @@ export interface AuthRequest extends Request {
   user?: {
     id: string
     email: string
+    name: string | null
     role: string | null
   }
 }
@@ -28,7 +29,7 @@ export const authenticate = async (
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
-      select: { id: true, email: true, role: true },
+      select: { id: true, email: true, name: true, role: true },
     })
 
     if (!user) {

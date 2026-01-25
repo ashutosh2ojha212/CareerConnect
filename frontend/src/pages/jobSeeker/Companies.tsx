@@ -8,6 +8,7 @@ interface Company {
   description?: string | null
   logo?: string
   employeeCount: number
+  jobPostCount?: number
 }
 
 export default function Companies() {
@@ -57,7 +58,9 @@ export default function Companies() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {companies.map((company) => (
+          {companies.map((company) => {
+            const displayName = company.name === 'Default Company' ? 'Other opportunities' : company.name
+            return (
           <div
             key={company.id}
             onClick={() => navigate(`/job-seeker/company/${company.id}`)}
@@ -66,17 +69,25 @@ export default function Companies() {
             <div className="flex items-center mb-5">
               <div className="h-14 w-14 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center mr-4 shadow-lg group-hover:scale-105 transition-transform duration-300">
                 <span className="text-white font-bold text-xl">
-                  {company.name.charAt(0)}
+                  {displayName.charAt(0)}
                 </span>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">{company.name}</h3>
-                <p className="text-sm font-medium text-gray-600 flex items-center gap-1.5">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  {company.employeeCount} {company.employeeCount === 1 ? 'employee' : 'employees'}
-                </p>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">{displayName}</h3>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-gray-600">
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    {company.jobPostCount ?? 0} {company.jobPostCount === 1 ? 'job opening' : 'job openings'}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    {company.employeeCount ?? 0} {company.employeeCount === 1 ? 'referrer' : 'referrers'}
+                  </span>
+                </div>
               </div>
             </div>
             {company.description != null && company.description !== '' && (
@@ -89,7 +100,8 @@ export default function Companies() {
               </svg>
             </button>
           </div>
-        ))}
+            )
+          })}
         </div>
       )}
     </div>

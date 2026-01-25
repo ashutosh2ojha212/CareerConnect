@@ -4,7 +4,7 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
-export default function Logo({ className = '', showText = true, size = 'md' }: LogoProps) {
+export default function Logo({ className = '', size = 'md' }: LogoProps) {
   const sizeMap = {
     sm: 120,
     md: 160,

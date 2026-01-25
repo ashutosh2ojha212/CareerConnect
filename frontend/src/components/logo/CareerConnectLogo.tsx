@@ -8,8 +8,6 @@ interface CareerConnectLogoProps {
 export default function CareerConnectLogo({ 
   className = '', 
   size = 64,
-  showText = false,
-  variant = 'icon'
 }: CareerConnectLogoProps) {
   // Use the logo.png from public folder
   return (

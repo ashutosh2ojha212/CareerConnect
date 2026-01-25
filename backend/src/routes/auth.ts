@@ -339,7 +339,7 @@ router.get('/google/callback', async (req, res, next) => {
       return res.redirect(`${FRONTEND_URL}/signin?error=token_exchange_failed`)
     }
 
-    const tokens = await tokenResponse.json()
+    const tokens = (await tokenResponse.json()) as { access_token: string }
     const { access_token } = tokens
 
     // Get user info from Google
@@ -353,22 +353,23 @@ router.get('/google/callback', async (req, res, next) => {
       return res.redirect(`${FRONTEND_URL}/signin?error=userinfo_failed`)
     }
 
-    const userInfo = await userInfoResponse.json()
-    const { email, name, picture } = userInfo
+    const userInfo = (await userInfoResponse.json()) as { email?: string; name?: string; picture?: string }
+    const { email, name } = userInfo
 
     if (!email || !name) {
       return res.redirect(`${FRONTEND_URL}/signin?error=missing_user_info`)
     }
 
     // Check if user exists
-    let user = await prisma.user.findUnique({
+    type GoogleAuthUser = { id: string; email: string; name: string | null; role: string | null }
+    let user: GoogleAuthUser | null = await prisma.user.findUnique({
       where: { email },
+      select: { id: true, email: true, name: true, role: true },
     })
 
     if (!user) {
       // Create new user with Google OAuth
       const hashedPassword = await hashPassword(Math.random().toString(36) + Date.now().toString())
-      
       user = await prisma.user.create({
         data: {
           name,

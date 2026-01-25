@@ -8,33 +8,39 @@ const router = express.Router()
 router.get('/', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const userId = req.user!.id
-    
-    // Get all companies that have:
-    // 1. Employees (excluding current user), OR
-    // 2. Job posts (excluding jobs created by current user)
+    const isJobSeeker = req.user!.role !== 'referrer' // job_seeker or null/other → see all companies
+
+    // Job seekers: see all companies that have at least one employee or one job post
+    // (including Default Company, where many jobs live when employees have no real company).
+    // Employees/referrers: exclude Default Company and companies where the only content is from themselves.
+    const whereClause = isJobSeeker
+      ? {
+          OR: [
+            { employees: { some: {} } },  // at least one employee
+            { jobPosts: { some: {} } },   // at least one job post
+          ],
+        }
+      : {
+          name: { not: 'Default Company' },
+          OR: [
+            {
+              employees: {
+                some: { userId: { not: userId } },
+              },
+            },
+            {
+              jobPosts: {
+                some: { userId: { not: userId } },
+              },
+            },
+          ],
+        }
+
     const companies = await prisma.company.findMany({
-      where: {
-        name: { not: 'Default Company' },
-        OR: [
-          {
-            employees: {
-              some: {
-                userId: { not: userId }, // Has employees other than current user
-              },
-            },
-          },
-          {
-            jobPosts: {
-              some: {
-                userId: { not: userId }, // Has job posts not created by current user
-              },
-            },
-          },
-        ],
-      },
+      where: whereClause,
       include: {
         _count: {
-          select: { employees: true },
+          select: { employees: true, jobPosts: true },
         },
       },
     })
@@ -45,6 +51,7 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
       description: company.description,
       logo: company.logo,
       employeeCount: company._count.employees,
+      jobPostCount: company._count.jobPosts,
     }))
 
     res.json(formatted)

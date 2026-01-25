@@ -257,9 +257,9 @@ export default function ResetPassword() {
                 autoComplete="new-password"
                 {...register('confirmPassword', {
                   required: 'Please confirm your password',
-                  validate: (value) =>
+                  validate: (value: string) =>
                     value === newPassword || 'Passwords do not match',
-                } as any)}
+                })}
                 className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
                 placeholder="••••••••"
                 aria-invalid={errors.confirmPassword ? 'true' : 'false'}

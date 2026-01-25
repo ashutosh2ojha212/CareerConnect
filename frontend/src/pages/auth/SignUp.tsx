@@ -6,6 +6,10 @@ import GoogleButton from '../../components/GoogleButton'
 import { authService, SignUpData } from '../../lib/auth'
 import { useAuthStore } from '../../store/authStore'
 
+interface SignUpFormData extends SignUpData {
+  confirmPassword: string
+}
+
 export default function SignUp() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((state) => state.setAuth)
@@ -16,7 +20,7 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<SignUpData>()
+  } = useForm<SignUpFormData>()
 
   const password = watch('password')
 
@@ -26,10 +30,10 @@ export default function SignUp() {
     window.location.href = `${backendUrl}/api/auth/google`
   }
 
-  const onSubmit = async (data: SignUpData) => {
+  const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true)
     try {
-      const response = await authService.signUp(data)
+      const response = await authService.signUp({ name: data.name, email: data.email, password: data.password })
       setAuth(response.user, response.token)
       toast.success('Account created successfully!')
       navigate('/role-selection')
@@ -279,10 +283,10 @@ export default function SignUp() {
                 {...register('confirmPassword', {
                   required: 'Please confirm your password',
                   validate: {
-                    matches: (value) => value === password || 'Passwords do not match',
-                    notEmpty: (value) => value.trim() !== '' || 'Please confirm your password',
+                    matches: (value: string) => value === password || 'Passwords do not match',
+                    notEmpty: (value: string) => value.trim() !== '' || 'Please confirm your password',
                   }
-                } as any)}
+                })}
                 className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="••••••••"
                 aria-invalid={errors.confirmPassword ? 'true' : 'false'}

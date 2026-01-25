@@ -81,6 +81,7 @@ async function main() {
     data: {
       title: 'Senior Software Engineer',
       description: 'We are looking for an experienced software engineer to join our team...',
+      companyName: techCorp.name,
       companyId: techCorp.id,
       userId: employee1.id,
       customFormFields: {

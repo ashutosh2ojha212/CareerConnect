@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { authService } from '../../lib/auth'
@@ -9,7 +9,6 @@ interface ForgotPasswordData {
 }
 
 export default function ForgotPassword() {
-  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [userNotFound, setUserNotFound] = useState(false)

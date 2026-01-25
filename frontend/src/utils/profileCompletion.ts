@@ -60,7 +60,7 @@ export function calculateProfileCompletion(profile: ProfileForCompletion | null)
     isFilled(profile.fullName),
     isFilled(profile.email),
     isFilled(profile.primaryRole),
-    profile.experience != null && profile.experience !== '',
+    profile.experience != null && typeof profile.experience === 'number',
     roles.length > 0,
     isFilled(profile.preferredLocations),
     isFilled(profile.skills),

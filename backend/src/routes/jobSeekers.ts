@@ -223,7 +223,7 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
 
     // Filter by search query if provided
     if (searchQuery) {
-      profiles = profiles.filter((profile) => {
+      profiles = profiles.filter((profile: { fullName?: string | null; primaryRole?: string | null; jobPreferences?: string | null; skills?: string | null; experience?: number | null }) => {
         const fullName = (profile.fullName || '').toLowerCase()
         const primaryRole = (profile.primaryRole || '').toLowerCase()
         const jobPreferences = (profile.jobPreferences || '').toLowerCase()
@@ -241,16 +241,16 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
     }
 
     // Format response — always return preferredRoles, preferredLocations, skills as arrays (no raw JSON)
-    const formattedProfiles = profiles.map((profile) => ({
+    const formattedProfiles = profiles.map((profile: { id: string; userId: string; fullName?: string | null; email?: string | null; experience?: number | null; primaryRole?: string | null; jobPreferences?: string | null; skills?: string | null; profileImageURL?: string | null; createdAt: unknown; updatedAt: unknown; preferredLocations?: unknown; profileSummary?: string | null; resumeUrl?: string | null }) => ({
       id: profile.id,
       userId: profile.userId,
       fullName: profile.fullName,
       email: profile.email,
       experience: profile.experience,
       primaryRole: profile.primaryRole,
-      skills: parseSkills(profile.skills),
-      preferredRoles: parsePreferredRoles(profile.jobPreferences),
-      preferredLocations: parseLocations((profile as any).preferredLocations),
+      skills: parseSkills(profile.skills ?? null),
+      preferredRoles: parsePreferredRoles(profile.jobPreferences ?? null),
+      preferredLocations: parseLocations((profile as any).preferredLocations ?? null),
       profileSummary: (profile as any).profileSummary ?? null,
       resumeUrl: (profile as any).resumeUrl ?? null,
       profileImageURL: profile.profileImageURL,
@@ -299,7 +299,7 @@ router.get('/:id', authenticate, async (req: AuthRequest, res, next) => {
       try {
         skillsArray = JSON.parse(profile.skills)
       } catch {
-        skillsArray = profile.skills.split(',').map((s) => s.trim()).filter(Boolean)
+        skillsArray = profile.skills.split(',').map((s: string) => s.trim()).filter(Boolean)
       }
     }
 

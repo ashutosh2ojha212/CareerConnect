@@ -206,23 +206,24 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
     })
 
     // Get custom form fields from job post, or fallback to default
-    let baseFormFields = jobPostWithFields?.customFormFields || []
-    
+    type FormFieldShape = { id: string; jobPostId: string; label: string; type: string; required: boolean; order: number }
+    let baseFormFields: FormFieldShape[] = jobPostWithFields?.customFormFields ?? []
+
     // If no custom fields, use default fields
     if (baseFormFields.length === 0) {
       baseFormFields = [
-        { id: 'name', label: 'Full Name', type: 'text', required: true, order: 0 },
-        { id: 'email', label: 'Email', type: 'email', required: true, order: 1 },
-        { id: 'phone', label: 'Phone Number', type: 'tel', required: false, order: 2 },
-        { id: 'experience', label: 'Years of Experience', type: 'number', required: false, order: 3 },
-        { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true, order: 4 },
+        { id: 'name', jobPostId: jobId, label: 'Full Name', type: 'text', required: true, order: 0 },
+        { id: 'email', jobPostId: jobId, label: 'Email', type: 'email', required: true, order: 1 },
+        { id: 'phone', jobPostId: jobId, label: 'Phone Number', type: 'tel', required: false, order: 2 },
+        { id: 'experience', jobPostId: jobId, label: 'Years of Experience', type: 'number', required: false, order: 3 },
+        { id: 'resume', jobPostId: jobId, label: 'Resume (PDF)', type: 'file', required: true, order: 4 },
       ]
     }
 
     const formattedApplications = applications.map((app) => {
-      let parsedFormData = {}
+      let parsedFormData: Record<string, unknown> = {}
       try {
-        parsedFormData = typeof app.formData === 'string' ? JSON.parse(app.formData) : app.formData
+        parsedFormData = (typeof app.formData === 'string' ? JSON.parse(app.formData) : app.formData) as Record<string, unknown>
       } catch (e) {
         parsedFormData = {}
       }
@@ -236,14 +237,14 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
         if (!fieldMap.has(key) && key !== 'jobPostId' && key !== 'employeeId') {
           // Infer field type and label from key name
           let type = 'text'
-          let label = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')
+          const label = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')
           
           if (key.toLowerCase().includes('email')) type = 'email'
           else if (key.toLowerCase().includes('phone') || key.toLowerCase().includes('tel')) type = 'tel'
           else if (key.toLowerCase().includes('experience') || key.toLowerCase().includes('year')) type = 'number'
           else if (key.toLowerCase().includes('resume') || key.toLowerCase().includes('file')) type = 'file'
           
-          fieldMap.set(key, { id: key, label, type, required: false, order: 999 })
+          fieldMap.set(key, { id: key, jobPostId: jobId, label, type, required: false, order: 999 })
         }
       })
 

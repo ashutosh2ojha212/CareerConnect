@@ -25,7 +25,7 @@ export default function SetupReferralForm() {
     handleSubmit,
     control,
     setValue,
-    formState: { errors },
+    formState: { errors: _formErrors },
   } = useForm<ReferralFormData>({
     defaultValues: {
       fields: [
