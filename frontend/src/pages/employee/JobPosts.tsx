@@ -128,17 +128,17 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-8 mt-6">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 mt-6">
       {/* Main Content - Job Posts Section */}
       <div className="min-w-0">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">My Job Posts</h1>
-            <p className="text-gray-500 mt-1 text-sm sm:text-base">Manage and track the job openings you've shared.</p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">My Job Posts</h1>
+            <p className="text-gray-600 text-base sm:text-lg">Manage and track the job openings you've shared</p>
           </div>
           <button
             onClick={() => navigate('/employee/create')}
-            className="h-12 px-6 sm:px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
+            className="h-12 px-6 sm:px-8 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 active:scale-100 transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
           >
             + Create New Job Post
           </button>
@@ -146,12 +146,12 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
 
         {jobPosts.length === 0 ? (
         /* Premium Empty State */
-        <div className="max-w-4xl mx-auto mt-16 bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-10 text-center flex flex-col items-center justify-center border border-gray-100">
+        <div className="max-w-4xl mx-auto mt-20 bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-12 text-center flex flex-col items-center justify-center border border-gray-100">
           {searchQuery ? (
             <>
-              <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md mb-6">
+              <div className="h-24 w-24 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center shadow-lg mb-6">
                 <svg
-                  className="h-10 w-10 text-white"
+                  className="h-12 w-12 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -159,17 +159,17 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">No job posts found</h2>
-              <p className="text-gray-600 text-base">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">No job posts found</h2>
+              <p className="text-gray-600 text-base max-w-md">
                 No job posts found for "{searchQuery}". Try adjusting your search terms.
               </p>
             </>
           ) : (
             <>
           {/* Illustration Icon */}
-          <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md mb-6">
+          <div className="h-24 w-24 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center shadow-lg mb-6">
             <svg
-              className="h-10 w-10 text-white"
+              className="h-12 w-12 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -184,17 +184,17 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
           </div>
 
               {/* Main Text */}
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">
                 No job posts yet
               </h2>
-              <p className="text-gray-600 text-base mb-8">
+              <p className="text-gray-600 text-base mb-8 max-w-md">
                 You haven't created any job posts. Start by creating your first one!
               </p>
 
               {/* Button */}
               <button
                 onClick={() => navigate('/employee/create')}
-                className="h-12 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200"
+                className="h-12 px-8 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 active:scale-100 transition-all duration-200"
               >
                 Create Job Post
               </button>
@@ -206,12 +206,12 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
           {jobPosts.map((job) => (
             <div
               key={job.id}
-              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.06)] p-6 cursor-pointer hover:shadow-[0_12px_50px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100 relative"
+              className="group bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 relative"
             >
               {/* Edit Icon - Top Right */}
               <button
                 onClick={(e) => handleEditClick(e, job.id)}
-                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200 z-10"
+                className="absolute top-5 right-5 p-2.5 text-gray-400 hover:text-[#4A4CF0] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200 z-10"
                 title="Edit Job Post"
               >
                 <svg
@@ -231,23 +231,23 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
 
               <div
                 onClick={() => navigate(`/employee/job/${job.id}`)}
-                className="pr-8"
+                className="pr-12"
               >
-                {/* Job Title */}
-                <h3 className="text-xl font-semibold text-gray-900 mb-1 pr-8">{job.title}</h3>
-                
                 {/* Company Name */}
-                <p className="text-base font-medium text-gray-700 mb-4">
-                  {job.companyName || job.company?.name || 'Default Company'}
+                <p className="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">
+                  {job.companyName || job.company?.name || 'Company'}
                 </p>
+                
+                {/* Job Title */}
+                <h3 className="text-xl font-bold text-gray-900 mb-4 pr-2">{job.title}</h3>
 
                 {/* Key Information Grid */}
-                <div className="space-y-2 mb-4">
+                <div className="space-y-3 mb-5">
                   {/* Experience */}
                   {job.experience !== null && job.experience !== undefined && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2.5 text-sm text-gray-700">
                       <svg
-                        className="w-4 h-4 text-gray-400"
+                        className="w-5 h-5 text-gray-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -259,15 +259,15 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
-                      <span>{job.experience}+ years experience</span>
+                      <span className="font-medium">{job.experience}+ years experience</span>
                     </div>
                   )}
 
                   {/* Location */}
                   {job.location && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2.5 text-sm text-gray-700">
                       <svg
-                        className="w-4 h-4 text-gray-400"
+                        className="w-5 h-5 text-gray-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -285,18 +285,21 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
                           d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                         />
                       </svg>
-                      <span>{job.location}</span>
+                      <span className="font-medium">{job.location}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Footer with Applicants Count and CTA */}
-                <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-                  <span className="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full">
-                    {job.applicantCount} applicants
+                <div className="flex justify-between items-center pt-5 border-t border-gray-100">
+                  <span className="bg-gradient-to-r from-[#4A4CF0]/10 to-[#6366F1]/10 text-[#4A4CF0] text-xs font-bold px-3 py-1.5 rounded-full border border-[#4A4CF0]/20">
+                    {job.applicantCount} {job.applicantCount === 1 ? 'applicant' : 'applicants'}
                   </span>
-                  <button className="text-indigo-600 hover:text-indigo-700 font-medium text-sm transition-colors">
-                    View Details →
+                  <button className="text-[#4A4CF0] hover:text-[#6366F1] font-semibold text-sm transition-colors flex items-center gap-1">
+                    View Details
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -306,43 +309,43 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
         )}
       </div>
 
-      {/* Right Sidebar - Simplified Referral Form Card */}
+      {/* Right Sidebar - Compact Referral Form Card */}
       <div className="lg:sticky lg:top-24 h-fit">
         {!referralForm ? (
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-xl">
+          <div className="bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] rounded-2xl p-6 text-white shadow-lg">
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold mb-2">Complete your referral setup</h3>
-                <p className="text-indigo-100 text-sm">
+                <h3 className="text-lg font-bold mb-2">Complete Your Referral Setup</h3>
+                <p className="text-white/90 text-sm leading-relaxed">
                   Create the form job seekers will fill when requesting referrals from you.
                 </p>
               </div>
               <button
                 onClick={() => navigate('/employee/setup-form')}
-                className="w-full px-4 py-2.5 bg-white text-indigo-600 font-semibold rounded-xl shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200 text-sm"
+                className="w-full px-4 py-3 bg-white text-[#4A4CF0] font-bold rounded-xl shadow-md hover:shadow-lg hover:scale-105 active:scale-100 transition-all duration-200 text-sm"
               >
                 Set Up Referral Form
               </button>
             </div>
           </div>
         ) : (
-          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_rgba(0,0,0,0.06)] p-6 border border-gray-100">
+          <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 border border-gray-100">
             {/* Edit Form Button - Top */}
             <button
               onClick={() => navigate('/employee/setup-form')}
-              className="w-full px-4 py-2 text-sm font-medium border border-indigo-500 text-indigo-600 rounded-xl hover:bg-indigo-50 active:scale-[0.97] transition-all duration-200 mb-4"
+              className="w-full px-4 py-2.5 text-sm font-semibold border-2 border-[#4A4CF0] text-[#4A4CF0] rounded-xl hover:bg-[#4A4CF0]/10 active:scale-[0.98] transition-all duration-200 mb-5"
             >
               Edit Form
             </button>
 
             {/* Title and Status */}
             <div className="space-y-3">
-              <h3 className="text-base font-semibold text-gray-900">
+              <h3 className="text-base font-bold text-gray-900">
                 {referralForm.formTitle || 'Referral Application Form'}
               </h3>
               <div className="flex items-center">
-                <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-green-100 text-green-700 text-xs font-medium">
-                  <svg className="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-green-100 text-green-700 text-xs font-bold border border-green-200">
+                  <svg className="w-3.5 h-3.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   Form Active

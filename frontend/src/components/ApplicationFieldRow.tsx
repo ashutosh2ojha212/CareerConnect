@@ -111,14 +111,14 @@ export default function ApplicationFieldRow({
   if (value === undefined || value === null || value === '') {
     if (type === 'file') {
       return (
-        <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+        <div className="flex items-center justify-between py-4 border-b border-gray-100 last:border-b-0">
           <div className="flex-1">
-            <p className="text-sm font-semibold text-gray-700 mb-1">{label}</p>
+            <p className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">{label}</p>
             <p className="text-sm text-gray-400 italic">Not provided</p>
           </div>
           <button
             disabled
-            className="ml-4 p-2 text-gray-300 cursor-not-allowed"
+            className="ml-4 p-2.5 text-gray-300 cursor-not-allowed rounded-xl"
             title="No file available"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,16 +134,19 @@ export default function ApplicationFieldRow({
   const displayValue = String(value)
 
   return (
-    <div className="flex items-start justify-between py-3 border-b border-gray-100 last:border-b-0">
+    <div className="flex items-start justify-between py-4 border-b border-gray-100 last:border-b-0">
       <div className="flex-1 min-w-0 pr-4">
-        <p className="text-sm font-semibold text-gray-700 mb-2">{label}</p>
+        <p className="text-xs font-bold text-gray-500 mb-3 uppercase tracking-wide">{label}</p>
         {type === 'file' ? (
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">PDF Document</span>
+            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <span className="text-sm font-medium text-gray-700">PDF Document</span>
           </div>
         ) : (
-          <div className="bg-gray-50 rounded-lg px-4 py-2.5 border border-gray-200">
-            <p className="text-sm text-gray-900 break-words whitespace-pre-wrap">
+          <div className="bg-gray-50 rounded-xl px-5 py-3.5 border border-gray-200">
+            <p className="text-sm text-gray-900 break-words whitespace-pre-wrap font-medium">
               {displayValue}
             </p>
           </div>
@@ -154,11 +157,11 @@ export default function ApplicationFieldRow({
           <button
             onClick={handleDownload}
             disabled={isDownloading || (!fileUrl && !applicationId)}
-            className="ml-4 p-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-colors disabled:text-gray-300 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            className="ml-4 p-2.5 text-[#4A4CF0] hover:text-[#6366F1] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200 disabled:text-gray-300 disabled:cursor-not-allowed disabled:hover:bg-transparent"
             title="Download file"
           >
             {isDownloading ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-indigo-600"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#4A4CF0]"></div>
             ) : (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -168,7 +171,7 @@ export default function ApplicationFieldRow({
         ) : (
           <button
             onClick={() => copyToClipboard(displayValue)}
-            className="ml-4 p-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+            className="ml-4 p-2.5 text-gray-600 hover:text-[#4A4CF0] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200"
             title="Copy to clipboard"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -203,56 +203,56 @@ export default function JobApplicants() {
 
   if (selectedApplicant) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <div className="max-w-4xl mx-auto px-6 py-10">
+      <div className="min-h-screen bg-gradient-to-br from-[#fefefe] via-[#faf9f7] to-[#f5f4f2]">
+        <div className="max-w-5xl mx-auto px-6 py-10">
           {/* Back Button */}
           <button
             onClick={() => setSelectedApplicant(null)}
-            className="mb-6 text-indigo-600 hover:text-indigo-700 font-medium transition-colors flex items-center gap-2"
+            className="mb-8 text-[#4A4CF0] hover:text-[#6366F1] font-semibold transition-colors flex items-center gap-2 group"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back to Applicants
           </button>
 
           {/* Applicant Header Card */}
-          <div className="bg-white shadow-lg rounded-2xl border border-gray-100 p-6 mb-6 hover:shadow-xl transition-shadow duration-300">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-gray-100 p-8 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
               {/* Applicant Identity Block */}
-              <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xl shadow-md">
+              <div className="flex items-center gap-5">
+                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center text-white font-bold text-2xl shadow-lg">
                   {getInitials(selectedApplicant.name)}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900">{selectedApplicant.name}</h2>
-                  <p className="text-gray-600 mt-1">{selectedApplicant.email}</p>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-1">{selectedApplicant.name}</h2>
+                  <p className="text-gray-600 text-base">{selectedApplicant.email}</p>
                 </div>
               </div>
 
               {/* Status Badge */}
               <div>
                 <span
-                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold ${
+                  className={`inline-flex items-center px-5 py-2.5 rounded-full text-sm font-bold shadow-sm ${
                     selectedApplicant.status === 'approved'
-                      ? 'bg-green-100 text-green-800'
+                      ? 'bg-[#34c759] text-white'
                       : selectedApplicant.status === 'rejected'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800'
+                      ? 'bg-[#ff3b30] text-white'
+                      : 'bg-[#ffcc00] text-gray-900'
                   }`}
                 >
                   {selectedApplicant.status === 'approved' && (
-                    <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                   )}
                   {selectedApplicant.status === 'rejected' && (
-                    <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
                   )}
                   {selectedApplicant.status === 'pending' && (
-                    <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                     </svg>
                   )}
@@ -264,27 +264,27 @@ export default function JobApplicants() {
 
           {/* Metadata Section */}
           {selectedApplicant.jobPost && (
-            <div className="bg-white shadow-lg rounded-2xl border border-gray-100 p-6 mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Job & Submission Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">Applied On</p>
-                  <p className="text-gray-700">{formatDate(selectedApplicant.createdAt)}</p>
+            <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-gray-100 p-8 mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Job & Submission Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                  <p className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Applied On</p>
+                  <p className="text-base font-semibold text-gray-900">{formatDate(selectedApplicant.createdAt)}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">Company</p>
-                  <p className="text-gray-700">
+                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                  <p className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Company</p>
+                  <p className="text-base font-semibold text-gray-900">
                     {selectedApplicant.jobPost.companyName || selectedApplicant.jobPost.company?.name}
                   </p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">Role Applied For</p>
-                  <p className="text-gray-700">{selectedApplicant.jobPost.title}</p>
+                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                  <p className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Role Applied For</p>
+                  <p className="text-base font-semibold text-gray-900">{selectedApplicant.jobPost.title}</p>
                 </div>
                 {selectedApplicant.jobPost.experience && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-500 mb-1">Required Experience</p>
-                    <p className="text-gray-700">{selectedApplicant.jobPost.experience}+ years</p>
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                    <p className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Required Experience</p>
+                    <p className="text-base font-semibold text-gray-900">{selectedApplicant.jobPost.experience}+ years</p>
                   </div>
                 )}
               </div>
@@ -292,8 +292,8 @@ export default function JobApplicants() {
           )}
 
           {/* Application Details Section */}
-          <div className="bg-white shadow-lg rounded-2xl border border-gray-100 p-6 mb-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">Application Details</h3>
+          <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-gray-100 p-8 mb-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-8">Application Details</h3>
             <div className="space-y-1">
               {selectedApplicant.formFields && selectedApplicant.formFields.length > 0 ? (
                 // Use form field labels if available - maintain order from schema
@@ -394,26 +394,26 @@ export default function JobApplicants() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button
                   onClick={() => updateStatus(selectedApplicant.id, 'approved')}
-                  className="h-12 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:opacity-90 active:scale-[0.97] transition-all duration-200 shadow-md flex items-center justify-center gap-2"
+                  className="h-14 bg-gradient-to-r from-[#34c759] to-[#30d158] text-white rounded-2xl font-bold text-base hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-md flex items-center justify-center gap-3"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
-                  Approve
+                  Approve Application
                 </button>
                 <button
                   onClick={() => updateStatus(selectedApplicant.id, 'rejected')}
-                  className="h-12 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl font-semibold hover:opacity-90 active:scale-[0.97] transition-all duration-200 shadow-md flex items-center justify-center gap-2"
+                  className="h-14 bg-gradient-to-r from-[#ff3b30] to-[#ff453a] text-white rounded-2xl font-bold text-base hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-md flex items-center justify-center gap-3"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  Reject
+                  Reject Application
                 </button>
               </div>
             ) : (
-              <div className="bg-gray-50 rounded-xl p-4 text-center">
-                <p className="text-gray-600 text-sm">
+              <div className="bg-gray-50 rounded-2xl p-6 text-center border border-gray-200">
+                <p className="text-gray-700 text-base font-medium">
                   This application has already been processed.
                 </p>
               </div>
@@ -428,33 +428,39 @@ export default function JobApplicants() {
     <div>
       <button
         onClick={() => navigate('/employee')}
-        className="mb-6 text-indigo-600 hover:text-indigo-700 font-medium transition-colors flex items-center gap-2"
+        className="mb-8 text-[#4A4CF0] hover:text-[#6366F1] font-semibold transition-colors flex items-center gap-2 group"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
         Back to Job Posts
       </button>
 
-      <h1 className="text-3xl font-semibold text-gray-900 mb-8">Applicants</h1>
+      <div className="mb-10">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Applicants</h1>
+        <p className="text-gray-600 text-base sm:text-lg">Review and manage job applications</p>
+      </div>
 
       {/* Tabs */}
-      <div className="mb-6 border-b border-gray-200">
+      <div className="mb-8 border-b-2 border-gray-200">
         <nav className="flex space-x-8" aria-label="Tabs">
           {(['pending', 'approved', 'rejected'] as TabStatus[]).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`
-                py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                relative pb-4 px-2 border-b-3 font-bold text-base transition-all duration-200
                 ${
                   activeTab === tab
-                    ? 'border-indigo-500 text-indigo-600'
+                    ? 'border-[#4A4CF0] text-[#4A4CF0]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }
               `}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {activeTab === tab && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full"></div>
+              )}
             </button>
           ))}
         </nav>
@@ -466,10 +472,10 @@ export default function JobApplicants() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
         </div>
       ) : applicants.length === 0 ? (
-        <div className="max-w-4xl mx-auto mt-16 bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] p-12 text-center flex flex-col items-center justify-center border border-gray-100">
-          <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-md mb-6">
+        <div className="max-w-4xl mx-auto mt-20 bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-12 text-center flex flex-col items-center justify-center border border-gray-100">
+          <div className="h-24 w-24 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center shadow-lg mb-6">
             <svg
-              className="h-10 w-10 text-white"
+              className="h-12 w-12 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -482,8 +488,8 @@ export default function JobApplicants() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">No applicants found</h2>
-          <p className="text-gray-600 text-base">
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">No applicants found</h2>
+          <p className="text-gray-600 text-base max-w-md">
             {getEmptyStateMessage(activeTab)}
           </p>
         </div>
@@ -492,27 +498,35 @@ export default function JobApplicants() {
           {applicants.map((applicant) => (
             <div
               key={applicant.id}
-              className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.06)] p-6 hover:shadow-[0_12px_50px_rgba(0,0,0,0.08)] transition-all duration-300 border border-gray-100 relative"
+              className="group bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 relative cursor-pointer"
+              onClick={() => setSelectedApplicant(applicant)}
             >
               <div className="flex justify-between items-start">
-                <div
-                  className="flex-1 cursor-pointer"
-                  onClick={() => setSelectedApplicant(applicant)}
-                >
-                  <h3 className="text-lg font-semibold text-gray-900">{applicant.name}</h3>
-                  <p className="text-gray-600">{applicant.email}</p>
-                  <p className="text-sm text-gray-500 mt-2">
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center text-white font-bold text-lg shadow-md">
+                      {getInitials(applicant.name)}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">{applicant.name}</h3>
+                      <p className="text-sm text-gray-600">{applicant.email}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-500 flex items-center gap-1.5 ml-16">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
                     Applied on {new Date(applicant.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
                   <span
-                    className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                    className={`px-4 py-2 rounded-full text-sm font-bold shadow-sm ${
                       applicant.status === 'approved'
-                        ? 'bg-green-100 text-green-800'
+                        ? 'bg-[#34c759] text-white'
                         : applicant.status === 'rejected'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-yellow-100 text-yellow-800'
+                        ? 'bg-[#ff3b30] text-white'
+                        : 'bg-[#ffcc00] text-gray-900'
                     }`}
                   >
                     {applicant.status.charAt(0).toUpperCase() + applicant.status.slice(1)}
@@ -522,7 +536,7 @@ export default function JobApplicants() {
                       e.stopPropagation()
                       setShowDeleteConfirm(applicant.id)
                     }}
-                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200"
                     title="Delete applicant"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -539,35 +553,35 @@ export default function JobApplicants() {
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={() => !isDeleting && setShowDeleteConfirm(null)}
         >
           <div 
-            className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6"
+            className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Confirm Deletion</h3>
-            <p className="text-gray-600 mb-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Confirm Deletion</h3>
+            <p className="text-gray-600 mb-8 text-base leading-relaxed">
               Are you sure you want to delete this application?
               <br />
-              <span className="font-medium text-red-600">This action cannot be undone.</span>
+              <span className="font-bold text-red-600">This action cannot be undone.</span>
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowDeleteConfirm(null)}
                 disabled={isDeleting}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors font-medium disabled:opacity-50"
+                className="px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-200 font-semibold disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDelete(showDeleteConfirm)}
                 disabled={isDeleting}
-                className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-3 text-white bg-gradient-to-r from-[#ff3b30] to-[#ff453a] rounded-xl hover:shadow-lg transition-all duration-200 font-bold disabled:opacity-50 flex items-center gap-2"
               >
                 {isDeleting ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     Deleting...
                   </>
                 ) : (

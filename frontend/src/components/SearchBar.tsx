@@ -37,17 +37,17 @@ export default function SearchBar({
   }
 
   return (
-    <div className="flex-1 max-w-2xl mx-8">
+    <div className="w-full">
       <div className="relative">
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={placeholder}
-          className="w-full h-11 px-4 pl-10 pr-4 border border-gray-300 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-200 text-sm"
+          className="w-full h-11 px-4 pl-11 pr-4 border border-gray-300 rounded-xl bg-white/90 backdrop-blur-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4A4CF0]/30 focus:border-[#4A4CF0] transition-all duration-200 text-sm shadow-sm hover:shadow-md"
         />
         <svg
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+          className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

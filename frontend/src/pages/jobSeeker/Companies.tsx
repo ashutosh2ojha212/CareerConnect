@@ -34,17 +34,26 @@ export default function Companies() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4A4CF0]"></div>
       </div>
     )
   }
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Browse Companies</h1>
+      <div className="mb-10">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Browse Companies</h1>
+        <p className="text-gray-600 text-base sm:text-lg">Discover companies and connect with employees for referrals</p>
+      </div>
       {companies.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <p className="text-gray-600">No companies available at this time.</p>
+        <div className="max-w-4xl mx-auto mt-20 bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-12 text-center flex flex-col items-center justify-center border border-gray-100">
+          <div className="h-24 w-24 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center shadow-lg mb-6">
+            <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">No companies available</h2>
+          <p className="text-gray-600 text-base max-w-md">No companies are available at this time. Check back later!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -52,22 +61,30 @@ export default function Companies() {
           <div
             key={company.id}
             onClick={() => navigate(`/job-seeker/company/${company.id}`)}
-            className="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow"
+            className="group bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 border border-gray-100"
           >
-            <div className="flex items-center mb-4">
-              <div className="h-12 w-12 rounded-full bg-primary-100 flex items-center justify-center mr-4">
-                <span className="text-primary-600 font-bold text-lg">
+            <div className="flex items-center mb-5">
+              <div className="h-14 w-14 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center mr-4 shadow-lg group-hover:scale-105 transition-transform duration-300">
+                <span className="text-white font-bold text-xl">
                   {company.name.charAt(0)}
                 </span>
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-gray-900">{company.name}</h3>
-                <p className="text-sm text-gray-500">{company.employeeCount} employees</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">{company.name}</h3>
+                <p className="text-sm font-medium text-gray-600 flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  {company.employeeCount} {company.employeeCount === 1 ? 'employee' : 'employees'}
+                </p>
               </div>
             </div>
-            <p className="text-gray-600">{company.description}</p>
-            <button className="mt-4 text-primary-600 hover:text-primary-700 font-medium">
-              View Employees →
+            <p className="text-gray-600 mb-5 leading-relaxed">{company.description}</p>
+            <button className="mt-4 text-[#4A4CF0] hover:text-[#6366F1] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
+              View Employees
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         ))}

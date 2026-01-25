@@ -78,45 +78,45 @@ export default function JobSeekerDashboard() {
       <div className="fixed inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent pointer-events-none"></div>
 
       {/* Premium Navbar */}
-      <nav className="w-full sticky top-0 z-50 bg-white/70 backdrop-blur-xl shadow-sm px-8 py-4 flex items-center justify-between border-b border-gray-200/50">
-        {/* Left: Logo + Switch Button */}
-        <div className="flex items-center gap-4">
-          <img
-            src="/logo.png"
-            alt="CareerConnect"
-            className="h-12 w-auto object-contain drop-shadow-md"
-            style={{
-              imageRendering: 'crisp-edges',
-            }}
-          />
-          <button
-            onClick={() => navigate('/employee')}
-            className="ml-6 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium text-sm shadow-md hover:opacity-90 active:scale-[0.97] transition-all duration-200 whitespace-nowrap"
-          >
-            Switch to Employee
-          </button>
-        </div>
+      <nav className="w-full sticky top-0 z-50 bg-white/80 backdrop-blur-xl shadow-[0_2px_20px_rgba(0,0,0,0.04)] px-6 lg:px-8 py-4 border-b border-gray-200/60">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          {/* Left: Logo */}
+          <div className="flex items-center">
+            <img
+              src="/logo.png"
+              alt="CareerConnect"
+              className="h-10 w-auto object-contain"
+            />
+          </div>
 
-        {/* Right: Avatar Dropdown */}
-        <div className="flex items-center gap-4" ref={dropdownRef}>
-          <div className="relative cursor-pointer" onClick={toggleDropdown}>
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-semibold shadow-md text-sm">
-              {getUserInitials()}
-            </div>
-
-            {/* Dropdown Menu */}
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white shadow-xl rounded-xl py-3 border border-gray-100 z-50">
-                <p className="px-4 py-2 text-gray-600 text-sm">Welcome, {getDisplayName()}</p>
-                <div className="h-px bg-gray-200 my-2"></div>
-                <button
-                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors"
-                  onClick={handleLogout}
-                >
-                  Sign Out
-                </button>
+          {/* Right: Switch Button + Avatar Dropdown */}
+          <div className="flex items-center gap-3" ref={dropdownRef}>
+            <button
+              onClick={() => navigate('/employee')}
+              className="px-4 py-2 rounded-full bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-medium text-sm shadow-md hover:shadow-lg hover:scale-105 active:scale-100 transition-all duration-200 whitespace-nowrap"
+            >
+              Switch to Employee
+            </button>
+            
+            <div className="relative cursor-pointer" onClick={toggleDropdown}>
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] text-white flex items-center justify-center font-semibold shadow-md text-sm hover:shadow-lg transition-shadow">
+                {getUserInitials()}
               </div>
-            )}
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-52 bg-white shadow-xl rounded-2xl py-2 border border-gray-100 z-50 overflow-hidden">
+                  <p className="px-4 py-2.5 text-gray-700 text-sm font-medium">Welcome, {getDisplayName()}</p>
+                  <div className="h-px bg-gray-100 my-1"></div>
+                  <button
+                    className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    onClick={handleLogout}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </nav>
@@ -124,20 +124,26 @@ export default function JobSeekerDashboard() {
       {/* Main Content Container */}
       <div className="max-w-6xl mx-auto px-6">
         {/* Premium Tabs */}
-        <div className="w-full flex items-center gap-10 mt-12 border-b border-gray-200">
+        <div className="w-full flex items-center justify-center gap-8 mt-10 mb-1 border-b-2 border-gray-200">
           <button
             onClick={() => navigate('/job-seeker')}
             data-active={isActive('/job-seeker')}
-            className="pb-3 px-1 text-lg font-medium text-gray-700 hover:text-indigo-600 transition-colors border-b-2 border-transparent data-[active=true]:text-indigo-600 data-[active=true]:border-indigo-600"
+            className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0] data-[active=true]:border-[#4A4CF0]"
           >
             Browse Companies
+            {isActive('/job-seeker') && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full"></div>
+            )}
           </button>
           <button
             onClick={() => navigate('/job-seeker/applications')}
             data-active={isActive('/job-seeker/applications')}
-            className="pb-3 px-1 text-lg font-medium text-gray-700 hover:text-indigo-600 transition-colors border-b-2 border-transparent data-[active=true]:text-indigo-600 data-[active=true]:border-indigo-600"
+            className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0] data-[active=true]:border-[#4A4CF0]"
           >
             My Applications
+            {isActive('/job-seeker/applications') && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full"></div>
+            )}
           </button>
         </div>
 
