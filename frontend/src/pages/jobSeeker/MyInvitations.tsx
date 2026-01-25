@@ -40,19 +40,37 @@ export default function MyInvitations() {
   }, [])
 
   useEffect(() => {
+    // Only check application status if no invitation is selected (form is not open)
     if (selected) return
+    
     list.forEach((inv) => {
+      // Skip if already marked as applied
       if (inv.status === 'APPLIED' || hasAppliedMap[inv.id]) return
-      api.get(`/applications/check?employeeId=${inv.employeeId}`).then((r) => {
-        if (r.data?.hasApplied) {
-          setHasAppliedMap((m) => ({ ...m, [inv.id]: true }))
-        }
-      }).catch(() => {})
+      
+      // Check by jobPostId if available, otherwise by employeeId
+      const checkUrl = inv.jobPostId 
+        ? `/applications/check?jobId=${inv.jobPostId}`
+        : `/applications/check?employeeId=${inv.employeeId}`
+      
+      api.get(checkUrl)
+        .then((r) => {
+          if (r.data?.hasApplied) {
+            setHasAppliedMap((m) => ({ ...m, [inv.id]: true }))
+          }
+        })
+        .catch(() => {
+          // Silently fail - application check is optional
+        })
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list, selected])
 
   const handleApplyNow = (inv: Invitation) => {
     if (inv.status === 'APPLIED' || hasAppliedMap[inv.id]) return
+    if (!inv.jobPostId) {
+      // If no job post ID, we can't apply - show error
+      return
+    }
     setSelected(inv)
   }
 
@@ -79,6 +97,7 @@ export default function MyInvitations() {
     return (
       <ReferralForm
         employee={employee}
+        jobPostId={selected.jobPostId ?? undefined}
         onBack={() => setSelected(null)}
         onSuccess={handleSuccess}
       />

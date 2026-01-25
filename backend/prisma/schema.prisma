@@ -106,6 +106,7 @@ model ReferralApplication {
   status     String   @default("pending") // "pending", "approved", "rejected"
   formData   String   @default("{}") // Dynamic form data (JSON string)
   resumeUrl  String?
+  deleted    Boolean  @default(false) // Soft delete flag
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

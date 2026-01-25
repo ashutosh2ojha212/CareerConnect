@@ -155,7 +155,11 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
     }
 
     // Build where clause with optional status filter
-    const whereClause: any = { jobPostId: jobId }
+    // Exclude soft-deleted applications
+    const whereClause: any = { 
+      jobPostId: jobId,
+      deleted: { not: true }, // Exclude soft-deleted applications
+    }
     if (status && typeof status === 'string' && ['pending', 'approved', 'rejected'].includes(status)) {
       whereClause.status = status
     }

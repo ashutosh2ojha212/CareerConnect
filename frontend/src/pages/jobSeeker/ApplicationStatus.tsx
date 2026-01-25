@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import api from '../../lib/api'
+import toast from 'react-hot-toast'
 
 interface Application {
   id: string
@@ -18,6 +19,7 @@ interface Application {
 export default function ApplicationStatus() {
   const [applications, setApplications] = useState<Application[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('all')
 
   useEffect(() => {
     fetchApplications()
@@ -34,6 +36,23 @@ export default function ApplicationStatus() {
       setIsLoading(false)
     }
   }
+
+  const handleDelete = async (applicationId: string) => {
+    if (!confirm('Are you sure you want to delete this application?')) {
+      return
+    }
+    try {
+      await api.delete(`/applications/${applicationId}`)
+      toast.success('Application deleted successfully')
+      fetchApplications()
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to delete application')
+    }
+  }
+
+  const filteredApplications = activeTab === 'all' 
+    ? applications 
+    : applications.filter(app => app.status === activeTab)
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -54,25 +73,80 @@ export default function ApplicationStatus() {
     )
   }
 
+  const pendingCount = applications.filter(a => a.status === 'pending').length
+  const approvedCount = applications.filter(a => a.status === 'approved').length
+  const rejectedCount = applications.filter(a => a.status === 'rejected').length
+
   return (
     <div>
       <div className="mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">My Applications</h1>
         <p className="text-gray-600 text-base sm:text-lg">Track the status of your referral applications</p>
       </div>
-      {applications.length === 0 ? (
+
+      {/* Tabs */}
+      <div className="mb-6 flex flex-wrap gap-3 border-b border-gray-200">
+        <button
+          onClick={() => setActiveTab('all')}
+          className={`pb-3 px-4 font-semibold transition-colors border-b-2 ${
+            activeTab === 'all'
+              ? 'text-[#4A4CF0] border-[#4A4CF0]'
+              : 'text-gray-600 border-transparent hover:text-[#4A4CF0]'
+          }`}
+        >
+          All ({applications.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('pending')}
+          className={`pb-3 px-4 font-semibold transition-colors border-b-2 ${
+            activeTab === 'pending'
+              ? 'text-[#4A4CF0] border-[#4A4CF0]'
+              : 'text-gray-600 border-transparent hover:text-[#4A4CF0]'
+          }`}
+        >
+          Pending ({pendingCount})
+        </button>
+        <button
+          onClick={() => setActiveTab('approved')}
+          className={`pb-3 px-4 font-semibold transition-colors border-b-2 ${
+            activeTab === 'approved'
+              ? 'text-[#4A4CF0] border-[#4A4CF0]'
+              : 'text-gray-600 border-transparent hover:text-[#4A4CF0]'
+          }`}
+        >
+          Accepted ({approvedCount})
+        </button>
+        <button
+          onClick={() => setActiveTab('rejected')}
+          className={`pb-3 px-4 font-semibold transition-colors border-b-2 ${
+            activeTab === 'rejected'
+              ? 'text-[#4A4CF0] border-[#4A4CF0]'
+              : 'text-gray-600 border-transparent hover:text-[#4A4CF0]'
+          }`}
+        >
+          Rejected ({rejectedCount})
+        </button>
+      </div>
+
+      {filteredApplications.length === 0 ? (
         <div className="max-w-4xl mx-auto mt-20 bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-12 text-center flex flex-col items-center justify-center border border-gray-100">
           <div className="h-24 w-24 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center shadow-lg mb-6">
             <svg className="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">No applications yet</h2>
-          <p className="text-gray-600 text-base max-w-md">Start browsing companies to find referral opportunities!</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">
+            {activeTab === 'all' ? 'No applications yet' : `No ${activeTab} applications`}
+          </h2>
+          <p className="text-gray-600 text-base max-w-md">
+            {activeTab === 'all' 
+              ? 'Start browsing companies to find referral opportunities!'
+              : `You don't have any ${activeTab} applications at the moment.`}
+          </p>
         </div>
       ) : (
         <div className="space-y-5">
-          {applications.map((app) => (
+          {filteredApplications.map((app) => (
             <div key={app.id} className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-shadow">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                 <div className="flex-1 min-w-0">
@@ -88,7 +162,7 @@ export default function ApplicationStatus() {
                     Applied on {new Date(app.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex items-center flex-shrink-0">
+                <div className="flex items-center gap-3 flex-shrink-0">
                   <span
                     className={`px-5 py-2.5 rounded-full text-sm font-bold shadow-sm ${getStatusColor(
                       app.status
@@ -96,6 +170,15 @@ export default function ApplicationStatus() {
                   >
                     {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                   </span>
+                  <button
+                    onClick={() => handleDelete(app.id)}
+                    className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Delete application"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>

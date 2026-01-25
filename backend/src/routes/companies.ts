@@ -3,12 +3,34 @@ import { prisma } from '../lib/prisma'
 import { authenticate, AuthRequest } from '../middleware/auth'
 
 const router = express.Router()
-// Get all companies — only exclude "Default Company". Do not filter by userId or employee membership.
+// Get all companies that have employees OR job posts
+// Exclude "Default Company" from display
 router.get('/', authenticate, async (req: AuthRequest, res, next) => {
   try {
+    const userId = req.user!.id
+    
+    // Get all companies that have:
+    // 1. Employees (excluding current user), OR
+    // 2. Job posts (excluding jobs created by current user)
     const companies = await prisma.company.findMany({
       where: {
         name: { not: 'Default Company' },
+        OR: [
+          {
+            employees: {
+              some: {
+                userId: { not: userId }, // Has employees other than current user
+              },
+            },
+          },
+          {
+            jobPosts: {
+              some: {
+                userId: { not: userId }, // Has job posts not created by current user
+              },
+            },
+          },
+        ],
       },
       include: {
         _count: {
@@ -32,19 +54,25 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
 })
 
 // Get company details with job posts. Job seeker sees all companies except Default.
-// jobPosts: only exclude current user's own posts (jobPost.userId != currentUserId).
+// jobPosts: exclude only jobs created by current user (jobPost.userId != currentUserId).
+// Also exclude jobs from user's own company if user is an employee.
 router.get('/:companyId', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const { companyId } = req.params
     const userId = req.user!.id
 
+    // Build where clause for job posts
+    // Exclude only jobs created by current user
+    // Job seekers should see all jobs from all companies except their own posts
+    const jobPostWhere: any = {
+      userId: { not: userId }, // Exclude jobs created by current user
+    }
+
     const company = await prisma.company.findUnique({
       where: { id: companyId },
       include: {
         jobPosts: {
-          where: {
-            userId: { not: userId },
-          },
+          where: jobPostWhere,
           include: {
             user: {
               select: { id: true, name: true },

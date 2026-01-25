@@ -86,7 +86,10 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
     const userId = req.user!.id
 
     const applications = await prisma.referralApplication.findMany({
-      where: { userId },
+      where: { 
+        userId,
+        deleted: { not: true }, // Exclude soft-deleted applications
+      },
       include: {
         jobPost: {
           include: {
@@ -132,6 +135,7 @@ router.post(
     try {
       const userId = req.user!.id
       const { employeeId } = req.params
+      const { jobPostId: providedJobPostId } = req.query // Get jobPostId from query if provided
       const files = req.files as Express.Multer.File[]
       const file = files && files.length > 0 ? files[0] : null
 
@@ -161,28 +165,49 @@ router.post(
       // Convert formData to JSON string for SQLite
       const formDataJson = JSON.stringify(formData)
 
-      // Get employee's company and job posts
-      const employee = await prisma.employeeProfile.findUnique({
-        where: { userId: employeeId },
-        include: {
-          company: {
-            include: {
-              jobPosts: {
-                take: 1,
-                orderBy: {
-                  createdAt: 'desc',
+      // Determine jobPostId: use provided one, or get from employee's latest job post
+      let jobPostId: string | null = null
+      
+      if (providedJobPostId && typeof providedJobPostId === 'string') {
+        // Verify the job post exists and belongs to the employee
+        const jobPost = await prisma.jobPost.findUnique({
+          where: { id: providedJobPostId },
+          select: {
+            id: true,
+            userId: true,
+          },
+        })
+        
+        // Check if the job post's userId matches the employeeId
+        if (jobPost && jobPost.userId === employeeId) {
+          jobPostId = providedJobPostId
+        } else {
+          return res.status(400).json({ message: 'Invalid job post or job post does not belong to this employee' })
+        }
+      } else {
+        // Get employee's company and job posts
+        const employee = await prisma.employeeProfile.findUnique({
+          where: { userId: employeeId },
+          include: {
+            company: {
+              include: {
+                jobPosts: {
+                  take: 1,
+                  orderBy: {
+                    createdAt: 'desc',
+                  },
                 },
               },
             },
           },
-        },
-      })
+        })
 
-      if (!employee) {
-        return res.status(404).json({ message: 'Employee not found' })
+        if (!employee) {
+          return res.status(404).json({ message: 'Employee not found' })
+        }
+
+        jobPostId = employee.company.jobPosts[0]?.id || null
       }
-
-      const jobPostId = employee.company.jobPosts[0]?.id || null
 
       // Check if user has already applied for this job
       if (jobPostId) {
@@ -327,7 +352,7 @@ router.get('/:employeeId/form-fields', authenticate, async (req, res, next) => {
   }
 })
 
-// Delete application
+// Delete application (soft delete - job seeker can delete their own applications)
 router.delete('/:applicationId', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const { applicationId } = req.params
@@ -336,27 +361,21 @@ router.delete('/:applicationId', authenticate, async (req: AuthRequest, res, nex
     // Find the application and verify ownership
     const application = await prisma.referralApplication.findUnique({
       where: { id: applicationId },
-      include: {
-        jobPost: {
-          select: {
-            userId: true,
-          },
-        },
-      },
     })
 
     if (!application) {
       return res.status(404).json({ message: 'Application not found' })
     }
 
-    // Verify user owns the job post (only job creator can delete)
-    if (!application.jobPost || application.jobPost.userId !== userId) {
-      return res.status(403).json({ message: 'Unauthorized: Only the job creator can delete applications' })
+    // Verify user owns the application (job seeker can delete their own applications)
+    if (application.userId !== userId) {
+      return res.status(403).json({ message: 'Unauthorized: You can only delete your own applications' })
     }
 
-    // Hard delete the application
-    await prisma.referralApplication.delete({
+    // Soft delete the application
+    await prisma.referralApplication.update({
       where: { id: applicationId },
+      data: { deleted: true },
     })
 
     res.json({ success: true })

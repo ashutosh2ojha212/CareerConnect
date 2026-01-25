@@ -87,14 +87,30 @@ router.get('/me', authenticate, async (req: AuthRequest, res, next) => {
     const rows = await model.findMany({
       where: { candidateId: toJobSeekerId },
       include: {
-        inviter: { select: { id: true, name: true } },
+        inviter: { 
+          select: { 
+            id: true, 
+            name: true,
+            email: true,
+          } 
+        },
         jobPost: {
           select: {
             id: true,
             title: true,
             companyName: true,
             companyId: true,
-            company: { select: { id: true, name: true } },
+            description: true,
+            experience: true,
+            location: true,
+            skills: true,
+            company: { 
+              select: { 
+                id: true, 
+                name: true,
+                description: true,
+              } 
+            },
           },
         },
       },
@@ -102,19 +118,34 @@ router.get('/me', authenticate, async (req: AuthRequest, res, next) => {
       take: 50,
     })
 
-    const invitations = rows.map((r: any) => ({
-      id: r.id,
-      fromEmployeeId: r.inviterId,
-      toJobSeekerId: r.candidateId,
-      jobPostId: r.jobPostId ?? null,
-      status: r.status === 'pending' ? 'PENDING' : r.status,
-      createdAt: r.createdAt,
-      inviterName: r.inviter?.name ?? 'Employee',
-      jobTitle: r.jobPost?.title ?? null,
-      companyName: r.jobPost?.company?.name ?? r.jobPost?.companyName ?? null,
-      companyId: r.jobPost?.company?.id ?? null,
-      employeeId: r.inviterId,
-    }))
+    const invitations = rows.map((r: any) => {
+      // Determine company name - prefer company.name over companyName, but exclude "Default Company"
+      let companyName = null
+      if (r.jobPost?.company?.name && r.jobPost.company.name !== 'Default Company') {
+        companyName = r.jobPost.company.name
+      } else if (r.jobPost?.companyName && r.jobPost.companyName !== 'Default Company') {
+        companyName = r.jobPost.companyName
+      }
+
+      return {
+        id: r.id,
+        fromEmployeeId: r.inviterId,
+        toJobSeekerId: r.candidateId,
+        jobPostId: r.jobPostId ?? null,
+        status: r.status === 'pending' ? 'PENDING' : r.status,
+        createdAt: r.createdAt,
+        inviterName: r.inviter?.name ?? 'Employee',
+        inviterEmail: r.inviter?.email ?? null,
+        jobTitle: r.jobPost?.title ?? null,
+        companyName,
+        companyId: r.jobPost?.company?.id ?? r.jobPost?.companyId ?? null,
+        employeeId: r.inviterId,
+        jobDescription: r.jobPost?.description ?? null,
+        jobExperience: r.jobPost?.experience ?? null,
+        jobLocation: r.jobPost?.location ?? null,
+        jobSkills: r.jobPost?.skills ? (typeof r.jobPost.skills === 'string' ? JSON.parse(r.jobPost.skills) : r.jobPost.skills) : [],
+      }
+    })
 
     res.json(invitations)
   } catch (error) {

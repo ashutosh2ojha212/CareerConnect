@@ -180,6 +180,7 @@ exports.Prisma.ReferralApplicationScalarFieldEnum = {
   status: 'status',
   formData: 'formData',
   resumeUrl: 'resumeUrl',
+  deleted: 'deleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

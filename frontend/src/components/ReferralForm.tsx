@@ -14,6 +14,7 @@ interface Employee {
 
 interface ReferralFormProps {
   employee: Employee
+  jobPostId?: string // Optional: specific job post ID when applying from invitation
   onBack: () => void
   onSuccess: () => void
 }
@@ -22,7 +23,7 @@ interface FormData {
   [key: string]: string | File
 }
 
-export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFormProps) {
+export default function ReferralForm({ employee, jobPostId, onBack, onSuccess }: ReferralFormProps) {
   const [formFields, setFormFields] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -37,7 +38,10 @@ export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFo
 
   const checkApplicationStatus = async () => {
     try {
-      const response = await api.get(`/applications/check?employeeId=${employee.id}`)
+      const checkUrl = jobPostId 
+        ? `/applications/check?jobId=${jobPostId}`
+        : `/applications/check?employeeId=${employee.id}`
+      const response = await api.get(checkUrl)
       if (response.data.hasApplied) {
         setHasApplied(true)
         setApplicationStatus(response.data.application?.status || null)
@@ -49,9 +53,15 @@ export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFo
 
   const fetchFormFields = async () => {
     try {
-      // Fetch custom form fields for this employee/company
-      const response = await api.get(`/applications/${employee.id}/form-fields`)
-      setFormFields(response.data)
+      // If jobPostId is provided, fetch form fields for that specific job
+      if (jobPostId) {
+        const response = await api.get(`/jobs/${jobPostId}/form-fields`)
+        setFormFields(response.data)
+      } else {
+        // Otherwise, fetch custom form fields for this employee/company
+        const response = await api.get(`/applications/${employee.id}/form-fields`)
+        setFormFields(response.data)
+      }
     } catch (error) {
       // Default form fields if none exist
       setFormFields([
@@ -87,7 +97,12 @@ export default function ReferralForm({ employee, onBack, onSuccess }: ReferralFo
       })
       
 
-      await api.post(`/applications/${employee.id}`, formData, {
+      // If jobPostId is provided, include it in the request
+      const url = jobPostId 
+        ? `/applications/${employee.id}?jobPostId=${jobPostId}`
+        : `/applications/${employee.id}`
+      
+      await api.post(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

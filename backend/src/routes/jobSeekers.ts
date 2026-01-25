@@ -189,7 +189,7 @@ router.post('/me/resume', authenticate, upload.single('resume'), async (req: Aut
 })
 
 // Get job seekers with search (for employees browsing candidates)
-// Excludes profiles whose user is an employee in the same company as the requesting employee
+// Returns all job seeker profiles except the current user's own profile
 router.get('/', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const model = (prisma as any).jobSeekerProfile
@@ -200,23 +200,12 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
     const { search } = req.query
     const searchQuery = typeof search === 'string' ? search.trim().toLowerCase() : ''
 
-    // Exclude: (1) current user's own profile, (2) same-company employees
-    let excludeUserIds: string[] = [userId]
-    const myEmployee = await prisma.employeeProfile.findUnique({
-      where: { userId },
-      select: { companyId: true },
-    })
-    if (myEmployee) {
-      const sameCompanyUserIds = await prisma.employeeProfile.findMany({
-        where: { companyId: myEmployee.companyId },
-        select: { userId: true },
-      })
-      excludeUserIds = [...new Set([userId, ...sameCompanyUserIds.map((e) => e.userId)])]
-    }
+    // Exclude only: current user's own profile
+    // DO NOT filter by company - job seekers should be visible regardless of company
 
-    // Get all job seeker profiles except own and same-company employees
+    // Get all job seeker profiles except own
     let profiles = await model.findMany({
-      where: { userId: { notIn: excludeUserIds } },
+      where: { userId: { not: userId } },
       include: {
         user: {
           select: {

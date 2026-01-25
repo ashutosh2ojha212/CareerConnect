@@ -6843,6 +6843,7 @@ export namespace Prisma {
     status: string | null
     formData: string | null
     resumeUrl: string | null
+    deleted: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6855,6 +6856,7 @@ export namespace Prisma {
     status: string | null
     formData: string | null
     resumeUrl: string | null
+    deleted: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6867,6 +6869,7 @@ export namespace Prisma {
     status: number
     formData: number
     resumeUrl: number
+    deleted: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -6881,6 +6884,7 @@ export namespace Prisma {
     status?: true
     formData?: true
     resumeUrl?: true
+    deleted?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6893,6 +6897,7 @@ export namespace Prisma {
     status?: true
     formData?: true
     resumeUrl?: true
+    deleted?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6905,6 +6910,7 @@ export namespace Prisma {
     status?: true
     formData?: true
     resumeUrl?: true
+    deleted?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -6990,6 +6996,7 @@ export namespace Prisma {
     status: string
     formData: string
     resumeUrl: string | null
+    deleted: boolean
     createdAt: Date
     updatedAt: Date
     _count: ReferralApplicationCountAggregateOutputType | null
@@ -7019,6 +7026,7 @@ export namespace Prisma {
     status?: boolean
     formData?: boolean
     resumeUrl?: boolean
+    deleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7033,6 +7041,7 @@ export namespace Prisma {
     status?: boolean
     formData?: boolean
     resumeUrl?: boolean
+    deleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7047,6 +7056,7 @@ export namespace Prisma {
     status?: boolean
     formData?: boolean
     resumeUrl?: boolean
+    deleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -7074,6 +7084,7 @@ export namespace Prisma {
       status: string
       formData: string
       resumeUrl: string | null
+      deleted: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["referralApplication"]>
@@ -7478,6 +7489,7 @@ export namespace Prisma {
     readonly status: FieldRef<"ReferralApplication", 'String'>
     readonly formData: FieldRef<"ReferralApplication", 'String'>
     readonly resumeUrl: FieldRef<"ReferralApplication", 'String'>
+    readonly deleted: FieldRef<"ReferralApplication", 'Boolean'>
     readonly createdAt: FieldRef<"ReferralApplication", 'DateTime'>
     readonly updatedAt: FieldRef<"ReferralApplication", 'DateTime'>
   }
@@ -10898,6 +10910,7 @@ export namespace Prisma {
     status: 'status',
     formData: 'formData',
     resumeUrl: 'resumeUrl',
+    deleted: 'deleted',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -11399,6 +11412,7 @@ export namespace Prisma {
     status?: StringFilter<"ReferralApplication"> | string
     formData?: StringFilter<"ReferralApplication"> | string
     resumeUrl?: StringNullableFilter<"ReferralApplication"> | string | null
+    deleted?: BoolFilter<"ReferralApplication"> | boolean
     createdAt?: DateTimeFilter<"ReferralApplication"> | Date | string
     updatedAt?: DateTimeFilter<"ReferralApplication"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
@@ -11413,6 +11427,7 @@ export namespace Prisma {
     status?: SortOrder
     formData?: SortOrder
     resumeUrl?: SortOrderInput | SortOrder
+    deleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -11431,6 +11446,7 @@ export namespace Prisma {
     status?: StringFilter<"ReferralApplication"> | string
     formData?: StringFilter<"ReferralApplication"> | string
     resumeUrl?: StringNullableFilter<"ReferralApplication"> | string | null
+    deleted?: BoolFilter<"ReferralApplication"> | boolean
     createdAt?: DateTimeFilter<"ReferralApplication"> | Date | string
     updatedAt?: DateTimeFilter<"ReferralApplication"> | Date | string
     user?: XOR<UserRelationFilter, UserWhereInput>
@@ -11445,6 +11461,7 @@ export namespace Prisma {
     status?: SortOrder
     formData?: SortOrder
     resumeUrl?: SortOrderInput | SortOrder
+    deleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ReferralApplicationCountOrderByAggregateInput
@@ -11463,6 +11480,7 @@ export namespace Prisma {
     status?: StringWithAggregatesFilter<"ReferralApplication"> | string
     formData?: StringWithAggregatesFilter<"ReferralApplication"> | string
     resumeUrl?: StringNullableWithAggregatesFilter<"ReferralApplication"> | string | null
+    deleted?: BoolWithAggregatesFilter<"ReferralApplication"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"ReferralApplication"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ReferralApplication"> | Date | string
   }
@@ -12116,6 +12134,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutApplicationsInput
@@ -12130,6 +12149,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12140,6 +12160,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutApplicationsNestedInput
@@ -12154,6 +12175,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12166,6 +12188,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12176,6 +12199,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12188,6 +12212,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12889,6 +12914,7 @@ export namespace Prisma {
     status?: SortOrder
     formData?: SortOrder
     resumeUrl?: SortOrder
+    deleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12901,6 +12927,7 @@ export namespace Prisma {
     status?: SortOrder
     formData?: SortOrder
     resumeUrl?: SortOrder
+    deleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12913,6 +12940,7 @@ export namespace Prisma {
     status?: SortOrder
     formData?: SortOrder
     resumeUrl?: SortOrder
+    deleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13982,6 +14010,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobPost?: JobPostCreateNestedOneWithoutApplicationsInput
@@ -13994,6 +14023,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14216,6 +14246,7 @@ export namespace Prisma {
     status?: StringFilter<"ReferralApplication"> | string
     formData?: StringFilter<"ReferralApplication"> | string
     resumeUrl?: StringNullableFilter<"ReferralApplication"> | string | null
+    deleted?: BoolFilter<"ReferralApplication"> | boolean
     createdAt?: DateTimeFilter<"ReferralApplication"> | Date | string
     updatedAt?: DateTimeFilter<"ReferralApplication"> | Date | string
   }
@@ -14675,6 +14706,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutApplicationsInput
@@ -14687,6 +14719,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15550,6 +15583,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15589,6 +15623,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobPost?: JobPostUpdateOneWithoutApplicationsNestedInput
@@ -15601,6 +15636,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15612,6 +15648,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15814,6 +15851,7 @@ export namespace Prisma {
     status?: string
     formData?: string
     resumeUrl?: string | null
+    deleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15856,6 +15894,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutApplicationsNestedInput
@@ -15868,6 +15907,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15879,6 +15919,7 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     formData?: StringFieldUpdateOperationsInput | string
     resumeUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

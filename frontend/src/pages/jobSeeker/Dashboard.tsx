@@ -94,7 +94,13 @@ export default function JobSeekerDashboard() {
       const pending = list.filter((i: any) => i.status !== 'APPLIED')
       if (pending.length > 0) {
         invitationToastShown.current = true
-        toast('You have a new referral invitation.', { icon: '✉️', duration: 5000 })
+        toast.success('You have a new referral invitation.', { 
+          duration: 3000,
+          style: {
+            background: '#10b981',
+            color: '#fff',
+          },
+        })
       }
     }).catch(() => {})
     return () => { cancelled = true }
