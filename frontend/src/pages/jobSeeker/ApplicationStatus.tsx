@@ -71,16 +71,16 @@ export default function ApplicationStatus() {
           <p className="text-gray-600 text-base max-w-md">Start browsing companies to find referral opportunities!</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {applications.map((app) => (
-            <div key={app.id} className="group bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+            <div key={app.id} className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-shadow">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3 className="text-xl font-bold text-gray-900 mb-1">
                     {app.jobTitle || 'Referral Application'}
                   </h3>
                   <p className="text-base font-medium text-gray-700 mb-1">{app.companyName}</p>
-                  <p className="text-sm text-gray-600 mb-2">Referred by: <span className="font-semibold">{app.employee.name}</span></p>
+                  <p className="text-sm text-gray-600 mb-1">Referred by: <span className="font-semibold">{app.employee?.name ?? '—'}</span></p>
                   <p className="text-sm text-gray-500 flex items-center gap-1.5">
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -88,7 +88,7 @@ export default function ApplicationStatus() {
                     Applied on {new Date(app.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 flex-shrink-0">
+                <div className="flex items-center flex-shrink-0">
                   <span
                     className={`px-5 py-2.5 rounded-full text-sm font-bold shadow-sm ${getStatusColor(
                       app.status
@@ -96,12 +96,6 @@ export default function ApplicationStatus() {
                   >
                     {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                   </span>
-                  <button
-                    type="button"
-                    className="px-4 py-2 rounded-xl border-2 border-[#4A4CF0] text-[#4A4CF0] font-semibold text-sm hover:bg-[#4A4CF0]/10 transition-colors"
-                  >
-                    View Application
-                  </button>
                 </div>
               </div>
             </div>

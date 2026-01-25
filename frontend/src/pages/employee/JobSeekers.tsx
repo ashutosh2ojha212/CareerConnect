@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
+import toast from 'react-hot-toast'
 import api from '../../lib/api'
+
+const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:3001/api').replace(/\/api\/?$/, '')
 
 interface JobSeekerProfile {
   id: string
@@ -9,11 +12,26 @@ interface JobSeekerProfile {
   experience: number | null
   primaryRole: string | null
   skills: string[]
-  jobPreferences: string | null
+  preferredRoles?: string[]
   preferredLocations?: string[]
+  profileSummary?: string | null
+  resumeUrl?: string | null
   profileImageURL: string | null
   createdAt: string
   updatedAt: string
+}
+
+function ensureStringArray(v: unknown): string[] {
+  if (Array.isArray(v)) return v.map((x) => (typeof x === 'string' ? x : String(x)))
+  if (typeof v === 'string') {
+    try {
+      const p = JSON.parse(v)
+      return Array.isArray(p) ? p.map(String) : v ? [v] : []
+    } catch {
+      return v ? v.split(',').map((s) => s.trim()).filter(Boolean) : []
+    }
+  }
+  return []
 }
 
 interface ViewProfileModalProps {
@@ -22,6 +40,9 @@ interface ViewProfileModalProps {
 }
 
 function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
+  const [inviting, setInviting] = useState(false)
+  const [invitationSent, setInvitationSent] = useState(false)
+
   if (!profile) return null
 
   const getInitials = (name: string) => {
@@ -32,16 +53,38 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
     return name.substring(0, 2).toUpperCase()
   }
 
+  const resumeHref = profile.resumeUrl
+    ? (profile.resumeUrl.startsWith('http') ? profile.resumeUrl : `${API_BASE}${profile.resumeUrl}`)
+    : null
+
+  const handleInviteToApply = async () => {
+    setInviting(true)
+    try {
+      await api.post('/invitations', { toJobSeekerId: profile.userId })
+      toast.success('Invitation sent to the candidate.')
+      setInvitationSent(true)
+    } catch (e: any) {
+      if (e.response?.status === 409) {
+        toast.error('Invitation already sent to this candidate.')
+        setInvitationSent(true)
+      } else {
+        toast.error(e.response?.data?.message || 'Failed to send invitation')
+      }
+    } finally {
+      setInviting(false)
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div
         className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-8">
+        <div className="p-6 sm:p-8">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Candidate Profile</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Candidate Profile</h2>
             <button
               onClick={onClose}
               className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -56,12 +99,12 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
           <div className="space-y-6">
             {/* Avatar and Basic Info */}
             <div className="flex items-center gap-5 pb-6 border-b border-gray-200">
-              <div className="h-24 w-24 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+              <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center text-white font-bold text-xl sm:text-2xl shadow-lg flex-shrink-0">
                 {getInitials(profile.fullName)}
               </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">{profile.fullName}</h3>
-                <p className="text-gray-600 mb-2">{profile.email}</p>
+              <div className="min-w-0">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">{profile.fullName}</h3>
+                <p className="text-gray-600 mb-1 truncate">{profile.email}</p>
                 {profile.primaryRole && (
                   <p className="text-base font-semibold text-gray-800">{profile.primaryRole}</p>
                 )}
@@ -69,37 +112,93 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
             </div>
 
             {/* Experience */}
-            {profile.experience !== null && (
+            {profile.experience != null && (
               <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
                 <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Experience</p>
                 <p className="text-lg font-bold text-gray-900">{profile.experience} years</p>
               </div>
             )}
 
-            {/* Job Preferences */}
-            {profile.jobPreferences && (
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Looking For</p>
-                <p className="text-base font-semibold text-gray-900">{profile.jobPreferences}</p>
-              </div>
-            )}
-
-            {/* Skills */}
-            {profile.skills && profile.skills.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">Skills</p>
-                <div className="flex flex-wrap gap-2">
-                  {profile.skills.map((skill, index) => (
-                    <span
-                      key={index}
-                      className="px-4 py-2 bg-gradient-to-r from-[#4A4CF0]/10 to-[#6366F1]/10 text-[#4A4CF0] rounded-xl text-sm font-semibold border border-[#4A4CF0]/20"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+            {/* Preferred Roles (Looking For) — chips only, hide if empty */}
+            {(() => {
+              const roles = ensureStringArray(profile.preferredRoles ?? (profile as any).jobPreferences)
+              if (roles.length === 0) return null
+              return (
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Looking For</p>
+                  <div className="flex flex-wrap gap-2">
+                    {roles.map((r, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-[#EEF0FF] text-[#4A4CF0] rounded-xl text-sm font-semibold border border-[#D4D7FF]">
+                        {r}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )
+            })()}
+
+            {/* Preferred Locations — single section, chips */}
+            {(() => {
+              const locs = ensureStringArray(profile.preferredLocations)
+              if (locs.length === 0) return null
+              return (
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Preferred Locations</p>
+                  <div className="flex flex-wrap gap-2">
+                    {locs.map((loc, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-[#EEF0FF] text-[#4A4CF0] rounded-xl text-sm font-semibold border border-[#D4D7FF]">
+                        {loc}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* Skills — chips */}
+            {(() => {
+              const sk = ensureStringArray(profile.skills)
+              if (sk.length === 0) return null
+              return (
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide">Skills</p>
+                  <div className="flex flex-wrap gap-2">
+                    {sk.map((s, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-[#EEF0FF] text-[#4A4CF0] rounded-xl text-sm font-semibold border border-[#D4D7FF]">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* Download Resume + Invite to Apply */}
+            <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-gray-100">
+              {resumeHref ? (
+                <a
+                  href={resumeHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 h-11 px-4 rounded-xl bg-[#EEF0FF] text-[#4A4CF0] font-semibold hover:bg-[#D4D7FF] transition-colors border border-[#D4D7FF]"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download Resume
+                </a>
+              ) : (
+                <span className="text-gray-500 text-sm font-medium">Resume not uploaded</span>
+              )}
+              <button
+                type="button"
+                onClick={handleInviteToApply}
+                disabled={inviting || invitationSent}
+                className="h-11 px-5 rounded-xl bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-semibold hover:shadow-lg disabled:opacity-60 transition-all"
+              >
+                {inviting ? 'Sending…' : invitationSent ? 'Invitation sent' : 'Invite to Apply'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -212,40 +311,59 @@ export default function JobSeekers({ searchQuery = '' }: JobSeekersProps) {
                 </div>
               </div>
 
-              {profile.jobPreferences && (
-                <div className="mb-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                  <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Preferred Roles</p>
-                  <p className="text-sm font-medium text-gray-900">{profile.jobPreferences}</p>
-                </div>
-              )}
-
-              {profile.preferredLocations && profile.preferredLocations.length > 0 && (
-                <div className="mb-3">
-                  <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Preferred Locations</p>
-                  <p className="text-sm font-medium text-gray-700">{profile.preferredLocations.join(', ')}</p>
-                </div>
-              )}
-
-              {profile.skills && profile.skills.length > 0 && (
-                <div className="mb-5">
-                  <p className="text-xs font-semibold text-gray-500 mb-2.5 uppercase tracking-wide">Skills</p>
-                  <div className="flex flex-wrap gap-2">
-                    {profile.skills.slice(0, 4).map((skill, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-gradient-to-r from-[#4A4CF0]/10 to-[#6366F1]/10 text-[#4A4CF0] rounded-lg text-xs font-semibold border border-[#4A4CF0]/20"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                    {profile.skills.length > 4 && (
-                      <span className="px-3 py-1 text-gray-500 text-xs font-medium flex items-center">
-                        +{profile.skills.length - 4} more
-                      </span>
-                    )}
+              {(() => {
+                const roles = ensureStringArray(profile.preferredRoles ?? (profile as any).jobPreferences)
+                if (roles.length === 0) return null
+                return (
+                  <div className="mb-3">
+                    <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Preferred Roles</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {roles.slice(0, 4).map((r, i) => (
+                        <span key={i} className="px-2.5 py-1 bg-[#EEF0FF] text-[#4A4CF0] rounded-lg text-xs font-semibold">
+                          {r}
+                        </span>
+                      ))}
+                      {roles.length > 4 && <span className="text-gray-500 text-xs">+{roles.length - 4}</span>}
+                    </div>
                   </div>
-                </div>
-              )}
+                )
+              })()}
+
+              {(() => {
+                const locs = ensureStringArray(profile.preferredLocations)
+                if (locs.length === 0) return null
+                return (
+                  <div className="mb-3">
+                    <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Preferred Locations</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {locs.slice(0, 3).map((l, i) => (
+                        <span key={i} className="px-2.5 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
+                          {l}
+                        </span>
+                      ))}
+                      {locs.length > 3 && <span className="text-gray-500 text-xs">+{locs.length - 3}</span>}
+                    </div>
+                  </div>
+                )
+              })()}
+
+              {(() => {
+                const sk = ensureStringArray(profile.skills)
+                if (sk.length === 0) return null
+                return (
+                  <div className="mb-5">
+                    <p className="text-xs font-semibold text-gray-500 mb-2.5 uppercase tracking-wide">Skills</p>
+                    <div className="flex flex-wrap gap-2">
+                      {sk.slice(0, 4).map((s, i) => (
+                        <span key={i} className="px-3 py-1 bg-[#EEF0FF] text-[#4A4CF0] rounded-lg text-xs font-semibold border border-[#D4D7FF]">
+                          {s}
+                        </span>
+                      ))}
+                      {sk.length > 4 && <span className="px-3 py-1 text-gray-500 text-xs">+{sk.length - 4} more</span>}
+                    </div>
+                  </div>
+                )
+              })()}
 
               <button
                 onClick={() => setSelectedProfile(profile)}

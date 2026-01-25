@@ -1,10 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, startTransition } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../lib/auth'
+import api from '../../lib/api'
 import Companies from './Companies'
 import CompanyEmployees from './CompanyEmployees'
 import ApplicationStatus from './ApplicationStatus'
+import MyInvitations from './MyInvitations'
 import MyProfile from './MyProfile'
 
 export default function JobSeekerDashboard() {
@@ -13,6 +16,7 @@ export default function JobSeekerDashboard() {
   const { user } = useAuthStore()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const invitationToastShown = useRef(false)
 
   // Get user initials for avatar
   const getUserInitials = () => {
@@ -74,6 +78,28 @@ export default function JobSeekerDashboard() {
     return location.pathname.startsWith(path)
   }
 
+  const handleNav = (path: string) => {
+    startTransition(() => {
+      navigate(path)
+    })
+  }
+
+  // Show toast when job seeker has new invitations
+  useEffect(() => {
+    if (invitationToastShown.current) return
+    let cancelled = false
+    api.get('/invitations/me').then(({ data }) => {
+      if (cancelled || invitationToastShown.current) return
+      const list = Array.isArray(data) ? data : []
+      const pending = list.filter((i: any) => i.status !== 'APPLIED')
+      if (pending.length > 0) {
+        invitationToastShown.current = true
+        toast('You have a new referral invitation.', { icon: '✉️', duration: 5000 })
+      }
+    }).catch(() => {})
+    return () => { cancelled = true }
+  }, [])
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fefefe] via-[#faf9f7] to-[#f5f4f2]">
       {/* Glossy Background Overlay */}
@@ -94,7 +120,7 @@ export default function JobSeekerDashboard() {
           {/* Right: Switch Button + Avatar Dropdown */}
           <div className="flex items-center gap-3" ref={dropdownRef}>
             <button
-              onClick={() => navigate('/employee')}
+              onClick={() => startTransition(() => navigate('/employee'))}
               className="px-4 py-2 rounded-full bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-medium text-sm shadow-md hover:shadow-lg hover:scale-105 active:scale-100 transition-all duration-200 whitespace-nowrap"
             >
               Switch to Employee
@@ -126,9 +152,9 @@ export default function JobSeekerDashboard() {
       {/* Main Content Container */}
       <div className="max-w-6xl mx-auto px-6">
         {/* Premium Tabs */}
-        <div className="w-full flex items-center justify-center gap-6 sm:gap-8 mt-10 mb-1 border-b-2 border-gray-200">
+        <div className="w-full flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-10 mb-1 border-b-2 border-gray-200">
           <button
-            onClick={() => navigate('/job-seeker')}
+            onClick={() => handleNav('/job-seeker')}
             data-active={isActive('/job-seeker')}
             className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0]"
           >
@@ -138,7 +164,7 @@ export default function JobSeekerDashboard() {
             )}
           </button>
           <button
-            onClick={() => navigate('/job-seeker/applications')}
+            onClick={() => handleNav('/job-seeker/applications')}
             data-active={isActive('/job-seeker/applications')}
             className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0]"
           >
@@ -148,7 +174,17 @@ export default function JobSeekerDashboard() {
             )}
           </button>
           <button
-            onClick={() => navigate('/job-seeker/profile')}
+            onClick={() => handleNav('/job-seeker/invitations')}
+            data-active={isActive('/job-seeker/invitations')}
+            className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0]"
+          >
+            My Invitations
+            {isActive('/job-seeker/invitations') && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full" />
+            )}
+          </button>
+          <button
+            onClick={() => handleNav('/job-seeker/profile')}
             data-active={isActive('/job-seeker/profile')}
             className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0]"
           >
@@ -165,6 +201,7 @@ export default function JobSeekerDashboard() {
             <Route index element={<Companies />} />
             <Route path="company/:companyId" element={<CompanyEmployees />} />
             <Route path="applications" element={<ApplicationStatus />} />
+            <Route path="invitations" element={<MyInvitations />} />
             <Route path="profile" element={<MyProfile />} />
           </Routes>
         </main>

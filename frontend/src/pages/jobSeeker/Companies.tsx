@@ -5,7 +5,7 @@ import api from '../../lib/api'
 interface Company {
   id: string
   name: string
-  description: string
+  description?: string | null
   logo?: string
   employeeCount: number
 }
@@ -79,7 +79,9 @@ export default function Companies() {
                 </p>
               </div>
             </div>
-            <p className="text-gray-600 mb-5 leading-relaxed">{company.description}</p>
+            {company.description != null && company.description !== '' && (
+              <p className="text-gray-600 mb-5 leading-relaxed">{company.description}</p>
+            )}
             <button className="mt-4 text-[#4A4CF0] hover:text-[#6366F1] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
               View Employees
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

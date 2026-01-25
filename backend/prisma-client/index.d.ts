@@ -53,6 +53,11 @@ export type ReferralForm = $Result.DefaultSelection<Prisma.$ReferralFormPayload>
  * 
  */
 export type JobSeekerProfile = $Result.DefaultSelection<Prisma.$JobSeekerProfilePayload>
+/**
+ * Model ReferralInvitation
+ * 
+ */
+export type ReferralInvitation = $Result.DefaultSelection<Prisma.$ReferralInvitationPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -256,6 +261,16 @@ export class PrismaClient<
     * ```
     */
   get jobSeekerProfile(): Prisma.JobSeekerProfileDelegate<ExtArgs>;
+
+  /**
+   * `prisma.referralInvitation`: Exposes CRUD operations for the **ReferralInvitation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReferralInvitations
+    * const referralInvitations = await prisma.referralInvitation.findMany()
+    * ```
+    */
+  get referralInvitation(): Prisma.ReferralInvitationDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -704,7 +719,8 @@ export namespace Prisma {
     JobCustomFormField: 'JobCustomFormField',
     ReferralApplication: 'ReferralApplication',
     ReferralForm: 'ReferralForm',
-    JobSeekerProfile: 'JobSeekerProfile'
+    JobSeekerProfile: 'JobSeekerProfile',
+    ReferralInvitation: 'ReferralInvitation'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -720,7 +736,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "company" | "employeeProfile" | "jobPost" | "jobCustomFormField" | "referralApplication" | "referralForm" | "jobSeekerProfile"
+      modelProps: "user" | "company" | "employeeProfile" | "jobPost" | "jobCustomFormField" | "referralApplication" | "referralForm" | "jobSeekerProfile" | "referralInvitation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1284,6 +1300,76 @@ export namespace Prisma {
           }
         }
       }
+      ReferralInvitation: {
+        payload: Prisma.$ReferralInvitationPayload<ExtArgs>
+        fields: Prisma.ReferralInvitationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReferralInvitationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReferralInvitationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload>
+          }
+          findFirst: {
+            args: Prisma.ReferralInvitationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReferralInvitationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload>
+          }
+          findMany: {
+            args: Prisma.ReferralInvitationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload>[]
+          }
+          create: {
+            args: Prisma.ReferralInvitationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload>
+          }
+          createMany: {
+            args: Prisma.ReferralInvitationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReferralInvitationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload>[]
+          }
+          delete: {
+            args: Prisma.ReferralInvitationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload>
+          }
+          update: {
+            args: Prisma.ReferralInvitationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReferralInvitationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReferralInvitationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.ReferralInvitationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReferralInvitationPayload>
+          }
+          aggregate: {
+            args: Prisma.ReferralInvitationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReferralInvitation>
+          }
+          groupBy: {
+            args: Prisma.ReferralInvitationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReferralInvitationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReferralInvitationCountArgs<ExtArgs>
+            result: $Utils.Optional<ReferralInvitationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1447,11 +1533,15 @@ export namespace Prisma {
   export type UserCountOutputType = {
     applications: number
     jobPosts: number
+    sentInvitations: number
+    receivedInvitations: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     applications?: boolean | UserCountOutputTypeCountApplicationsArgs
     jobPosts?: boolean | UserCountOutputTypeCountJobPostsArgs
+    sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
+    receivedInvitations?: boolean | UserCountOutputTypeCountReceivedInvitationsArgs
   }
 
   // Custom InputTypes
@@ -1477,6 +1567,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountJobPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobPostWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSentInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReferralInvitationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReceivedInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReferralInvitationWhereInput
   }
 
 
@@ -1527,11 +1631,13 @@ export namespace Prisma {
   export type JobPostCountOutputType = {
     customFormFields: number
     applications: number
+    referralInvitations: number
   }
 
   export type JobPostCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customFormFields?: boolean | JobPostCountOutputTypeCountCustomFormFieldsArgs
     applications?: boolean | JobPostCountOutputTypeCountApplicationsArgs
+    referralInvitations?: boolean | JobPostCountOutputTypeCountReferralInvitationsArgs
   }
 
   // Custom InputTypes
@@ -1557,6 +1663,13 @@ export namespace Prisma {
    */
   export type JobPostCountOutputTypeCountApplicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReferralApplicationWhereInput
+  }
+
+  /**
+   * JobPostCountOutputType without action
+   */
+  export type JobPostCountOutputTypeCountReferralInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReferralInvitationWhereInput
   }
 
 
@@ -1765,6 +1878,8 @@ export namespace Prisma {
     applications?: boolean | User$applicationsArgs<ExtArgs>
     jobPosts?: boolean | User$jobPostsArgs<ExtArgs>
     referralForm?: boolean | User$referralFormArgs<ExtArgs>
+    sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
+    receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1798,6 +1913,8 @@ export namespace Prisma {
     applications?: boolean | User$applicationsArgs<ExtArgs>
     jobPosts?: boolean | User$jobPostsArgs<ExtArgs>
     referralForm?: boolean | User$referralFormArgs<ExtArgs>
+    sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
+    receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1810,6 +1927,8 @@ export namespace Prisma {
       applications: Prisma.$ReferralApplicationPayload<ExtArgs>[]
       jobPosts: Prisma.$JobPostPayload<ExtArgs>[]
       referralForm: Prisma.$ReferralFormPayload<ExtArgs> | null
+      sentInvitations: Prisma.$ReferralInvitationPayload<ExtArgs>[]
+      receivedInvitations: Prisma.$ReferralInvitationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2190,6 +2309,8 @@ export namespace Prisma {
     applications<T extends User$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, User$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralApplicationPayload<ExtArgs>, T, "findMany"> | Null>
     jobPosts<T extends User$jobPostsArgs<ExtArgs> = {}>(args?: Subset<T, User$jobPostsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPostPayload<ExtArgs>, T, "findMany"> | Null>
     referralForm<T extends User$referralFormArgs<ExtArgs> = {}>(args?: Subset<T, User$referralFormArgs<ExtArgs>>): Prisma__ReferralFormClient<$Result.GetResult<Prisma.$ReferralFormPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findMany"> | Null>
+    receivedInvitations<T extends User$receivedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2622,6 +2743,46 @@ export namespace Prisma {
      */
     include?: ReferralFormInclude<ExtArgs> | null
     where?: ReferralFormWhereInput
+  }
+
+  /**
+   * User.sentInvitations
+   */
+  export type User$sentInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    where?: ReferralInvitationWhereInput
+    orderBy?: ReferralInvitationOrderByWithRelationInput | ReferralInvitationOrderByWithRelationInput[]
+    cursor?: ReferralInvitationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReferralInvitationScalarFieldEnum | ReferralInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * User.receivedInvitations
+   */
+  export type User$receivedInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    where?: ReferralInvitationWhereInput
+    orderBy?: ReferralInvitationOrderByWithRelationInput | ReferralInvitationOrderByWithRelationInput[]
+    cursor?: ReferralInvitationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReferralInvitationScalarFieldEnum | ReferralInvitationScalarFieldEnum[]
   }
 
   /**
@@ -4820,6 +4981,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     customFormFields?: boolean | JobPost$customFormFieldsArgs<ExtArgs>
     applications?: boolean | JobPost$applicationsArgs<ExtArgs>
+    referralInvitations?: boolean | JobPost$referralInvitationsArgs<ExtArgs>
     _count?: boolean | JobPostCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobPost"]>
 
@@ -4858,6 +5020,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     customFormFields?: boolean | JobPost$customFormFieldsArgs<ExtArgs>
     applications?: boolean | JobPost$applicationsArgs<ExtArgs>
+    referralInvitations?: boolean | JobPost$referralInvitationsArgs<ExtArgs>
     _count?: boolean | JobPostCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobPostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4872,6 +5035,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       customFormFields: Prisma.$JobCustomFormFieldPayload<ExtArgs>[]
       applications: Prisma.$ReferralApplicationPayload<ExtArgs>[]
+      referralInvitations: Prisma.$ReferralInvitationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5253,6 +5417,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     customFormFields<T extends JobPost$customFormFieldsArgs<ExtArgs> = {}>(args?: Subset<T, JobPost$customFormFieldsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobCustomFormFieldPayload<ExtArgs>, T, "findMany"> | Null>
     applications<T extends JobPost$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, JobPost$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralApplicationPayload<ExtArgs>, T, "findMany"> | Null>
+    referralInvitations<T extends JobPost$referralInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, JobPost$referralInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5646,6 +5811,26 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ReferralApplicationScalarFieldEnum | ReferralApplicationScalarFieldEnum[]
+  }
+
+  /**
+   * JobPost.referralInvitations
+   */
+  export type JobPost$referralInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    where?: ReferralInvitationWhereInput
+    orderBy?: ReferralInvitationOrderByWithRelationInput | ReferralInvitationOrderByWithRelationInput[]
+    cursor?: ReferralInvitationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReferralInvitationScalarFieldEnum | ReferralInvitationScalarFieldEnum[]
   }
 
   /**
@@ -9657,6 +9842,976 @@ export namespace Prisma {
 
 
   /**
+   * Model ReferralInvitation
+   */
+
+  export type AggregateReferralInvitation = {
+    _count: ReferralInvitationCountAggregateOutputType | null
+    _min: ReferralInvitationMinAggregateOutputType | null
+    _max: ReferralInvitationMaxAggregateOutputType | null
+  }
+
+  export type ReferralInvitationMinAggregateOutputType = {
+    id: string | null
+    inviterId: string | null
+    candidateId: string | null
+    jobPostId: string | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type ReferralInvitationMaxAggregateOutputType = {
+    id: string | null
+    inviterId: string | null
+    candidateId: string | null
+    jobPostId: string | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type ReferralInvitationCountAggregateOutputType = {
+    id: number
+    inviterId: number
+    candidateId: number
+    jobPostId: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ReferralInvitationMinAggregateInputType = {
+    id?: true
+    inviterId?: true
+    candidateId?: true
+    jobPostId?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type ReferralInvitationMaxAggregateInputType = {
+    id?: true
+    inviterId?: true
+    candidateId?: true
+    jobPostId?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type ReferralInvitationCountAggregateInputType = {
+    id?: true
+    inviterId?: true
+    candidateId?: true
+    jobPostId?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ReferralInvitationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReferralInvitation to aggregate.
+     */
+    where?: ReferralInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReferralInvitations to fetch.
+     */
+    orderBy?: ReferralInvitationOrderByWithRelationInput | ReferralInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReferralInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReferralInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReferralInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReferralInvitations
+    **/
+    _count?: true | ReferralInvitationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReferralInvitationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReferralInvitationMaxAggregateInputType
+  }
+
+  export type GetReferralInvitationAggregateType<T extends ReferralInvitationAggregateArgs> = {
+        [P in keyof T & keyof AggregateReferralInvitation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReferralInvitation[P]>
+      : GetScalarType<T[P], AggregateReferralInvitation[P]>
+  }
+
+
+
+
+  export type ReferralInvitationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReferralInvitationWhereInput
+    orderBy?: ReferralInvitationOrderByWithAggregationInput | ReferralInvitationOrderByWithAggregationInput[]
+    by: ReferralInvitationScalarFieldEnum[] | ReferralInvitationScalarFieldEnum
+    having?: ReferralInvitationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReferralInvitationCountAggregateInputType | true
+    _min?: ReferralInvitationMinAggregateInputType
+    _max?: ReferralInvitationMaxAggregateInputType
+  }
+
+  export type ReferralInvitationGroupByOutputType = {
+    id: string
+    inviterId: string
+    candidateId: string
+    jobPostId: string | null
+    status: string
+    createdAt: Date
+    _count: ReferralInvitationCountAggregateOutputType | null
+    _min: ReferralInvitationMinAggregateOutputType | null
+    _max: ReferralInvitationMaxAggregateOutputType | null
+  }
+
+  type GetReferralInvitationGroupByPayload<T extends ReferralInvitationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReferralInvitationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReferralInvitationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReferralInvitationGroupByOutputType[P]>
+            : GetScalarType<T[P], ReferralInvitationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReferralInvitationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inviterId?: boolean
+    candidateId?: boolean
+    jobPostId?: boolean
+    status?: boolean
+    createdAt?: boolean
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    candidate?: boolean | UserDefaultArgs<ExtArgs>
+    jobPost?: boolean | ReferralInvitation$jobPostArgs<ExtArgs>
+  }, ExtArgs["result"]["referralInvitation"]>
+
+  export type ReferralInvitationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inviterId?: boolean
+    candidateId?: boolean
+    jobPostId?: boolean
+    status?: boolean
+    createdAt?: boolean
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    candidate?: boolean | UserDefaultArgs<ExtArgs>
+    jobPost?: boolean | ReferralInvitation$jobPostArgs<ExtArgs>
+  }, ExtArgs["result"]["referralInvitation"]>
+
+  export type ReferralInvitationSelectScalar = {
+    id?: boolean
+    inviterId?: boolean
+    candidateId?: boolean
+    jobPostId?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type ReferralInvitationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    candidate?: boolean | UserDefaultArgs<ExtArgs>
+    jobPost?: boolean | ReferralInvitation$jobPostArgs<ExtArgs>
+  }
+  export type ReferralInvitationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inviter?: boolean | UserDefaultArgs<ExtArgs>
+    candidate?: boolean | UserDefaultArgs<ExtArgs>
+    jobPost?: boolean | ReferralInvitation$jobPostArgs<ExtArgs>
+  }
+
+  export type $ReferralInvitationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReferralInvitation"
+    objects: {
+      inviter: Prisma.$UserPayload<ExtArgs>
+      candidate: Prisma.$UserPayload<ExtArgs>
+      jobPost: Prisma.$JobPostPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      inviterId: string
+      candidateId: string
+      jobPostId: string | null
+      status: string
+      createdAt: Date
+    }, ExtArgs["result"]["referralInvitation"]>
+    composites: {}
+  }
+
+  type ReferralInvitationGetPayload<S extends boolean | null | undefined | ReferralInvitationDefaultArgs> = $Result.GetResult<Prisma.$ReferralInvitationPayload, S>
+
+  type ReferralInvitationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<ReferralInvitationFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: ReferralInvitationCountAggregateInputType | true
+    }
+
+  export interface ReferralInvitationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReferralInvitation'], meta: { name: 'ReferralInvitation' } }
+    /**
+     * Find zero or one ReferralInvitation that matches the filter.
+     * @param {ReferralInvitationFindUniqueArgs} args - Arguments to find a ReferralInvitation
+     * @example
+     * // Get one ReferralInvitation
+     * const referralInvitation = await prisma.referralInvitation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReferralInvitationFindUniqueArgs>(args: SelectSubset<T, ReferralInvitationFindUniqueArgs<ExtArgs>>): Prisma__ReferralInvitationClient<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one ReferralInvitation that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {ReferralInvitationFindUniqueOrThrowArgs} args - Arguments to find a ReferralInvitation
+     * @example
+     * // Get one ReferralInvitation
+     * const referralInvitation = await prisma.referralInvitation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReferralInvitationFindUniqueOrThrowArgs>(args: SelectSubset<T, ReferralInvitationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReferralInvitationClient<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first ReferralInvitation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReferralInvitationFindFirstArgs} args - Arguments to find a ReferralInvitation
+     * @example
+     * // Get one ReferralInvitation
+     * const referralInvitation = await prisma.referralInvitation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReferralInvitationFindFirstArgs>(args?: SelectSubset<T, ReferralInvitationFindFirstArgs<ExtArgs>>): Prisma__ReferralInvitationClient<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first ReferralInvitation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReferralInvitationFindFirstOrThrowArgs} args - Arguments to find a ReferralInvitation
+     * @example
+     * // Get one ReferralInvitation
+     * const referralInvitation = await prisma.referralInvitation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReferralInvitationFindFirstOrThrowArgs>(args?: SelectSubset<T, ReferralInvitationFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReferralInvitationClient<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more ReferralInvitations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReferralInvitationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReferralInvitations
+     * const referralInvitations = await prisma.referralInvitation.findMany()
+     * 
+     * // Get first 10 ReferralInvitations
+     * const referralInvitations = await prisma.referralInvitation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const referralInvitationWithIdOnly = await prisma.referralInvitation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReferralInvitationFindManyArgs>(args?: SelectSubset<T, ReferralInvitationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a ReferralInvitation.
+     * @param {ReferralInvitationCreateArgs} args - Arguments to create a ReferralInvitation.
+     * @example
+     * // Create one ReferralInvitation
+     * const ReferralInvitation = await prisma.referralInvitation.create({
+     *   data: {
+     *     // ... data to create a ReferralInvitation
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReferralInvitationCreateArgs>(args: SelectSubset<T, ReferralInvitationCreateArgs<ExtArgs>>): Prisma__ReferralInvitationClient<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many ReferralInvitations.
+     * @param {ReferralInvitationCreateManyArgs} args - Arguments to create many ReferralInvitations.
+     * @example
+     * // Create many ReferralInvitations
+     * const referralInvitation = await prisma.referralInvitation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReferralInvitationCreateManyArgs>(args?: SelectSubset<T, ReferralInvitationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReferralInvitations and returns the data saved in the database.
+     * @param {ReferralInvitationCreateManyAndReturnArgs} args - Arguments to create many ReferralInvitations.
+     * @example
+     * // Create many ReferralInvitations
+     * const referralInvitation = await prisma.referralInvitation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReferralInvitations and only return the `id`
+     * const referralInvitationWithIdOnly = await prisma.referralInvitation.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReferralInvitationCreateManyAndReturnArgs>(args?: SelectSubset<T, ReferralInvitationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a ReferralInvitation.
+     * @param {ReferralInvitationDeleteArgs} args - Arguments to delete one ReferralInvitation.
+     * @example
+     * // Delete one ReferralInvitation
+     * const ReferralInvitation = await prisma.referralInvitation.delete({
+     *   where: {
+     *     // ... filter to delete one ReferralInvitation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReferralInvitationDeleteArgs>(args: SelectSubset<T, ReferralInvitationDeleteArgs<ExtArgs>>): Prisma__ReferralInvitationClient<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one ReferralInvitation.
+     * @param {ReferralInvitationUpdateArgs} args - Arguments to update one ReferralInvitation.
+     * @example
+     * // Update one ReferralInvitation
+     * const referralInvitation = await prisma.referralInvitation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReferralInvitationUpdateArgs>(args: SelectSubset<T, ReferralInvitationUpdateArgs<ExtArgs>>): Prisma__ReferralInvitationClient<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more ReferralInvitations.
+     * @param {ReferralInvitationDeleteManyArgs} args - Arguments to filter ReferralInvitations to delete.
+     * @example
+     * // Delete a few ReferralInvitations
+     * const { count } = await prisma.referralInvitation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReferralInvitationDeleteManyArgs>(args?: SelectSubset<T, ReferralInvitationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReferralInvitations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReferralInvitationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReferralInvitations
+     * const referralInvitation = await prisma.referralInvitation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReferralInvitationUpdateManyArgs>(args: SelectSubset<T, ReferralInvitationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ReferralInvitation.
+     * @param {ReferralInvitationUpsertArgs} args - Arguments to update or create a ReferralInvitation.
+     * @example
+     * // Update or create a ReferralInvitation
+     * const referralInvitation = await prisma.referralInvitation.upsert({
+     *   create: {
+     *     // ... data to create a ReferralInvitation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReferralInvitation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReferralInvitationUpsertArgs>(args: SelectSubset<T, ReferralInvitationUpsertArgs<ExtArgs>>): Prisma__ReferralInvitationClient<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of ReferralInvitations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReferralInvitationCountArgs} args - Arguments to filter ReferralInvitations to count.
+     * @example
+     * // Count the number of ReferralInvitations
+     * const count = await prisma.referralInvitation.count({
+     *   where: {
+     *     // ... the filter for the ReferralInvitations we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReferralInvitationCountArgs>(
+      args?: Subset<T, ReferralInvitationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReferralInvitationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReferralInvitation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReferralInvitationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReferralInvitationAggregateArgs>(args: Subset<T, ReferralInvitationAggregateArgs>): Prisma.PrismaPromise<GetReferralInvitationAggregateType<T>>
+
+    /**
+     * Group by ReferralInvitation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReferralInvitationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReferralInvitationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReferralInvitationGroupByArgs['orderBy'] }
+        : { orderBy?: ReferralInvitationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReferralInvitationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReferralInvitationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReferralInvitation model
+   */
+  readonly fields: ReferralInvitationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReferralInvitation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReferralInvitationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    inviter<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    candidate<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    jobPost<T extends ReferralInvitation$jobPostArgs<ExtArgs> = {}>(args?: Subset<T, ReferralInvitation$jobPostArgs<ExtArgs>>): Prisma__JobPostClient<$Result.GetResult<Prisma.$JobPostPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReferralInvitation model
+   */ 
+  interface ReferralInvitationFieldRefs {
+    readonly id: FieldRef<"ReferralInvitation", 'String'>
+    readonly inviterId: FieldRef<"ReferralInvitation", 'String'>
+    readonly candidateId: FieldRef<"ReferralInvitation", 'String'>
+    readonly jobPostId: FieldRef<"ReferralInvitation", 'String'>
+    readonly status: FieldRef<"ReferralInvitation", 'String'>
+    readonly createdAt: FieldRef<"ReferralInvitation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReferralInvitation findUnique
+   */
+  export type ReferralInvitationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ReferralInvitation to fetch.
+     */
+    where: ReferralInvitationWhereUniqueInput
+  }
+
+  /**
+   * ReferralInvitation findUniqueOrThrow
+   */
+  export type ReferralInvitationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ReferralInvitation to fetch.
+     */
+    where: ReferralInvitationWhereUniqueInput
+  }
+
+  /**
+   * ReferralInvitation findFirst
+   */
+  export type ReferralInvitationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ReferralInvitation to fetch.
+     */
+    where?: ReferralInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReferralInvitations to fetch.
+     */
+    orderBy?: ReferralInvitationOrderByWithRelationInput | ReferralInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReferralInvitations.
+     */
+    cursor?: ReferralInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReferralInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReferralInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReferralInvitations.
+     */
+    distinct?: ReferralInvitationScalarFieldEnum | ReferralInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * ReferralInvitation findFirstOrThrow
+   */
+  export type ReferralInvitationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ReferralInvitation to fetch.
+     */
+    where?: ReferralInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReferralInvitations to fetch.
+     */
+    orderBy?: ReferralInvitationOrderByWithRelationInput | ReferralInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReferralInvitations.
+     */
+    cursor?: ReferralInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReferralInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReferralInvitations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReferralInvitations.
+     */
+    distinct?: ReferralInvitationScalarFieldEnum | ReferralInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * ReferralInvitation findMany
+   */
+  export type ReferralInvitationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * Filter, which ReferralInvitations to fetch.
+     */
+    where?: ReferralInvitationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReferralInvitations to fetch.
+     */
+    orderBy?: ReferralInvitationOrderByWithRelationInput | ReferralInvitationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReferralInvitations.
+     */
+    cursor?: ReferralInvitationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReferralInvitations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReferralInvitations.
+     */
+    skip?: number
+    distinct?: ReferralInvitationScalarFieldEnum | ReferralInvitationScalarFieldEnum[]
+  }
+
+  /**
+   * ReferralInvitation create
+   */
+  export type ReferralInvitationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReferralInvitation.
+     */
+    data: XOR<ReferralInvitationCreateInput, ReferralInvitationUncheckedCreateInput>
+  }
+
+  /**
+   * ReferralInvitation createMany
+   */
+  export type ReferralInvitationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReferralInvitations.
+     */
+    data: ReferralInvitationCreateManyInput | ReferralInvitationCreateManyInput[]
+  }
+
+  /**
+   * ReferralInvitation createManyAndReturn
+   */
+  export type ReferralInvitationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many ReferralInvitations.
+     */
+    data: ReferralInvitationCreateManyInput | ReferralInvitationCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReferralInvitation update
+   */
+  export type ReferralInvitationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReferralInvitation.
+     */
+    data: XOR<ReferralInvitationUpdateInput, ReferralInvitationUncheckedUpdateInput>
+    /**
+     * Choose, which ReferralInvitation to update.
+     */
+    where: ReferralInvitationWhereUniqueInput
+  }
+
+  /**
+   * ReferralInvitation updateMany
+   */
+  export type ReferralInvitationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReferralInvitations.
+     */
+    data: XOR<ReferralInvitationUpdateManyMutationInput, ReferralInvitationUncheckedUpdateManyInput>
+    /**
+     * Filter which ReferralInvitations to update
+     */
+    where?: ReferralInvitationWhereInput
+  }
+
+  /**
+   * ReferralInvitation upsert
+   */
+  export type ReferralInvitationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReferralInvitation to update in case it exists.
+     */
+    where: ReferralInvitationWhereUniqueInput
+    /**
+     * In case the ReferralInvitation found by the `where` argument doesn't exist, create a new ReferralInvitation with this data.
+     */
+    create: XOR<ReferralInvitationCreateInput, ReferralInvitationUncheckedCreateInput>
+    /**
+     * In case the ReferralInvitation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReferralInvitationUpdateInput, ReferralInvitationUncheckedUpdateInput>
+  }
+
+  /**
+   * ReferralInvitation delete
+   */
+  export type ReferralInvitationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+    /**
+     * Filter which ReferralInvitation to delete.
+     */
+    where: ReferralInvitationWhereUniqueInput
+  }
+
+  /**
+   * ReferralInvitation deleteMany
+   */
+  export type ReferralInvitationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReferralInvitations to delete
+     */
+    where?: ReferralInvitationWhereInput
+  }
+
+  /**
+   * ReferralInvitation.jobPost
+   */
+  export type ReferralInvitation$jobPostArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobPost
+     */
+    select?: JobPostSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobPostInclude<ExtArgs> | null
+    where?: JobPostWhereInput
+  }
+
+  /**
+   * ReferralInvitation without action
+   */
+  export type ReferralInvitationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReferralInvitation
+     */
+    select?: ReferralInvitationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReferralInvitationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9782,6 +10937,18 @@ export namespace Prisma {
   export type JobSeekerProfileScalarFieldEnum = (typeof JobSeekerProfileScalarFieldEnum)[keyof typeof JobSeekerProfileScalarFieldEnum]
 
 
+  export const ReferralInvitationScalarFieldEnum: {
+    id: 'id',
+    inviterId: 'inviterId',
+    candidateId: 'candidateId',
+    jobPostId: 'jobPostId',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type ReferralInvitationScalarFieldEnum = (typeof ReferralInvitationScalarFieldEnum)[keyof typeof ReferralInvitationScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -9859,6 +11026,8 @@ export namespace Prisma {
     applications?: ReferralApplicationListRelationFilter
     jobPosts?: JobPostListRelationFilter
     referralForm?: XOR<ReferralFormNullableRelationFilter, ReferralFormWhereInput> | null
+    sentInvitations?: ReferralInvitationListRelationFilter
+    receivedInvitations?: ReferralInvitationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -9876,6 +11045,8 @@ export namespace Prisma {
     applications?: ReferralApplicationOrderByRelationAggregateInput
     jobPosts?: JobPostOrderByRelationAggregateInput
     referralForm?: ReferralFormOrderByWithRelationInput
+    sentInvitations?: ReferralInvitationOrderByRelationAggregateInput
+    receivedInvitations?: ReferralInvitationOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -9896,6 +11067,8 @@ export namespace Prisma {
     applications?: ReferralApplicationListRelationFilter
     jobPosts?: JobPostListRelationFilter
     referralForm?: XOR<ReferralFormNullableRelationFilter, ReferralFormWhereInput> | null
+    sentInvitations?: ReferralInvitationListRelationFilter
+    receivedInvitations?: ReferralInvitationListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -10073,6 +11246,7 @@ export namespace Prisma {
     user?: XOR<UserRelationFilter, UserWhereInput>
     customFormFields?: JobCustomFormFieldListRelationFilter
     applications?: ReferralApplicationListRelationFilter
+    referralInvitations?: ReferralInvitationListRelationFilter
   }
 
   export type JobPostOrderByWithRelationInput = {
@@ -10091,6 +11265,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     customFormFields?: JobCustomFormFieldOrderByRelationAggregateInput
     applications?: ReferralApplicationOrderByRelationAggregateInput
+    referralInvitations?: ReferralInvitationOrderByRelationAggregateInput
   }
 
   export type JobPostWhereUniqueInput = Prisma.AtLeast<{
@@ -10112,6 +11287,7 @@ export namespace Prisma {
     user?: XOR<UserRelationFilter, UserWhereInput>
     customFormFields?: JobCustomFormFieldListRelationFilter
     applications?: ReferralApplicationListRelationFilter
+    referralInvitations?: ReferralInvitationListRelationFilter
   }, "id">
 
   export type JobPostOrderByWithAggregationInput = {
@@ -10453,6 +11629,73 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"JobSeekerProfile"> | Date | string
   }
 
+  export type ReferralInvitationWhereInput = {
+    AND?: ReferralInvitationWhereInput | ReferralInvitationWhereInput[]
+    OR?: ReferralInvitationWhereInput[]
+    NOT?: ReferralInvitationWhereInput | ReferralInvitationWhereInput[]
+    id?: StringFilter<"ReferralInvitation"> | string
+    inviterId?: StringFilter<"ReferralInvitation"> | string
+    candidateId?: StringFilter<"ReferralInvitation"> | string
+    jobPostId?: StringNullableFilter<"ReferralInvitation"> | string | null
+    status?: StringFilter<"ReferralInvitation"> | string
+    createdAt?: DateTimeFilter<"ReferralInvitation"> | Date | string
+    inviter?: XOR<UserRelationFilter, UserWhereInput>
+    candidate?: XOR<UserRelationFilter, UserWhereInput>
+    jobPost?: XOR<JobPostNullableRelationFilter, JobPostWhereInput> | null
+  }
+
+  export type ReferralInvitationOrderByWithRelationInput = {
+    id?: SortOrder
+    inviterId?: SortOrder
+    candidateId?: SortOrder
+    jobPostId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    inviter?: UserOrderByWithRelationInput
+    candidate?: UserOrderByWithRelationInput
+    jobPost?: JobPostOrderByWithRelationInput
+  }
+
+  export type ReferralInvitationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    inviterId_candidateId?: ReferralInvitationInviterIdCandidateIdCompoundUniqueInput
+    AND?: ReferralInvitationWhereInput | ReferralInvitationWhereInput[]
+    OR?: ReferralInvitationWhereInput[]
+    NOT?: ReferralInvitationWhereInput | ReferralInvitationWhereInput[]
+    inviterId?: StringFilter<"ReferralInvitation"> | string
+    candidateId?: StringFilter<"ReferralInvitation"> | string
+    jobPostId?: StringNullableFilter<"ReferralInvitation"> | string | null
+    status?: StringFilter<"ReferralInvitation"> | string
+    createdAt?: DateTimeFilter<"ReferralInvitation"> | Date | string
+    inviter?: XOR<UserRelationFilter, UserWhereInput>
+    candidate?: XOR<UserRelationFilter, UserWhereInput>
+    jobPost?: XOR<JobPostNullableRelationFilter, JobPostWhereInput> | null
+  }, "id" | "inviterId_candidateId">
+
+  export type ReferralInvitationOrderByWithAggregationInput = {
+    id?: SortOrder
+    inviterId?: SortOrder
+    candidateId?: SortOrder
+    jobPostId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: ReferralInvitationCountOrderByAggregateInput
+    _max?: ReferralInvitationMaxOrderByAggregateInput
+    _min?: ReferralInvitationMinOrderByAggregateInput
+  }
+
+  export type ReferralInvitationScalarWhereWithAggregatesInput = {
+    AND?: ReferralInvitationScalarWhereWithAggregatesInput | ReferralInvitationScalarWhereWithAggregatesInput[]
+    OR?: ReferralInvitationScalarWhereWithAggregatesInput[]
+    NOT?: ReferralInvitationScalarWhereWithAggregatesInput | ReferralInvitationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReferralInvitation"> | string
+    inviterId?: StringWithAggregatesFilter<"ReferralInvitation"> | string
+    candidateId?: StringWithAggregatesFilter<"ReferralInvitation"> | string
+    jobPostId?: StringNullableWithAggregatesFilter<"ReferralInvitation"> | string | null
+    status?: StringWithAggregatesFilter<"ReferralInvitation"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ReferralInvitation"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -10468,6 +11711,8 @@ export namespace Prisma {
     applications?: ReferralApplicationCreateNestedManyWithoutUserInput
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -10485,6 +11730,8 @@ export namespace Prisma {
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
   }
 
   export type UserUpdateInput = {
@@ -10502,6 +11749,8 @@ export namespace Prisma {
     applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -10519,6 +11768,8 @@ export namespace Prisma {
     applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -10703,6 +11954,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutJobPostsInput
     customFormFields?: JobCustomFormFieldCreateNestedManyWithoutJobPostInput
     applications?: ReferralApplicationCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostUncheckedCreateInput = {
@@ -10719,6 +11971,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     customFormFields?: JobCustomFormFieldUncheckedCreateNestedManyWithoutJobPostInput
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostUpdateInput = {
@@ -10735,6 +11988,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutJobPostsNestedInput
     customFormFields?: JobCustomFormFieldUpdateManyWithoutJobPostNestedInput
     applications?: ReferralApplicationUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUpdateManyWithoutJobPostNestedInput
   }
 
   export type JobPostUncheckedUpdateInput = {
@@ -10751,6 +12005,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customFormFields?: JobCustomFormFieldUncheckedUpdateManyWithoutJobPostNestedInput
     applications?: ReferralApplicationUncheckedUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUncheckedUpdateManyWithoutJobPostNestedInput
   }
 
   export type JobPostCreateManyInput = {
@@ -11117,6 +12372,66 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReferralInvitationCreateInput = {
+    id?: string
+    status?: string
+    createdAt?: Date | string
+    inviter: UserCreateNestedOneWithoutSentInvitationsInput
+    candidate: UserCreateNestedOneWithoutReceivedInvitationsInput
+    jobPost?: JobPostCreateNestedOneWithoutReferralInvitationsInput
+  }
+
+  export type ReferralInvitationUncheckedCreateInput = {
+    id?: string
+    inviterId: string
+    candidateId: string
+    jobPostId?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReferralInvitationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inviter?: UserUpdateOneRequiredWithoutSentInvitationsNestedInput
+    candidate?: UserUpdateOneRequiredWithoutReceivedInvitationsNestedInput
+    jobPost?: JobPostUpdateOneWithoutReferralInvitationsNestedInput
+  }
+
+  export type ReferralInvitationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inviterId?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    jobPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReferralInvitationCreateManyInput = {
+    id?: string
+    inviterId: string
+    candidateId: string
+    jobPostId?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReferralInvitationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReferralInvitationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inviterId?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    jobPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -11194,6 +12509,12 @@ export namespace Prisma {
     isNot?: ReferralFormWhereInput | null
   }
 
+  export type ReferralInvitationListRelationFilter = {
+    every?: ReferralInvitationWhereInput
+    some?: ReferralInvitationWhereInput
+    none?: ReferralInvitationWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -11204,6 +12525,10 @@ export namespace Prisma {
   }
 
   export type JobPostOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReferralInvitationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -11678,6 +13003,38 @@ export namespace Prisma {
     experience?: SortOrder
   }
 
+  export type ReferralInvitationInviterIdCandidateIdCompoundUniqueInput = {
+    inviterId: string
+    candidateId: string
+  }
+
+  export type ReferralInvitationCountOrderByAggregateInput = {
+    id?: SortOrder
+    inviterId?: SortOrder
+    candidateId?: SortOrder
+    jobPostId?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReferralInvitationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    inviterId?: SortOrder
+    candidateId?: SortOrder
+    jobPostId?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ReferralInvitationMinOrderByAggregateInput = {
+    id?: SortOrder
+    inviterId?: SortOrder
+    candidateId?: SortOrder
+    jobPostId?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type EmployeeProfileCreateNestedOneWithoutUserInput = {
     create?: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmployeeProfileCreateOrConnectWithoutUserInput
@@ -11710,6 +13067,20 @@ export namespace Prisma {
     connect?: ReferralFormWhereUniqueInput
   }
 
+  export type ReferralInvitationCreateNestedManyWithoutInviterInput = {
+    create?: XOR<ReferralInvitationCreateWithoutInviterInput, ReferralInvitationUncheckedCreateWithoutInviterInput> | ReferralInvitationCreateWithoutInviterInput[] | ReferralInvitationUncheckedCreateWithoutInviterInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutInviterInput | ReferralInvitationCreateOrConnectWithoutInviterInput[]
+    createMany?: ReferralInvitationCreateManyInviterInputEnvelope
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+  }
+
+  export type ReferralInvitationCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<ReferralInvitationCreateWithoutCandidateInput, ReferralInvitationUncheckedCreateWithoutCandidateInput> | ReferralInvitationCreateWithoutCandidateInput[] | ReferralInvitationUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutCandidateInput | ReferralInvitationCreateOrConnectWithoutCandidateInput[]
+    createMany?: ReferralInvitationCreateManyCandidateInputEnvelope
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+  }
+
   export type EmployeeProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmployeeProfileCreateOrConnectWithoutUserInput
@@ -11740,6 +13111,20 @@ export namespace Prisma {
     create?: XOR<ReferralFormCreateWithoutUserInput, ReferralFormUncheckedCreateWithoutUserInput>
     connectOrCreate?: ReferralFormCreateOrConnectWithoutUserInput
     connect?: ReferralFormWhereUniqueInput
+  }
+
+  export type ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput = {
+    create?: XOR<ReferralInvitationCreateWithoutInviterInput, ReferralInvitationUncheckedCreateWithoutInviterInput> | ReferralInvitationCreateWithoutInviterInput[] | ReferralInvitationUncheckedCreateWithoutInviterInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutInviterInput | ReferralInvitationCreateOrConnectWithoutInviterInput[]
+    createMany?: ReferralInvitationCreateManyInviterInputEnvelope
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+  }
+
+  export type ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput = {
+    create?: XOR<ReferralInvitationCreateWithoutCandidateInput, ReferralInvitationUncheckedCreateWithoutCandidateInput> | ReferralInvitationCreateWithoutCandidateInput[] | ReferralInvitationUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutCandidateInput | ReferralInvitationCreateOrConnectWithoutCandidateInput[]
+    createMany?: ReferralInvitationCreateManyCandidateInputEnvelope
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -11816,6 +13201,34 @@ export namespace Prisma {
     update?: XOR<XOR<ReferralFormUpdateToOneWithWhereWithoutUserInput, ReferralFormUpdateWithoutUserInput>, ReferralFormUncheckedUpdateWithoutUserInput>
   }
 
+  export type ReferralInvitationUpdateManyWithoutInviterNestedInput = {
+    create?: XOR<ReferralInvitationCreateWithoutInviterInput, ReferralInvitationUncheckedCreateWithoutInviterInput> | ReferralInvitationCreateWithoutInviterInput[] | ReferralInvitationUncheckedCreateWithoutInviterInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutInviterInput | ReferralInvitationCreateOrConnectWithoutInviterInput[]
+    upsert?: ReferralInvitationUpsertWithWhereUniqueWithoutInviterInput | ReferralInvitationUpsertWithWhereUniqueWithoutInviterInput[]
+    createMany?: ReferralInvitationCreateManyInviterInputEnvelope
+    set?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    disconnect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    delete?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    update?: ReferralInvitationUpdateWithWhereUniqueWithoutInviterInput | ReferralInvitationUpdateWithWhereUniqueWithoutInviterInput[]
+    updateMany?: ReferralInvitationUpdateManyWithWhereWithoutInviterInput | ReferralInvitationUpdateManyWithWhereWithoutInviterInput[]
+    deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
+  }
+
+  export type ReferralInvitationUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<ReferralInvitationCreateWithoutCandidateInput, ReferralInvitationUncheckedCreateWithoutCandidateInput> | ReferralInvitationCreateWithoutCandidateInput[] | ReferralInvitationUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutCandidateInput | ReferralInvitationCreateOrConnectWithoutCandidateInput[]
+    upsert?: ReferralInvitationUpsertWithWhereUniqueWithoutCandidateInput | ReferralInvitationUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: ReferralInvitationCreateManyCandidateInputEnvelope
+    set?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    disconnect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    delete?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    update?: ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput | ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: ReferralInvitationUpdateManyWithWhereWithoutCandidateInput | ReferralInvitationUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
+  }
+
   export type EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmployeeProfileCreateOrConnectWithoutUserInput
@@ -11872,6 +13285,34 @@ export namespace Prisma {
     delete?: ReferralFormWhereInput | boolean
     connect?: ReferralFormWhereUniqueInput
     update?: XOR<XOR<ReferralFormUpdateToOneWithWhereWithoutUserInput, ReferralFormUpdateWithoutUserInput>, ReferralFormUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput = {
+    create?: XOR<ReferralInvitationCreateWithoutInviterInput, ReferralInvitationUncheckedCreateWithoutInviterInput> | ReferralInvitationCreateWithoutInviterInput[] | ReferralInvitationUncheckedCreateWithoutInviterInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutInviterInput | ReferralInvitationCreateOrConnectWithoutInviterInput[]
+    upsert?: ReferralInvitationUpsertWithWhereUniqueWithoutInviterInput | ReferralInvitationUpsertWithWhereUniqueWithoutInviterInput[]
+    createMany?: ReferralInvitationCreateManyInviterInputEnvelope
+    set?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    disconnect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    delete?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    update?: ReferralInvitationUpdateWithWhereUniqueWithoutInviterInput | ReferralInvitationUpdateWithWhereUniqueWithoutInviterInput[]
+    updateMany?: ReferralInvitationUpdateManyWithWhereWithoutInviterInput | ReferralInvitationUpdateManyWithWhereWithoutInviterInput[]
+    deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
+  }
+
+  export type ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput = {
+    create?: XOR<ReferralInvitationCreateWithoutCandidateInput, ReferralInvitationUncheckedCreateWithoutCandidateInput> | ReferralInvitationCreateWithoutCandidateInput[] | ReferralInvitationUncheckedCreateWithoutCandidateInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutCandidateInput | ReferralInvitationCreateOrConnectWithoutCandidateInput[]
+    upsert?: ReferralInvitationUpsertWithWhereUniqueWithoutCandidateInput | ReferralInvitationUpsertWithWhereUniqueWithoutCandidateInput[]
+    createMany?: ReferralInvitationCreateManyCandidateInputEnvelope
+    set?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    disconnect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    delete?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    update?: ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput | ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput[]
+    updateMany?: ReferralInvitationUpdateManyWithWhereWithoutCandidateInput | ReferralInvitationUpdateManyWithWhereWithoutCandidateInput[]
+    deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
   }
 
   export type EmployeeProfileCreateNestedManyWithoutCompanyInput = {
@@ -12012,6 +13453,13 @@ export namespace Prisma {
     connect?: ReferralApplicationWhereUniqueInput | ReferralApplicationWhereUniqueInput[]
   }
 
+  export type ReferralInvitationCreateNestedManyWithoutJobPostInput = {
+    create?: XOR<ReferralInvitationCreateWithoutJobPostInput, ReferralInvitationUncheckedCreateWithoutJobPostInput> | ReferralInvitationCreateWithoutJobPostInput[] | ReferralInvitationUncheckedCreateWithoutJobPostInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutJobPostInput | ReferralInvitationCreateOrConnectWithoutJobPostInput[]
+    createMany?: ReferralInvitationCreateManyJobPostInputEnvelope
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+  }
+
   export type JobCustomFormFieldUncheckedCreateNestedManyWithoutJobPostInput = {
     create?: XOR<JobCustomFormFieldCreateWithoutJobPostInput, JobCustomFormFieldUncheckedCreateWithoutJobPostInput> | JobCustomFormFieldCreateWithoutJobPostInput[] | JobCustomFormFieldUncheckedCreateWithoutJobPostInput[]
     connectOrCreate?: JobCustomFormFieldCreateOrConnectWithoutJobPostInput | JobCustomFormFieldCreateOrConnectWithoutJobPostInput[]
@@ -12024,6 +13472,13 @@ export namespace Prisma {
     connectOrCreate?: ReferralApplicationCreateOrConnectWithoutJobPostInput | ReferralApplicationCreateOrConnectWithoutJobPostInput[]
     createMany?: ReferralApplicationCreateManyJobPostInputEnvelope
     connect?: ReferralApplicationWhereUniqueInput | ReferralApplicationWhereUniqueInput[]
+  }
+
+  export type ReferralInvitationUncheckedCreateNestedManyWithoutJobPostInput = {
+    create?: XOR<ReferralInvitationCreateWithoutJobPostInput, ReferralInvitationUncheckedCreateWithoutJobPostInput> | ReferralInvitationCreateWithoutJobPostInput[] | ReferralInvitationUncheckedCreateWithoutJobPostInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutJobPostInput | ReferralInvitationCreateOrConnectWithoutJobPostInput[]
+    createMany?: ReferralInvitationCreateManyJobPostInputEnvelope
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
   }
 
   export type NullableIntFieldUpdateOperationsInput = {
@@ -12078,6 +13533,20 @@ export namespace Prisma {
     deleteMany?: ReferralApplicationScalarWhereInput | ReferralApplicationScalarWhereInput[]
   }
 
+  export type ReferralInvitationUpdateManyWithoutJobPostNestedInput = {
+    create?: XOR<ReferralInvitationCreateWithoutJobPostInput, ReferralInvitationUncheckedCreateWithoutJobPostInput> | ReferralInvitationCreateWithoutJobPostInput[] | ReferralInvitationUncheckedCreateWithoutJobPostInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutJobPostInput | ReferralInvitationCreateOrConnectWithoutJobPostInput[]
+    upsert?: ReferralInvitationUpsertWithWhereUniqueWithoutJobPostInput | ReferralInvitationUpsertWithWhereUniqueWithoutJobPostInput[]
+    createMany?: ReferralInvitationCreateManyJobPostInputEnvelope
+    set?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    disconnect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    delete?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    update?: ReferralInvitationUpdateWithWhereUniqueWithoutJobPostInput | ReferralInvitationUpdateWithWhereUniqueWithoutJobPostInput[]
+    updateMany?: ReferralInvitationUpdateManyWithWhereWithoutJobPostInput | ReferralInvitationUpdateManyWithWhereWithoutJobPostInput[]
+    deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
+  }
+
   export type JobCustomFormFieldUncheckedUpdateManyWithoutJobPostNestedInput = {
     create?: XOR<JobCustomFormFieldCreateWithoutJobPostInput, JobCustomFormFieldUncheckedCreateWithoutJobPostInput> | JobCustomFormFieldCreateWithoutJobPostInput[] | JobCustomFormFieldUncheckedCreateWithoutJobPostInput[]
     connectOrCreate?: JobCustomFormFieldCreateOrConnectWithoutJobPostInput | JobCustomFormFieldCreateOrConnectWithoutJobPostInput[]
@@ -12104,6 +13573,20 @@ export namespace Prisma {
     update?: ReferralApplicationUpdateWithWhereUniqueWithoutJobPostInput | ReferralApplicationUpdateWithWhereUniqueWithoutJobPostInput[]
     updateMany?: ReferralApplicationUpdateManyWithWhereWithoutJobPostInput | ReferralApplicationUpdateManyWithWhereWithoutJobPostInput[]
     deleteMany?: ReferralApplicationScalarWhereInput | ReferralApplicationScalarWhereInput[]
+  }
+
+  export type ReferralInvitationUncheckedUpdateManyWithoutJobPostNestedInput = {
+    create?: XOR<ReferralInvitationCreateWithoutJobPostInput, ReferralInvitationUncheckedCreateWithoutJobPostInput> | ReferralInvitationCreateWithoutJobPostInput[] | ReferralInvitationUncheckedCreateWithoutJobPostInput[]
+    connectOrCreate?: ReferralInvitationCreateOrConnectWithoutJobPostInput | ReferralInvitationCreateOrConnectWithoutJobPostInput[]
+    upsert?: ReferralInvitationUpsertWithWhereUniqueWithoutJobPostInput | ReferralInvitationUpsertWithWhereUniqueWithoutJobPostInput[]
+    createMany?: ReferralInvitationCreateManyJobPostInputEnvelope
+    set?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    disconnect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    delete?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+    update?: ReferralInvitationUpdateWithWhereUniqueWithoutJobPostInput | ReferralInvitationUpdateWithWhereUniqueWithoutJobPostInput[]
+    updateMany?: ReferralInvitationUpdateManyWithWhereWithoutJobPostInput | ReferralInvitationUpdateManyWithWhereWithoutJobPostInput[]
+    deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
   }
 
   export type JobPostCreateNestedOneWithoutCustomFormFieldsInput = {
@@ -12188,6 +13671,50 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutJobSeekerProfileInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobSeekerProfileInput, UserUpdateWithoutJobSeekerProfileInput>, UserUncheckedUpdateWithoutJobSeekerProfileInput>
+  }
+
+  export type UserCreateNestedOneWithoutSentInvitationsInput = {
+    create?: XOR<UserCreateWithoutSentInvitationsInput, UserUncheckedCreateWithoutSentInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSentInvitationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReceivedInvitationsInput = {
+    create?: XOR<UserCreateWithoutReceivedInvitationsInput, UserUncheckedCreateWithoutReceivedInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedInvitationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type JobPostCreateNestedOneWithoutReferralInvitationsInput = {
+    create?: XOR<JobPostCreateWithoutReferralInvitationsInput, JobPostUncheckedCreateWithoutReferralInvitationsInput>
+    connectOrCreate?: JobPostCreateOrConnectWithoutReferralInvitationsInput
+    connect?: JobPostWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutSentInvitationsNestedInput = {
+    create?: XOR<UserCreateWithoutSentInvitationsInput, UserUncheckedCreateWithoutSentInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSentInvitationsInput
+    upsert?: UserUpsertWithoutSentInvitationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSentInvitationsInput, UserUpdateWithoutSentInvitationsInput>, UserUncheckedUpdateWithoutSentInvitationsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutReceivedInvitationsNestedInput = {
+    create?: XOR<UserCreateWithoutReceivedInvitationsInput, UserUncheckedCreateWithoutReceivedInvitationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceivedInvitationsInput
+    upsert?: UserUpsertWithoutReceivedInvitationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReceivedInvitationsInput, UserUpdateWithoutReceivedInvitationsInput>, UserUncheckedUpdateWithoutReceivedInvitationsInput>
+  }
+
+  export type JobPostUpdateOneWithoutReferralInvitationsNestedInput = {
+    create?: XOR<JobPostCreateWithoutReferralInvitationsInput, JobPostUncheckedCreateWithoutReferralInvitationsInput>
+    connectOrCreate?: JobPostCreateOrConnectWithoutReferralInvitationsInput
+    upsert?: JobPostUpsertWithoutReferralInvitationsInput
+    disconnect?: JobPostWhereInput | boolean
+    delete?: JobPostWhereInput | boolean
+    connect?: JobPostWhereUniqueInput
+    update?: XOR<XOR<JobPostUpdateToOneWithWhereWithoutReferralInvitationsInput, JobPostUpdateWithoutReferralInvitationsInput>, JobPostUncheckedUpdateWithoutReferralInvitationsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -12493,6 +14020,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutJobPostsInput
     customFormFields?: JobCustomFormFieldCreateNestedManyWithoutJobPostInput
     applications?: ReferralApplicationCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostUncheckedCreateWithoutUserInput = {
@@ -12508,6 +14036,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     customFormFields?: JobCustomFormFieldUncheckedCreateNestedManyWithoutJobPostInput
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostCreateOrConnectWithoutUserInput = {
@@ -12538,6 +14067,56 @@ export namespace Prisma {
   export type ReferralFormCreateOrConnectWithoutUserInput = {
     where: ReferralFormWhereUniqueInput
     create: XOR<ReferralFormCreateWithoutUserInput, ReferralFormUncheckedCreateWithoutUserInput>
+  }
+
+  export type ReferralInvitationCreateWithoutInviterInput = {
+    id?: string
+    status?: string
+    createdAt?: Date | string
+    candidate: UserCreateNestedOneWithoutReceivedInvitationsInput
+    jobPost?: JobPostCreateNestedOneWithoutReferralInvitationsInput
+  }
+
+  export type ReferralInvitationUncheckedCreateWithoutInviterInput = {
+    id?: string
+    candidateId: string
+    jobPostId?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReferralInvitationCreateOrConnectWithoutInviterInput = {
+    where: ReferralInvitationWhereUniqueInput
+    create: XOR<ReferralInvitationCreateWithoutInviterInput, ReferralInvitationUncheckedCreateWithoutInviterInput>
+  }
+
+  export type ReferralInvitationCreateManyInviterInputEnvelope = {
+    data: ReferralInvitationCreateManyInviterInput | ReferralInvitationCreateManyInviterInput[]
+  }
+
+  export type ReferralInvitationCreateWithoutCandidateInput = {
+    id?: string
+    status?: string
+    createdAt?: Date | string
+    inviter: UserCreateNestedOneWithoutSentInvitationsInput
+    jobPost?: JobPostCreateNestedOneWithoutReferralInvitationsInput
+  }
+
+  export type ReferralInvitationUncheckedCreateWithoutCandidateInput = {
+    id?: string
+    inviterId: string
+    jobPostId?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReferralInvitationCreateOrConnectWithoutCandidateInput = {
+    where: ReferralInvitationWhereUniqueInput
+    create: XOR<ReferralInvitationCreateWithoutCandidateInput, ReferralInvitationUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type ReferralInvitationCreateManyCandidateInputEnvelope = {
+    data: ReferralInvitationCreateManyCandidateInput | ReferralInvitationCreateManyCandidateInput[]
   }
 
   export type EmployeeProfileUpsertWithoutUserInput = {
@@ -12701,6 +14280,50 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReferralInvitationUpsertWithWhereUniqueWithoutInviterInput = {
+    where: ReferralInvitationWhereUniqueInput
+    update: XOR<ReferralInvitationUpdateWithoutInviterInput, ReferralInvitationUncheckedUpdateWithoutInviterInput>
+    create: XOR<ReferralInvitationCreateWithoutInviterInput, ReferralInvitationUncheckedCreateWithoutInviterInput>
+  }
+
+  export type ReferralInvitationUpdateWithWhereUniqueWithoutInviterInput = {
+    where: ReferralInvitationWhereUniqueInput
+    data: XOR<ReferralInvitationUpdateWithoutInviterInput, ReferralInvitationUncheckedUpdateWithoutInviterInput>
+  }
+
+  export type ReferralInvitationUpdateManyWithWhereWithoutInviterInput = {
+    where: ReferralInvitationScalarWhereInput
+    data: XOR<ReferralInvitationUpdateManyMutationInput, ReferralInvitationUncheckedUpdateManyWithoutInviterInput>
+  }
+
+  export type ReferralInvitationScalarWhereInput = {
+    AND?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
+    OR?: ReferralInvitationScalarWhereInput[]
+    NOT?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
+    id?: StringFilter<"ReferralInvitation"> | string
+    inviterId?: StringFilter<"ReferralInvitation"> | string
+    candidateId?: StringFilter<"ReferralInvitation"> | string
+    jobPostId?: StringNullableFilter<"ReferralInvitation"> | string | null
+    status?: StringFilter<"ReferralInvitation"> | string
+    createdAt?: DateTimeFilter<"ReferralInvitation"> | Date | string
+  }
+
+  export type ReferralInvitationUpsertWithWhereUniqueWithoutCandidateInput = {
+    where: ReferralInvitationWhereUniqueInput
+    update: XOR<ReferralInvitationUpdateWithoutCandidateInput, ReferralInvitationUncheckedUpdateWithoutCandidateInput>
+    create: XOR<ReferralInvitationCreateWithoutCandidateInput, ReferralInvitationUncheckedCreateWithoutCandidateInput>
+  }
+
+  export type ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput = {
+    where: ReferralInvitationWhereUniqueInput
+    data: XOR<ReferralInvitationUpdateWithoutCandidateInput, ReferralInvitationUncheckedUpdateWithoutCandidateInput>
+  }
+
+  export type ReferralInvitationUpdateManyWithWhereWithoutCandidateInput = {
+    where: ReferralInvitationScalarWhereInput
+    data: XOR<ReferralInvitationUpdateManyMutationInput, ReferralInvitationUncheckedUpdateManyWithoutCandidateInput>
+  }
+
   export type EmployeeProfileCreateWithoutCompanyInput = {
     id?: string
     position?: string | null
@@ -12739,6 +14362,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutJobPostsInput
     customFormFields?: JobCustomFormFieldCreateNestedManyWithoutJobPostInput
     applications?: ReferralApplicationCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostUncheckedCreateWithoutCompanyInput = {
@@ -12754,6 +14378,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     customFormFields?: JobCustomFormFieldUncheckedCreateNestedManyWithoutJobPostInput
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostCreateOrConnectWithoutCompanyInput = {
@@ -12823,6 +14448,8 @@ export namespace Prisma {
     applications?: ReferralApplicationCreateNestedManyWithoutUserInput
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
   }
 
   export type UserUncheckedCreateWithoutEmployeeProfileInput = {
@@ -12839,6 +14466,8 @@ export namespace Prisma {
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
   }
 
   export type UserCreateOrConnectWithoutEmployeeProfileInput = {
@@ -12896,6 +14525,8 @@ export namespace Prisma {
     applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmployeeProfileInput = {
@@ -12912,6 +14543,8 @@ export namespace Prisma {
     applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
   export type CompanyUpsertWithoutEmployeesInput = {
@@ -12984,6 +14617,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileCreateNestedOneWithoutUserInput
     applications?: ReferralApplicationCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
   }
 
   export type UserUncheckedCreateWithoutJobPostsInput = {
@@ -13000,6 +14635,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUncheckedCreateNestedOneWithoutUserInput
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
   }
 
   export type UserCreateOrConnectWithoutJobPostsInput = {
@@ -13063,6 +14700,31 @@ export namespace Prisma {
     data: ReferralApplicationCreateManyJobPostInput | ReferralApplicationCreateManyJobPostInput[]
   }
 
+  export type ReferralInvitationCreateWithoutJobPostInput = {
+    id?: string
+    status?: string
+    createdAt?: Date | string
+    inviter: UserCreateNestedOneWithoutSentInvitationsInput
+    candidate: UserCreateNestedOneWithoutReceivedInvitationsInput
+  }
+
+  export type ReferralInvitationUncheckedCreateWithoutJobPostInput = {
+    id?: string
+    inviterId: string
+    candidateId: string
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReferralInvitationCreateOrConnectWithoutJobPostInput = {
+    where: ReferralInvitationWhereUniqueInput
+    create: XOR<ReferralInvitationCreateWithoutJobPostInput, ReferralInvitationUncheckedCreateWithoutJobPostInput>
+  }
+
+  export type ReferralInvitationCreateManyJobPostInputEnvelope = {
+    data: ReferralInvitationCreateManyJobPostInput | ReferralInvitationCreateManyJobPostInput[]
+  }
+
   export type CompanyUpsertWithoutJobPostsInput = {
     update: XOR<CompanyUpdateWithoutJobPostsInput, CompanyUncheckedUpdateWithoutJobPostsInput>
     create: XOR<CompanyCreateWithoutJobPostsInput, CompanyUncheckedCreateWithoutJobPostsInput>
@@ -13119,6 +14781,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUpdateOneWithoutUserNestedInput
     applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobPostsInput = {
@@ -13135,6 +14799,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUncheckedUpdateOneWithoutUserNestedInput
     applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
   export type JobCustomFormFieldUpsertWithWhereUniqueWithoutJobPostInput = {
@@ -13181,6 +14847,22 @@ export namespace Prisma {
     data: XOR<ReferralApplicationUpdateManyMutationInput, ReferralApplicationUncheckedUpdateManyWithoutJobPostInput>
   }
 
+  export type ReferralInvitationUpsertWithWhereUniqueWithoutJobPostInput = {
+    where: ReferralInvitationWhereUniqueInput
+    update: XOR<ReferralInvitationUpdateWithoutJobPostInput, ReferralInvitationUncheckedUpdateWithoutJobPostInput>
+    create: XOR<ReferralInvitationCreateWithoutJobPostInput, ReferralInvitationUncheckedCreateWithoutJobPostInput>
+  }
+
+  export type ReferralInvitationUpdateWithWhereUniqueWithoutJobPostInput = {
+    where: ReferralInvitationWhereUniqueInput
+    data: XOR<ReferralInvitationUpdateWithoutJobPostInput, ReferralInvitationUncheckedUpdateWithoutJobPostInput>
+  }
+
+  export type ReferralInvitationUpdateManyWithWhereWithoutJobPostInput = {
+    where: ReferralInvitationScalarWhereInput
+    data: XOR<ReferralInvitationUpdateManyMutationInput, ReferralInvitationUncheckedUpdateManyWithoutJobPostInput>
+  }
+
   export type JobPostCreateWithoutCustomFormFieldsInput = {
     id?: string
     title: string
@@ -13194,6 +14876,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutJobPostsInput
     user: UserCreateNestedOneWithoutJobPostsInput
     applications?: ReferralApplicationCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostUncheckedCreateWithoutCustomFormFieldsInput = {
@@ -13209,6 +14892,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostCreateOrConnectWithoutCustomFormFieldsInput = {
@@ -13240,6 +14924,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutJobPostsNestedInput
     user?: UserUpdateOneRequiredWithoutJobPostsNestedInput
     applications?: ReferralApplicationUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUpdateManyWithoutJobPostNestedInput
   }
 
   export type JobPostUncheckedUpdateWithoutCustomFormFieldsInput = {
@@ -13255,6 +14940,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     applications?: ReferralApplicationUncheckedUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUncheckedUpdateManyWithoutJobPostNestedInput
   }
 
   export type UserCreateWithoutApplicationsInput = {
@@ -13271,6 +14957,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileCreateNestedOneWithoutUserInput
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
   }
 
   export type UserUncheckedCreateWithoutApplicationsInput = {
@@ -13287,6 +14975,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUncheckedCreateNestedOneWithoutUserInput
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
   }
 
   export type UserCreateOrConnectWithoutApplicationsInput = {
@@ -13307,6 +14997,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutJobPostsInput
     user: UserCreateNestedOneWithoutJobPostsInput
     customFormFields?: JobCustomFormFieldCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostUncheckedCreateWithoutApplicationsInput = {
@@ -13322,6 +15013,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     customFormFields?: JobCustomFormFieldUncheckedCreateNestedManyWithoutJobPostInput
+    referralInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutJobPostInput
   }
 
   export type JobPostCreateOrConnectWithoutApplicationsInput = {
@@ -13354,6 +15046,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUpdateOneWithoutUserNestedInput
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApplicationsInput = {
@@ -13370,6 +15064,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUncheckedUpdateOneWithoutUserNestedInput
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
   export type JobPostUpsertWithoutApplicationsInput = {
@@ -13396,6 +15092,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutJobPostsNestedInput
     user?: UserUpdateOneRequiredWithoutJobPostsNestedInput
     customFormFields?: JobCustomFormFieldUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUpdateManyWithoutJobPostNestedInput
   }
 
   export type JobPostUncheckedUpdateWithoutApplicationsInput = {
@@ -13411,6 +15108,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customFormFields?: JobCustomFormFieldUncheckedUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUncheckedUpdateManyWithoutJobPostNestedInput
   }
 
   export type UserCreateWithoutReferralFormInput = {
@@ -13427,6 +15125,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileCreateNestedOneWithoutUserInput
     applications?: ReferralApplicationCreateNestedManyWithoutUserInput
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
+    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
   }
 
   export type UserUncheckedCreateWithoutReferralFormInput = {
@@ -13443,6 +15143,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUncheckedCreateNestedOneWithoutUserInput
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
+    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
   }
 
   export type UserCreateOrConnectWithoutReferralFormInput = {
@@ -13475,6 +15177,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUpdateOneWithoutUserNestedInput
     applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReferralFormInput = {
@@ -13491,6 +15195,8 @@ export namespace Prisma {
     jobSeekerProfile?: JobSeekerProfileUncheckedUpdateOneWithoutUserNestedInput
     applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
   }
 
   export type UserCreateWithoutJobSeekerProfileInput = {
@@ -13507,6 +15213,8 @@ export namespace Prisma {
     applications?: ReferralApplicationCreateNestedManyWithoutUserInput
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
   }
 
   export type UserUncheckedCreateWithoutJobSeekerProfileInput = {
@@ -13523,6 +15231,8 @@ export namespace Prisma {
     applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
   }
 
   export type UserCreateOrConnectWithoutJobSeekerProfileInput = {
@@ -13555,6 +15265,8 @@ export namespace Prisma {
     applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobSeekerProfileInput = {
@@ -13571,6 +15283,264 @@ export namespace Prisma {
     applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type UserCreateWithoutSentInvitationsInput = {
+    id?: string
+    email: string
+    name: string
+    password: string
+    role?: string | null
+    resetPasswordToken?: string | null
+    resetPasswordExpires?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employeeProfile?: EmployeeProfileCreateNestedOneWithoutUserInput
+    jobSeekerProfile?: JobSeekerProfileCreateNestedOneWithoutUserInput
+    applications?: ReferralApplicationCreateNestedManyWithoutUserInput
+    jobPosts?: JobPostCreateNestedManyWithoutUserInput
+    referralForm?: ReferralFormCreateNestedOneWithoutUserInput
+    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+  }
+
+  export type UserUncheckedCreateWithoutSentInvitationsInput = {
+    id?: string
+    email: string
+    name: string
+    password: string
+    role?: string | null
+    resetPasswordToken?: string | null
+    resetPasswordExpires?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employeeProfile?: EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+    jobSeekerProfile?: JobSeekerProfileUncheckedCreateNestedOneWithoutUserInput
+    applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
+    jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
+    referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
+    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type UserCreateOrConnectWithoutSentInvitationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSentInvitationsInput, UserUncheckedCreateWithoutSentInvitationsInput>
+  }
+
+  export type UserCreateWithoutReceivedInvitationsInput = {
+    id?: string
+    email: string
+    name: string
+    password: string
+    role?: string | null
+    resetPasswordToken?: string | null
+    resetPasswordExpires?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employeeProfile?: EmployeeProfileCreateNestedOneWithoutUserInput
+    jobSeekerProfile?: JobSeekerProfileCreateNestedOneWithoutUserInput
+    applications?: ReferralApplicationCreateNestedManyWithoutUserInput
+    jobPosts?: JobPostCreateNestedManyWithoutUserInput
+    referralForm?: ReferralFormCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+  }
+
+  export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
+    id?: string
+    email: string
+    name: string
+    password: string
+    role?: string | null
+    resetPasswordToken?: string | null
+    resetPasswordExpires?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employeeProfile?: EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+    jobSeekerProfile?: JobSeekerProfileUncheckedCreateNestedOneWithoutUserInput
+    applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
+    jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
+    referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+  }
+
+  export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReceivedInvitationsInput, UserUncheckedCreateWithoutReceivedInvitationsInput>
+  }
+
+  export type JobPostCreateWithoutReferralInvitationsInput = {
+    id?: string
+    title: string
+    companyName: string
+    description?: string | null
+    experience?: number | null
+    location?: string | null
+    skills?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutJobPostsInput
+    user: UserCreateNestedOneWithoutJobPostsInput
+    customFormFields?: JobCustomFormFieldCreateNestedManyWithoutJobPostInput
+    applications?: ReferralApplicationCreateNestedManyWithoutJobPostInput
+  }
+
+  export type JobPostUncheckedCreateWithoutReferralInvitationsInput = {
+    id?: string
+    title: string
+    companyName: string
+    description?: string | null
+    experience?: number | null
+    location?: string | null
+    skills?: string | null
+    companyId: string
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customFormFields?: JobCustomFormFieldUncheckedCreateNestedManyWithoutJobPostInput
+    applications?: ReferralApplicationUncheckedCreateNestedManyWithoutJobPostInput
+  }
+
+  export type JobPostCreateOrConnectWithoutReferralInvitationsInput = {
+    where: JobPostWhereUniqueInput
+    create: XOR<JobPostCreateWithoutReferralInvitationsInput, JobPostUncheckedCreateWithoutReferralInvitationsInput>
+  }
+
+  export type UserUpsertWithoutSentInvitationsInput = {
+    update: XOR<UserUpdateWithoutSentInvitationsInput, UserUncheckedUpdateWithoutSentInvitationsInput>
+    create: XOR<UserCreateWithoutSentInvitationsInput, UserUncheckedCreateWithoutSentInvitationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSentInvitationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSentInvitationsInput, UserUncheckedUpdateWithoutSentInvitationsInput>
+  }
+
+  export type UserUpdateWithoutSentInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employeeProfile?: EmployeeProfileUpdateOneWithoutUserNestedInput
+    jobSeekerProfile?: JobSeekerProfileUpdateOneWithoutUserNestedInput
+    applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
+    jobPosts?: JobPostUpdateManyWithoutUserNestedInput
+    referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
+    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSentInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employeeProfile?: EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+    jobSeekerProfile?: JobSeekerProfileUncheckedUpdateOneWithoutUserNestedInput
+    applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
+    jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
+    referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
+    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type UserUpsertWithoutReceivedInvitationsInput = {
+    update: XOR<UserUpdateWithoutReceivedInvitationsInput, UserUncheckedUpdateWithoutReceivedInvitationsInput>
+    create: XOR<UserCreateWithoutReceivedInvitationsInput, UserUncheckedCreateWithoutReceivedInvitationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReceivedInvitationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReceivedInvitationsInput, UserUncheckedUpdateWithoutReceivedInvitationsInput>
+  }
+
+  export type UserUpdateWithoutReceivedInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employeeProfile?: EmployeeProfileUpdateOneWithoutUserNestedInput
+    jobSeekerProfile?: JobSeekerProfileUpdateOneWithoutUserNestedInput
+    applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
+    jobPosts?: JobPostUpdateManyWithoutUserNestedInput
+    referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employeeProfile?: EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+    jobSeekerProfile?: JobSeekerProfileUncheckedUpdateOneWithoutUserNestedInput
+    applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
+    jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
+    referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+  }
+
+  export type JobPostUpsertWithoutReferralInvitationsInput = {
+    update: XOR<JobPostUpdateWithoutReferralInvitationsInput, JobPostUncheckedUpdateWithoutReferralInvitationsInput>
+    create: XOR<JobPostCreateWithoutReferralInvitationsInput, JobPostUncheckedCreateWithoutReferralInvitationsInput>
+    where?: JobPostWhereInput
+  }
+
+  export type JobPostUpdateToOneWithWhereWithoutReferralInvitationsInput = {
+    where?: JobPostWhereInput
+    data: XOR<JobPostUpdateWithoutReferralInvitationsInput, JobPostUncheckedUpdateWithoutReferralInvitationsInput>
+  }
+
+  export type JobPostUpdateWithoutReferralInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    experience?: NullableIntFieldUpdateOperationsInput | number | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutJobPostsNestedInput
+    user?: UserUpdateOneRequiredWithoutJobPostsNestedInput
+    customFormFields?: JobCustomFormFieldUpdateManyWithoutJobPostNestedInput
+    applications?: ReferralApplicationUpdateManyWithoutJobPostNestedInput
+  }
+
+  export type JobPostUncheckedUpdateWithoutReferralInvitationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    experience?: NullableIntFieldUpdateOperationsInput | number | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: NullableStringFieldUpdateOperationsInput | string | null
+    companyId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customFormFields?: JobCustomFormFieldUncheckedUpdateManyWithoutJobPostNestedInput
+    applications?: ReferralApplicationUncheckedUpdateManyWithoutJobPostNestedInput
   }
 
   export type ReferralApplicationCreateManyUserInput = {
@@ -13595,6 +15565,22 @@ export namespace Prisma {
     companyId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ReferralInvitationCreateManyInviterInput = {
+    id?: string
+    candidateId: string
+    jobPostId?: string | null
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type ReferralInvitationCreateManyCandidateInput = {
+    id?: string
+    inviterId: string
+    jobPostId?: string | null
+    status?: string
+    createdAt?: Date | string
   }
 
   export type ReferralApplicationUpdateWithoutUserInput = {
@@ -13643,6 +15629,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutJobPostsNestedInput
     customFormFields?: JobCustomFormFieldUpdateManyWithoutJobPostNestedInput
     applications?: ReferralApplicationUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUpdateManyWithoutJobPostNestedInput
   }
 
   export type JobPostUncheckedUpdateWithoutUserInput = {
@@ -13658,6 +15645,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customFormFields?: JobCustomFormFieldUncheckedUpdateManyWithoutJobPostNestedInput
     applications?: ReferralApplicationUncheckedUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUncheckedUpdateManyWithoutJobPostNestedInput
   }
 
   export type JobPostUncheckedUpdateManyWithoutUserInput = {
@@ -13671,6 +15659,54 @@ export namespace Prisma {
     companyId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReferralInvitationUpdateWithoutInviterInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: UserUpdateOneRequiredWithoutReceivedInvitationsNestedInput
+    jobPost?: JobPostUpdateOneWithoutReferralInvitationsNestedInput
+  }
+
+  export type ReferralInvitationUncheckedUpdateWithoutInviterInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    jobPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReferralInvitationUncheckedUpdateManyWithoutInviterInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    jobPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReferralInvitationUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inviter?: UserUpdateOneRequiredWithoutSentInvitationsNestedInput
+    jobPost?: JobPostUpdateOneWithoutReferralInvitationsNestedInput
+  }
+
+  export type ReferralInvitationUncheckedUpdateWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inviterId?: StringFieldUpdateOperationsInput | string
+    jobPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReferralInvitationUncheckedUpdateManyWithoutCandidateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inviterId?: StringFieldUpdateOperationsInput | string
+    jobPostId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmployeeProfileCreateManyCompanyInput = {
@@ -13731,6 +15767,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutJobPostsNestedInput
     customFormFields?: JobCustomFormFieldUpdateManyWithoutJobPostNestedInput
     applications?: ReferralApplicationUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUpdateManyWithoutJobPostNestedInput
   }
 
   export type JobPostUncheckedUpdateWithoutCompanyInput = {
@@ -13746,6 +15783,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customFormFields?: JobCustomFormFieldUncheckedUpdateManyWithoutJobPostNestedInput
     applications?: ReferralApplicationUncheckedUpdateManyWithoutJobPostNestedInput
+    referralInvitations?: ReferralInvitationUncheckedUpdateManyWithoutJobPostNestedInput
   }
 
   export type JobPostUncheckedUpdateManyWithoutCompanyInput = {
@@ -13778,6 +15816,14 @@ export namespace Prisma {
     resumeUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ReferralInvitationCreateManyJobPostInput = {
+    id?: string
+    inviterId: string
+    candidateId: string
+    status?: string
+    createdAt?: Date | string
   }
 
   export type JobCustomFormFieldUpdateWithoutJobPostInput = {
@@ -13837,6 +15883,30 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReferralInvitationUpdateWithoutJobPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    inviter?: UserUpdateOneRequiredWithoutSentInvitationsNestedInput
+    candidate?: UserUpdateOneRequiredWithoutReceivedInvitationsNestedInput
+  }
+
+  export type ReferralInvitationUncheckedUpdateWithoutJobPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inviterId?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReferralInvitationUncheckedUpdateManyWithoutJobPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inviterId?: StringFieldUpdateOperationsInput | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
 
 
   /**
@@ -13886,6 +15956,10 @@ export namespace Prisma {
      * @deprecated Use JobSeekerProfileDefaultArgs instead
      */
     export type JobSeekerProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = JobSeekerProfileDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use ReferralInvitationDefaultArgs instead
+     */
+    export type ReferralInvitationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = ReferralInvitationDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

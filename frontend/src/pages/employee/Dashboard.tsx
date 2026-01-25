@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, startTransition } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../lib/auth'
@@ -131,7 +131,7 @@ export default function EmployeeDashboard() {
             {activeTab === 'browse-candidates' && (
               <SearchBar
                 mode="candidate"
-                placeholder="Search job seekers by skills, role, or experience…"
+                placeholder="Search job seekers by skills, role, or experience..."
                 onSearch={handleCandidateSearch}
                 initialValue={candidateSearchQuery}
               />
@@ -139,7 +139,7 @@ export default function EmployeeDashboard() {
             {activeTab === 'my-job-posts' && (
               <SearchBar
                 mode="jobpost"
-                placeholder="Search your job posts by title, company name, or location…"
+                placeholder="Search your job posts by title, company, or location..."
                 onSearch={handleJobPostSearch}
                 initialValue={jobPostSearchQuery}
               />
@@ -152,7 +152,7 @@ export default function EmployeeDashboard() {
           {/* Right: Switch Button + Avatar Dropdown */}
           <div className="flex items-center gap-3" ref={dropdownRef}>
             <button
-              onClick={() => navigate('/job-seeker')}
+              onClick={() => startTransition(() => navigate('/job-seeker'))}
               className="px-4 py-2 rounded-full bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-medium text-sm shadow-md hover:shadow-lg hover:scale-105 active:scale-100 transition-all duration-200 whitespace-nowrap"
             >
               Switch to Job Seeker
@@ -186,7 +186,7 @@ export default function EmployeeDashboard() {
         {/* Premium Tabs */}
         <div className="w-full flex items-center justify-center gap-8 mt-10 mb-1 border-b-2 border-gray-200">
           <button
-            onClick={() => navigate('/employee/job-seekers')}
+            onClick={() => startTransition(() => navigate('/employee/job-seekers'))}
             data-active={isActive('/employee/job-seekers')}
             className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0] data-[active=true]:border-[#4A4CF0]"
           >
@@ -196,7 +196,7 @@ export default function EmployeeDashboard() {
             )}
           </button>
           <button
-            onClick={() => navigate('/employee')}
+            onClick={() => startTransition(() => navigate('/employee'))}
             data-active={isActive('/employee') && !isActive('/employee/job-seekers')}
             className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0] data-[active=true]:border-[#4A4CF0]"
           >
@@ -206,7 +206,7 @@ export default function EmployeeDashboard() {
             )}
           </button>
           <button
-            onClick={() => navigate('/employee/create')}
+            onClick={() => startTransition(() => navigate('/employee/create'))}
             data-active={isActive('/employee/create')}
             className="relative pb-4 px-2 text-base font-semibold text-gray-600 hover:text-[#4A4CF0] transition-all duration-200 border-b-3 border-transparent data-[active=true]:text-[#4A4CF0] data-[active=true]:border-[#4A4CF0]"
           >

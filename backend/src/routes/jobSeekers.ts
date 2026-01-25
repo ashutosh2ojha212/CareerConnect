@@ -20,7 +20,17 @@ function parseLocations(s: string | null): string[] {
     const parsed = JSON.parse(s)
     return Array.isArray(parsed) ? parsed.map(String) : []
   } catch {
-    return s.split(',').map((s) => s.trim()).filter(Boolean)
+    return String(s).split(',').map((x) => x.trim()).filter(Boolean)
+  }
+}
+
+function parsePreferredRoles(s: string | null): string[] {
+  if (!s) return []
+  try {
+    const parsed = JSON.parse(s)
+    return Array.isArray(parsed) ? parsed.map(String).filter(Boolean) : (s ? [s] : [])
+  } catch {
+    return String(s).split(',').map((x) => x.trim()).filter(Boolean)
   }
 }
 
@@ -190,8 +200,8 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
     const { search } = req.query
     const searchQuery = typeof search === 'string' ? search.trim().toLowerCase() : ''
 
-    // Same-company employee user ids to exclude (viewer is employee, don't show colleagues)
-    let excludeUserIds: string[] = []
+    // Exclude: (1) current user's own profile, (2) same-company employees
+    let excludeUserIds: string[] = [userId]
     const myEmployee = await prisma.employeeProfile.findUnique({
       where: { userId },
       select: { companyId: true },
@@ -201,12 +211,12 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
         where: { companyId: myEmployee.companyId },
         select: { userId: true },
       })
-      excludeUserIds = sameCompanyUserIds.map((e) => e.userId)
+      excludeUserIds = [...new Set([userId, ...sameCompanyUserIds.map((e) => e.userId)])]
     }
 
-    // Get all job seeker profiles except same-company employees
+    // Get all job seeker profiles except own and same-company employees
     let profiles = await model.findMany({
-      where: excludeUserIds.length ? { userId: { notIn: excludeUserIds } } : undefined,
+      where: { userId: { notIn: excludeUserIds } },
       include: {
         user: {
           select: {
@@ -241,7 +251,7 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
       })
     }
 
-    // Format response
+    // Format response — always return preferredRoles, preferredLocations, skills as arrays (no raw JSON)
     const formattedProfiles = profiles.map((profile) => ({
       id: profile.id,
       userId: profile.userId,
@@ -250,7 +260,7 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
       experience: profile.experience,
       primaryRole: profile.primaryRole,
       skills: parseSkills(profile.skills),
-      jobPreferences: profile.jobPreferences,
+      preferredRoles: parsePreferredRoles(profile.jobPreferences),
       preferredLocations: parseLocations((profile as any).preferredLocations),
       profileSummary: (profile as any).profileSummary ?? null,
       resumeUrl: (profile as any).resumeUrl ?? null,
@@ -312,7 +322,7 @@ router.get('/:id', authenticate, async (req: AuthRequest, res, next) => {
       experience: profile.experience,
       primaryRole: profile.primaryRole,
       skills: skillsArray,
-      jobPreferences: profile.jobPreferences,
+      preferredRoles: parsePreferredRoles(profile.jobPreferences),
       preferredLocations: parseLocations((profile as any).preferredLocations),
       profileSummary: (profile as any).profileSummary ?? null,
       resumeUrl: (profile as any).resumeUrl ?? null,

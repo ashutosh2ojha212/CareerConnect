@@ -23,11 +23,13 @@ model User {
   updatedAt            DateTime  @updatedAt
 
   // Relations
-  employeeProfile  EmployeeProfile?
-  jobSeekerProfile JobSeekerProfile?
-  applications     ReferralApplication[]
-  jobPosts         JobPost[]
-  referralForm     ReferralForm?
+  employeeProfile     EmployeeProfile?
+  jobSeekerProfile    JobSeekerProfile?
+  applications        ReferralApplication[]
+  jobPosts            JobPost[]
+  referralForm        ReferralForm?
+  sentInvitations     ReferralInvitation[]  @relation("Inviter")
+  receivedInvitations ReferralInvitation[]  @relation("Candidate")
 }
 
 model Company {
@@ -72,10 +74,11 @@ model JobPost {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  company          Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  customFormFields JobCustomFormField[]
-  applications     ReferralApplication[]
+  company             Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user                User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customFormFields    JobCustomFormField[]
+  applications        ReferralApplication[]
+  referralInvitations ReferralInvitation[]
 
   @@index([companyId])
   @@index([userId])
@@ -138,7 +141,7 @@ model JobSeekerProfile {
   experience         Int? // Years of experience
   primaryRole        String? // Current or primary role / designation
   skills             String? // JSON array or comma-separated
-  jobPreferences     String? // Preferred job role/title
+  jobPreferences     String? // Preferred job role/title (or JSON array for preferredJobRoles)
   preferredLocations String? // JSON array of location strings
   profileSummary     String? // Bio / about
   resumeUrl          String?
@@ -151,4 +154,23 @@ model JobSeekerProfile {
 
   @@index([userId])
   @@index([primaryRole])
+}
+
+model ReferralInvitation {
+  id          String   @id @default(uuid())
+  inviterId   String // fromEmployeeId (Employee user id)
+  candidateId String // toJobSeekerId (Job seeker user id)
+  jobPostId   String? // Optional: specific job for this invite
+  status      String   @default("PENDING") // "PENDING" | "APPLIED"
+  createdAt   DateTime @default(now())
+
+  // Relations
+  inviter   User     @relation("Inviter", fields: [inviterId], references: [id], onDelete: Cascade)
+  candidate User     @relation("Candidate", fields: [candidateId], references: [id], onDelete: Cascade)
+  jobPost   JobPost? @relation(fields: [jobPostId], references: [id], onDelete: SetNull)
+
+  @@unique([inviterId, candidateId])
+  @@index([candidateId])
+  @@index([inviterId])
+  @@index([jobPostId])
 }

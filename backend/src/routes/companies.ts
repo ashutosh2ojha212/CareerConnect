@@ -3,58 +3,36 @@ import { prisma } from '../lib/prisma'
 import { authenticate, AuthRequest } from '../middleware/auth'
 
 const router = express.Router()
-// Get all companies (filtered to exclude companies where user is the only employee)
+// Get all companies — only exclude "Default Company". Do not filter by userId or employee membership.
 router.get('/', authenticate, async (req: AuthRequest, res, next) => {
   try {
-    const userId = req.user!.id
-
-    // Get all companies with employees
     const companies = await prisma.company.findMany({
+      where: {
+        name: { not: 'Default Company' },
+      },
       include: {
-        employees: {
-          include: {
-            user: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        },
         _count: {
-          select: {
-            employees: true,
-          },
+          select: { employees: true },
         },
       },
     })
 
-    // Filter out companies where the current user is the only employee
-    // and exclude "Default Company" (used only when employee has no company assigned)
-    const filteredCompanies = companies
-      .filter((company) => {
-        if (company.name === 'Default Company') return false
-        // Get employees excluding the current user
-        const otherEmployees = company.employees.filter(
-          (emp) => emp.user.id !== userId
-        )
-        // Only include companies that have at least one other employee
-        return otherEmployees.length > 0
-      })
-      .map((company) => ({
-        id: company.id,
-        name: company.name,
-        description: company.description,
-        logo: company.logo,
-        employeeCount: company._count.employees,
-      }))
+    const formatted = companies.map((company) => ({
+      id: company.id,
+      name: company.name,
+      description: company.description,
+      logo: company.logo,
+      employeeCount: company._count.employees,
+    }))
 
-    res.json(filteredCompanies)
+    res.json(formatted)
   } catch (error) {
     next(error)
   }
 })
 
-// Get company details with job posts (filtered)
+// Get company details with job posts. Job seeker sees all companies except Default.
+// jobPosts: only exclude current user's own posts (jobPost.userId != currentUserId).
 router.get('/:companyId', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const { companyId } = req.params
@@ -65,59 +43,29 @@ router.get('/:companyId', authenticate, async (req: AuthRequest, res, next) => {
       include: {
         jobPosts: {
           where: {
-            // Exclude job posts created by the current user
-            userId: {
-              not: userId,
-            },
+            userId: { not: userId },
           },
           include: {
             user: {
-              select: {
-                id: true,
-                name: true,
-              },
+              select: { id: true, name: true },
             },
-            _count: {
-              select: {
-                applications: true,
-              },
-            },
+            _count: { select: { applications: true } },
           },
-          orderBy: {
-            createdAt: 'desc',
-          },
+          orderBy: { createdAt: 'desc' },
         },
         employees: {
-          where: {
-            // Exclude the current user from employee list
-            userId: {
-              not: userId,
-            },
-          },
+          where: { userId: { not: userId } },
           include: {
             user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
+              select: { id: true, name: true, email: true },
             },
           },
         },
-        _count: {
-          select: {
-            employees: true,
-          },
-        },
+        _count: { select: { employees: true } },
       },
     })
 
-    if (!company) {
-      return res.status(404).json({ message: 'Company not found' })
-    }
-
-    // If no other employees exist, don't show the company
-    if (company.employees.length === 0) {
+    if (!company || company.name === 'Default Company') {
       return res.status(404).json({ message: 'Company not found' })
     }
 

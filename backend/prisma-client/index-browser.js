@@ -210,6 +210,15 @@ exports.Prisma.JobSeekerProfileScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ReferralInvitationScalarFieldEnum = {
+  id: 'id',
+  inviterId: 'inviterId',
+  candidateId: 'candidateId',
+  jobPostId: 'jobPostId',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -229,7 +238,8 @@ exports.Prisma.ModelName = {
   JobCustomFormField: 'JobCustomFormField',
   ReferralApplication: 'ReferralApplication',
   ReferralForm: 'ReferralForm',
-  JobSeekerProfile: 'JobSeekerProfile'
+  JobSeekerProfile: 'JobSeekerProfile',
+  ReferralInvitation: 'ReferralInvitation'
 };
 
 /**

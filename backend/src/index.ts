@@ -8,6 +8,8 @@ import jobRoutes from './routes/jobs'
 import applicationRoutes from './routes/applications'
 import referrerRoutes from './routes/referrer'
 import jobSeekerRoutes from './routes/jobSeekers'
+import referralInvitationRoutes from './routes/referralInvitations'
+import invitationRoutes from './routes/invitations'
 import { errorHandler } from './middleware/errorHandler'
 
 dotenv.config()
@@ -30,6 +32,8 @@ app.use('/api/jobs', jobRoutes)
 app.use('/api/applications', applicationRoutes)
 app.use('/api/referrer', referrerRoutes)
 app.use('/api/job-seekers', jobSeekerRoutes)
+app.use('/api/referral-invitations', referralInvitationRoutes)
+app.use('/api/invitations', invitationRoutes)
 
 // Root endpoint - Backend status
 app.get('/', (req, res) => {
