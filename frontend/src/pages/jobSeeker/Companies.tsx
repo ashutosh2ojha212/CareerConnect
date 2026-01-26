@@ -59,7 +59,7 @@ export default function Companies() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {companies.map((company) => {
-            const displayName = company.name === 'Default Company' ? 'Other opportunities' : company.name
+            const displayName = company.name
             return (
           <div
             key={company.id}
@@ -94,7 +94,7 @@ export default function Companies() {
               <p className="text-gray-600 mb-5 leading-relaxed">{company.description}</p>
             )}
             <button className="mt-4 text-[#4A4CF0] hover:text-[#6366F1] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all">
-              View Employees
+              View Opportunities
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>

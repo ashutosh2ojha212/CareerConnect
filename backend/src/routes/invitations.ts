@@ -119,31 +119,26 @@ router.get('/me', authenticate, async (req: AuthRequest, res, next) => {
     })
 
     const invitations = rows.map((r: any) => {
-      // Determine company name - prefer company.name over companyName, but exclude "Default Company"
-      let companyName = null
-      if (r.jobPost?.company?.name && r.jobPost.company.name !== 'Default Company') {
-        companyName = r.jobPost.company.name
-      } else if (r.jobPost?.companyName && r.jobPost.companyName !== 'Default Company') {
-        companyName = r.jobPost.companyName
-      }
-
+      const jobPost = r.jobPost
+      const jobAvailable = !!jobPost
       return {
         id: r.id,
         fromEmployeeId: r.inviterId,
         toJobSeekerId: r.candidateId,
         jobPostId: r.jobPostId ?? null,
-        status: r.status === 'pending' ? 'PENDING' : r.status,
+        status: (r.status === 'pending' ? 'PENDING' : r.status) as string,
         createdAt: r.createdAt,
         inviterName: r.inviter?.name ?? 'Employee',
         inviterEmail: r.inviter?.email ?? null,
-        jobTitle: r.jobPost?.title ?? null,
-        companyName,
-        companyId: r.jobPost?.company?.id ?? r.jobPost?.companyId ?? null,
+        jobTitle: jobPost?.title ?? null,
+        companyName: jobPost?.companyName ?? jobPost?.company?.name ?? null,
+        companyId: jobPost?.companyId ?? jobPost?.company?.id ?? null,
         employeeId: r.inviterId,
-        jobDescription: r.jobPost?.description ?? null,
-        jobExperience: r.jobPost?.experience ?? null,
-        jobLocation: r.jobPost?.location ?? null,
-        jobSkills: r.jobPost?.skills ? (typeof r.jobPost.skills === 'string' ? JSON.parse(r.jobPost.skills) : r.jobPost.skills) : [],
+        jobDescription: jobPost?.description ?? null,
+        jobExperience: jobPost?.experience ?? null,
+        jobLocation: jobPost?.location ?? null,
+        jobSkills: jobPost?.skills ? (typeof jobPost.skills === 'string' ? JSON.parse(jobPost.skills) : jobPost.skills) : [],
+        jobAvailable,
       }
     })
 

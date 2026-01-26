@@ -29,12 +29,25 @@ export default function ReferralForm({ employee, jobPostId, onBack, onSuccess }:
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasApplied, setHasApplied] = useState(false)
   const [applicationStatus, setApplicationStatus] = useState<string | null>(null)
+  const [companyName, setCompanyName] = useState<string>(employee.company.name)
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>()
 
   useEffect(() => {
     fetchFormFields()
     checkApplicationStatus()
   }, [])
+
+  useEffect(() => {
+    if (!employee.company.id) {
+      setCompanyName(employee.company.name)
+      return
+    }
+    const isUuid = /^[0-9a-f-]{36}$/i.test(employee.company.id)
+    const param = isUuid ? employee.company.id : encodeURIComponent(employee.company.id)
+    api.get(`/companies/${param}`)
+      .then((res) => { if (res.data?.name) setCompanyName(res.data.name) })
+      .catch(() => {})
+  }, [employee.company.id, employee.company.name])
 
   const checkApplicationStatus = async () => {
     try {
@@ -145,7 +158,7 @@ export default function ReferralForm({ employee, jobPostId, onBack, onSuccess }:
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           Request Referral from {employee.name}
         </h2>
-        <p className="text-gray-600 mb-6">{employee.company.name}</p>
+        <p className="text-gray-600 mb-6">{companyName}</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {formFields.map((field) => {

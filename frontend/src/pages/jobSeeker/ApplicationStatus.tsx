@@ -19,7 +19,7 @@ interface Application {
 export default function ApplicationStatus() {
   const [applications, setApplications] = useState<Application[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('all')
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending')
 
   useEffect(() => {
     fetchApplications()
@@ -50,9 +50,9 @@ export default function ApplicationStatus() {
     }
   }
 
-  const filteredApplications = activeTab === 'all' 
-    ? applications 
-    : applications.filter(app => app.status === activeTab)
+  const filteredApplications = applications.filter((app) =>
+    activeTab === 'approved' ? app.status === 'approved' : activeTab === 'rejected' ? app.status === 'rejected' : app.status === 'pending'
+  )
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -86,16 +86,6 @@ export default function ApplicationStatus() {
 
       {/* Tabs */}
       <div className="mb-6 flex flex-wrap gap-3 border-b border-gray-200">
-        <button
-          onClick={() => setActiveTab('all')}
-          className={`pb-3 px-4 font-semibold transition-colors border-b-2 ${
-            activeTab === 'all'
-              ? 'text-[#4A4CF0] border-[#4A4CF0]'
-              : 'text-gray-600 border-transparent hover:text-[#4A4CF0]'
-          }`}
-        >
-          All ({applications.length})
-        </button>
         <button
           onClick={() => setActiveTab('pending')}
           className={`pb-3 px-4 font-semibold transition-colors border-b-2 ${
@@ -136,10 +126,10 @@ export default function ApplicationStatus() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-3">
-            {activeTab === 'all' ? 'No applications yet' : `No ${activeTab} applications`}
+            {activeTab === 'pending' ? 'No pending applications' : activeTab === 'approved' ? 'No accepted applications' : 'No rejected applications'}
           </h2>
           <p className="text-gray-600 text-base max-w-md">
-            {activeTab === 'all' 
+            {activeTab === 'pending'
               ? 'Start browsing companies to find referral opportunities!'
               : `You don't have any ${activeTab} applications at the moment.`}
           </p>
@@ -159,7 +149,7 @@ export default function ApplicationStatus() {
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Applied on {new Date(app.createdAt).toLocaleDateString()}
+                    Applied on {new Date(app.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0">
@@ -175,9 +165,7 @@ export default function ApplicationStatus() {
                     className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                     title="Delete application"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    Delete Application
                   </button>
                 </div>
               </div>
