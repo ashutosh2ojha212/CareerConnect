@@ -34,6 +34,13 @@ function ensureStringArray(v: unknown): string[] {
   return []
 }
 
+interface JobPostOption {
+  id: string
+  title: string
+  companyName: string
+  location?: string
+}
+
 interface ViewProfileModalProps {
   profile: JobSeekerProfile | null
   onClose: () => void
@@ -42,6 +49,10 @@ interface ViewProfileModalProps {
 function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
   const [inviting, setInviting] = useState(false)
   const [invitationSent, setInvitationSent] = useState(false)
+  const [showJobSelector, setShowJobSelector] = useState(false)
+  const [jobPosts, setJobPosts] = useState<JobPostOption[]>([])
+  const [loadingJobs, setLoadingJobs] = useState(false)
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
 
   if (!profile) return null
 
@@ -57,12 +68,39 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
     ? (profile.resumeUrl.startsWith('http') ? profile.resumeUrl : `${API_BASE}${profile.resumeUrl}`)
     : null
 
-  const handleInviteToApply = async () => {
+  const fetchJobPosts = async () => {
+    setLoadingJobs(true)
+    try {
+      const response = await api.get('/jobs/my-posts')
+      setJobPosts(response.data || [])
+    } catch (e) {
+      console.error('Failed to fetch job posts:', e)
+      setJobPosts([])
+    } finally {
+      setLoadingJobs(false)
+    }
+  }
+
+  const handleInviteClick = async () => {
+    // First fetch job posts to let user select
+    await fetchJobPosts()
+    setShowJobSelector(true)
+  }
+
+  const handleSendInvitation = async () => {
+    if (!selectedJobId) {
+      toast.error('Please select a job opening')
+      return
+    }
     setInviting(true)
     try {
-      await api.post('/invitations', { toJobSeekerId: profile.userId })
+      await api.post('/invitations', { 
+        toJobSeekerId: profile.userId,
+        jobPostId: selectedJobId 
+      })
       toast.success('Invitation sent to the candidate.')
       setInvitationSent(true)
+      setShowJobSelector(false)
     } catch (e: any) {
       if (e.response?.status === 409) {
         toast.error('Invitation already sent to this candidate.')
@@ -192,7 +230,7 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
               )}
               <button
                 type="button"
-                onClick={handleInviteToApply}
+                onClick={handleInviteClick}
                 disabled={inviting || invitationSent}
                 className="h-11 px-5 rounded-xl bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-semibold hover:shadow-lg disabled:opacity-60 transition-all"
               >
@@ -201,6 +239,90 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
             </div>
           </div>
         </div>
+
+        {/* Job Selection Modal */}
+        {showJobSelector && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-2xl">
+            <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Select Job Opening</h3>
+                <button
+                  onClick={() => {
+                    setShowJobSelector(false)
+                    setSelectedJobId(null)
+                  }}
+                  className="p-1 text-gray-400 hover:text-gray-600 rounded-lg"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Choose which job opening you want to invite {profile.fullName.split(' ')[0]} to apply for:
+              </p>
+              
+              {loadingJobs ? (
+                <div className="flex justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A4CF0]"></div>
+                </div>
+              ) : jobPosts.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 mb-2">No job posts available</p>
+                  <p className="text-sm text-gray-400">Create a job post first to invite candidates</p>
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-64 overflow-y-auto mb-4">
+                  {jobPosts.map((job) => (
+                    <label
+                      key={job.id}
+                      className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                        selectedJobId === job.id
+                          ? 'border-[#4A4CF0] bg-[#EEF0FF]'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="jobPost"
+                        value={job.id}
+                        checked={selectedJobId === job.id}
+                        onChange={() => setSelectedJobId(job.id)}
+                        className="mt-1 h-4 w-4 text-[#4A4CF0] focus:ring-[#4A4CF0]"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-900">{job.title}</p>
+                        <p className="text-sm text-gray-600">{job.companyName}</p>
+                        {job.location && (
+                          <p className="text-xs text-gray-500">{job.location}</p>
+                        )}
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowJobSelector(false)
+                    setSelectedJobId(null)
+                  }}
+                  className="flex-1 h-10 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSendInvitation}
+                  disabled={!selectedJobId || inviting || jobPosts.length === 0}
+                  className="flex-1 h-10 rounded-xl bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-semibold hover:shadow-lg disabled:opacity-50 transition-all"
+                >
+                  {inviting ? 'Sending...' : 'Send Invitation'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

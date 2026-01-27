@@ -91,6 +91,42 @@ router.post('/form', authenticate, async (req: AuthRequest, res, next) => {
   }
 })
 
+// Get referral form for a specific employee (for job seekers)
+router.get('/form/:employeeId', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const { employeeId } = req.params
+
+    const form = await prisma.referralForm.findUnique({
+      where: { userId: employeeId },
+    })
+
+    if (!form) {
+      // Return default fields if no custom form exists
+      return res.json({
+        id: 'default',
+        formTitle: 'Referral Application Form',
+        fields: [
+          { id: 'name', label: 'Full Name', type: 'text', required: true },
+          { id: 'email', label: 'Email', type: 'email', required: true },
+          { id: 'phone', label: 'Phone Number', type: 'tel', required: false },
+          { id: 'experience', label: 'Years of Experience', type: 'number', required: false },
+          { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true },
+        ],
+      })
+    }
+
+    res.json({
+      id: form.id,
+      formTitle: form.formTitle,
+      fields: JSON.parse(form.fields),
+      createdAt: form.createdAt,
+      updatedAt: form.updatedAt,
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
 // Update referral form (PUT)
 router.put('/form', authenticate, async (req: AuthRequest, res, next) => {
   try {
