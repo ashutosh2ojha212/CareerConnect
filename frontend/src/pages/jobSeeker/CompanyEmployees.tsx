@@ -41,6 +41,7 @@ export default function CompanyEmployees() {
   const [isLoading, setIsLoading] = useState(true)
   const [modalJob, setModalJob] = useState<JobPost | null>(null)
   const [referralTarget, setReferralTarget] = useState<{ employee: Employee; jobPostId: string } | null>(null)
+  const [appliedJobs, setAppliedJobs] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     if (companyId) {
@@ -59,6 +60,23 @@ export default function CompanyEmployees() {
       ])
       setCompany(companyRes.data)
       setEmployees(employeesRes.data || [])
+      
+      // Check applied status for all jobs
+      const jobs = companyRes.data?.jobPosts || []
+      const appliedSet = new Set<string>()
+      await Promise.all(
+        jobs.map(async (job: JobPost) => {
+          try {
+            const res = await api.get(`/applications/check?jobId=${job.id}`)
+            if (res.data?.hasApplied) {
+              appliedSet.add(job.id)
+            }
+          } catch {
+            // Ignore check errors
+          }
+        })
+      )
+      setAppliedJobs(appliedSet)
     } catch (e: any) {
       if (e.response?.status === 404) setCompany(null)
       else setCompany(null)
@@ -82,6 +100,7 @@ export default function CompanyEmployees() {
         jobPostId={referralTarget.jobPostId}
         onBack={() => setReferralTarget(null)}
         onSuccess={() => {
+          setAppliedJobs((prev) => new Set(prev).add(referralTarget.jobPostId))
           setReferralTarget(null)
           setModalJob(null)
           navigate('/job-seeker/applications')
@@ -135,39 +154,52 @@ export default function CompanyEmployees() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          {jobPosts.map((job) => (
-            <div
-              key={job.id}
-              className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all"
-            >
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{job.title}</h3>
-              <p className="text-sm text-gray-600 mb-3">Posted by {job.postedBy.name}</p>
-              {job.description && (
-                <p className="text-gray-700 mb-4 line-clamp-2">{job.description}</p>
-              )}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {job.experience != null && (
-                  <span className="px-3 py-1 bg-[#EEF0FF] text-[#4A4CF0] rounded-lg text-sm font-medium">
-                    {job.experience}+ years
-                  </span>
-                )}
-                {job.location && (
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">
-                    {job.location}
-                  </span>
-                )}
-              </div>
-              <p className="text-sm text-gray-500 mb-4">
-                {job.applicantCount} {job.applicantCount === 1 ? 'applicant' : 'applicants'}
-              </p>
-              <button
-                onClick={() => setModalJob(job)}
-                className="w-full py-2.5 rounded-xl bg-[#4A4CF0] text-white font-semibold hover:bg-[#6366F1] transition"
+          {jobPosts.map((job) => {
+            const hasApplied = appliedJobs.has(job.id)
+            return (
+              <div
+                key={job.id}
+                className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] transition-all"
               >
-                View Details
-              </button>
-            </div>
-          ))}
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{job.title}</h3>
+                <p className="text-sm text-gray-600 mb-3">Posted by {job.postedBy.name}</p>
+                {job.description && (
+                  <p className="text-gray-700 mb-4 line-clamp-2">{job.description}</p>
+                )}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {job.experience != null && (
+                    <span className="px-3 py-1 bg-[#EEF0FF] text-[#4A4CF0] rounded-lg text-sm font-medium">
+                      {job.experience}+ years
+                    </span>
+                  )}
+                  {job.location && (
+                    <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">
+                      {job.location}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm text-gray-500">
+                    {job.applicantCount} {job.applicantCount === 1 ? 'applicant' : 'applicants'}
+                  </p>
+                  {hasApplied && (
+                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-semibold flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      Applied
+                    </span>
+                  )}
+                </div>
+                <button
+                  onClick={() => setModalJob(job)}
+                  className="w-full py-2.5 rounded-xl bg-[#4A4CF0] text-white font-semibold hover:bg-[#6366F1] transition"
+                >
+                  View Details
+                </button>
+              </div>
+            )
+          })}
         </div>
       )}
 
@@ -180,8 +212,12 @@ export default function CompanyEmployees() {
             className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Header with close button */}
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-2xl font-bold text-gray-900">{modalJob.title}</h3>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">{modalJob.title}</h3>
+                <p className="text-[#4A4CF0] font-semibold">{company.name}</p>
+              </div>
               <button
                 onClick={() => setModalJob(null)}
                 className="p-1 rounded-full hover:bg-gray-100 text-gray-500"
@@ -192,30 +228,38 @@ export default function CompanyEmployees() {
                 </svg>
               </button>
             </div>
-            <p className="text-gray-600 font-medium mb-2">{company.name}</p>
+
+            {/* Job Description */}
             {modalJob.description && (
-              <p className="text-gray-700 mb-4 whitespace-pre-wrap">{modalJob.description}</p>
+              <div className="mb-5">
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Job Description</h4>
+                <p className="text-gray-600 whitespace-pre-wrap leading-relaxed">{modalJob.description}</p>
+              </div>
             )}
-            <div className="flex flex-wrap gap-2 mb-4">
+
+            {/* Experience & Location */}
+            <div className="flex flex-wrap gap-2 mb-5">
               {modalJob.experience != null && (
-                <span className="px-3 py-1 bg-[#EEF0FF] text-[#4A4CF0] rounded-lg text-sm font-medium">
-                  {modalJob.experience}+ years
+                <span className="px-3 py-1.5 bg-[#EEF0FF] text-[#4A4CF0] rounded-lg text-sm font-medium">
+                  {modalJob.experience}+ years experience
                 </span>
               )}
               {modalJob.location && (
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">
-                  {modalJob.location}
+                <span className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">
+                  📍 {modalJob.location}
                 </span>
               )}
             </div>
+
+            {/* Skills */}
             {modalJob.skills && modalJob.skills.length > 0 && (
-              <div className="mb-4">
-                <p className="text-sm font-medium text-gray-700 mb-2">Skills</p>
+              <div className="mb-5">
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Required Skills</h4>
                 <div className="flex flex-wrap gap-2">
                   {modalJob.skills.map((s, i) => (
                     <span
                       key={i}
-                      className="px-2.5 py-1 bg-[#EEF0FF] text-[#4A4CF0] rounded-lg text-xs font-medium"
+                      className="px-3 py-1.5 bg-[#EEF0FF] text-[#4A4CF0] rounded-lg text-sm font-medium"
                     >
                       {s}
                     </span>
@@ -223,25 +267,40 @@ export default function CompanyEmployees() {
                 </div>
               </div>
             )}
-            <p className="text-sm font-medium text-gray-700 mb-2">Referring employee</p>
-            <p className="text-gray-600 mb-4">{modalJob.postedBy.name}</p>
-            <button
-              onClick={() => {
-                const emp = employees.find((e) => e.id === modalJob.postedBy.id)
-                const employee: Employee = emp || {
-                  id: modalJob.postedBy.id,
-                  name: modalJob.postedBy.name,
-                  email: '',
-                  position: null,
-                  company: { id: company.id, name: company.name },
-                }
-                setReferralTarget({ employee, jobPostId: modalJob.id })
-                setModalJob(null)
-              }}
-              className="w-full py-3 rounded-xl bg-[#4A4CF0] text-white font-semibold hover:bg-[#6366F1] transition"
-            >
-              Request Referral
-            </button>
+
+            {/* Referring Employee */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-xl">
+              <h4 className="text-sm font-semibold text-gray-700 mb-1">Referring Employee</h4>
+              <p className="text-gray-900 font-medium">{modalJob.postedBy.name}</p>
+            </div>
+
+            {/* Action Button */}
+            {appliedJobs.has(modalJob.id) ? (
+              <div className="w-full py-3 rounded-xl bg-green-100 text-green-700 font-semibold text-center flex items-center justify-center gap-2">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Already Applied
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  const emp = employees.find((e) => e.id === modalJob.postedBy.id)
+                  const employee: Employee = emp || {
+                    id: modalJob.postedBy.id,
+                    name: modalJob.postedBy.name,
+                    email: '',
+                    position: null,
+                    company: { id: company.id, name: company.name },
+                  }
+                  setReferralTarget({ employee, jobPostId: modalJob.id })
+                  setModalJob(null)
+                }}
+                className="w-full py-3 rounded-xl bg-[#4A4CF0] text-white font-semibold hover:bg-[#6366F1] transition"
+              >
+                Request Referral
+              </button>
+            )}
           </div>
         </div>
       )}

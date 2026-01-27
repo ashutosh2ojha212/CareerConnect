@@ -69,10 +69,7 @@ export default function MyInvitations() {
 
   const handleApplyNow = (inv: Invitation) => {
     if (inv.status === 'APPLIED' || hasAppliedMap[inv.id]) return
-    if (!inv.jobPostId) {
-      // If no job post ID, we can't apply - show error
-      return
-    }
+    // Allow applying even if jobPostId is null - the backend will handle finding the right job
     setSelected(inv)
   }
 
@@ -148,7 +145,9 @@ export default function MyInvitations() {
         <div className="space-y-5">
           {list.map((inv) => {
             const alreadyApplied = inv.status === 'APPLIED' || hasAppliedMap[inv.id]
-            const jobGone = inv.jobAvailable === false || (inv.jobPostId == null && !inv.jobTitle && !inv.companyName)
+            // Only mark as gone if jobAvailable is explicitly false (job was deleted)
+            // If jobPostId is null but we have job info, the invitation is still valid
+            const jobGone = inv.jobAvailable === false
             return (
               <div
                 key={inv.id}

@@ -352,7 +352,43 @@ router.get('/:employeeId/form-fields', authenticate, async (req, res, next) => {
   }
 })
 
-// Delete application (soft delete - job seeker can delete their own applications)
+// Revoke application (only pending applications can be revoked)
+router.delete('/:applicationId/revoke', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const { applicationId } = req.params
+    const userId = req.user!.id
+
+    // Find the application and verify ownership
+    const application = await prisma.referralApplication.findUnique({
+      where: { id: applicationId },
+    })
+
+    if (!application) {
+      return res.status(404).json({ message: 'Application not found' })
+    }
+
+    // Verify user owns the application
+    if (application.userId !== userId) {
+      return res.status(403).json({ message: 'Unauthorized: You can only revoke your own applications' })
+    }
+
+    // Only allow revoking pending applications
+    if (application.status !== 'pending') {
+      return res.status(400).json({ message: 'Only pending applications can be revoked' })
+    }
+
+    // Hard delete the application (revoke)
+    await prisma.referralApplication.delete({
+      where: { id: applicationId },
+    })
+
+    res.json({ success: true, message: 'Application revoked successfully' })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Delete application (soft delete - only accepted/rejected applications can be deleted)
 router.delete('/:applicationId', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const { applicationId } = req.params
@@ -370,6 +406,11 @@ router.delete('/:applicationId', authenticate, async (req: AuthRequest, res, nex
     // Verify user owns the application (job seeker can delete their own applications)
     if (application.userId !== userId) {
       return res.status(403).json({ message: 'Unauthorized: You can only delete your own applications' })
+    }
+
+    // Only allow deleting accepted or rejected applications
+    if (application.status === 'pending') {
+      return res.status(400).json({ message: 'Pending applications cannot be deleted. Use revoke instead.' })
     }
 
     // Soft delete the application

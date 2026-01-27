@@ -20,6 +20,7 @@ export default function ApplicationStatus() {
   const [applications, setApplications] = useState<Application[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending')
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     fetchApplications()
@@ -37,6 +38,19 @@ export default function ApplicationStatus() {
     }
   }
 
+  const handleRevoke = async (applicationId: string) => {
+    if (!confirm('Are you sure you want to revoke this application? This action cannot be undone.')) {
+      return
+    }
+    try {
+      await api.delete(`/applications/${applicationId}/revoke`)
+      toast.success('Application revoked successfully')
+      setApplications((prev) => prev.filter((app) => app.id !== applicationId))
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to revoke application')
+    }
+  }
+
   const handleDelete = async (applicationId: string) => {
     if (!confirm('Are you sure you want to delete this application?')) {
       return
@@ -44,15 +58,23 @@ export default function ApplicationStatus() {
     try {
       await api.delete(`/applications/${applicationId}`)
       toast.success('Application deleted successfully')
-      fetchApplications()
+      setApplications((prev) => prev.filter((app) => app.id !== applicationId))
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to delete application')
     }
   }
 
-  const filteredApplications = applications.filter((app) =>
-    activeTab === 'approved' ? app.status === 'approved' : activeTab === 'rejected' ? app.status === 'rejected' : app.status === 'pending'
-  )
+  // Filter by tab and search query
+  const filteredApplications = applications
+    .filter((app) => app.status === activeTab)
+    .filter((app) => {
+      if (!searchQuery.trim()) return true
+      const query = searchQuery.toLowerCase().trim()
+      const jobTitle = (app.jobTitle || '').toLowerCase()
+      const companyName = (app.companyName || '').toLowerCase()
+      const status = app.status.toLowerCase()
+      return jobTitle.includes(query) || companyName.includes(query) || status.includes(query)
+    })
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -79,9 +101,30 @@ export default function ApplicationStatus() {
 
   return (
     <div>
-      <div className="mb-10">
+      <div className="mb-6">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">My Applications</h1>
         <p className="text-gray-600 text-base sm:text-lg">Track the status of your referral applications</p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative max-w-md">
+          <svg
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by job title, company, or status..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#4A4CF0] focus:ring-2 focus:ring-[#4A4CF0]/20 outline-none transition-all text-gray-900 placeholder:text-gray-400"
+          />
+        </div>
       </div>
 
       {/* Tabs */}
@@ -126,10 +169,18 @@ export default function ApplicationStatus() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-3">
-            {activeTab === 'pending' ? 'No pending applications' : activeTab === 'approved' ? 'No accepted applications' : 'No rejected applications'}
+            {searchQuery
+              ? 'No matching applications'
+              : activeTab === 'pending'
+              ? 'No pending applications'
+              : activeTab === 'approved'
+              ? 'No accepted applications'
+              : 'No rejected applications'}
           </h2>
           <p className="text-gray-600 text-base max-w-md">
-            {activeTab === 'pending'
+            {searchQuery
+              ? `No applications found for "${searchQuery}". Try a different search.`
+              : activeTab === 'pending'
               ? 'Start browsing companies to find referral opportunities!'
               : `You don't have any ${activeTab} applications at the moment.`}
           </p>
@@ -160,25 +211,35 @@ export default function ApplicationStatus() {
                   >
                     {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                   </span>
-                  <button
-                    onClick={() => handleDelete(app.id)}
-                    className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
-                    title="Delete application"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  {app.status === 'pending' ? (
+                    <button
+                      onClick={() => handleRevoke(app.id)}
+                      className="px-4 py-2 text-sm font-semibold text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-xl transition-all duration-200 border border-amber-200"
+                      title="Revoke application"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
+                      Revoke
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleDelete(app.id)}
+                      className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
+                      title="Delete application"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -188,4 +249,3 @@ export default function ApplicationStatus() {
     </div>
   )
 }
-
