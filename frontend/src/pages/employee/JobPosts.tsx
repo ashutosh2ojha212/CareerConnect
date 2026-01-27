@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import api from '../../lib/api'
 
 interface JobPost {
@@ -39,6 +40,8 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
   const [referralForm, setReferralForm] = useState<ReferralForm | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isFormLoading, setIsFormLoading] = useState(true)
+  const [deleteModalJob, setDeleteModalJob] = useState<JobPost | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     fetchJobPosts()
@@ -117,6 +120,29 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
   const handleEditClick = (e: React.MouseEvent, jobId: string) => {
     e.stopPropagation()
     navigate(`/employee/edit/${jobId}`)
+  }
+
+  const handleDeleteClick = (e: React.MouseEvent, job: JobPost) => {
+    e.stopPropagation()
+    setDeleteModalJob(job)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModalJob) return
+    setIsDeleting(true)
+    try {
+      await api.delete(`/jobs/${deleteModalJob.id}`)
+      // Remove from both lists
+      setAllJobPosts((prev) => prev.filter((j) => j.id !== deleteModalJob.id))
+      setJobPosts((prev) => prev.filter((j) => j.id !== deleteModalJob.id))
+      toast.success('Job post deleted successfully.')
+      setDeleteModalJob(null)
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Failed to delete job post'
+      toast.error(msg)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   if (isLoading || isFormLoading) {
@@ -208,26 +234,47 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
               key={job.id}
               className="group bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 relative"
             >
-              {/* Edit Icon - Top Right */}
-              <button
-                onClick={(e) => handleEditClick(e, job.id)}
-                className="absolute top-5 right-5 p-2.5 text-gray-400 hover:text-[#4A4CF0] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200 z-10"
-                title="Edit Job Post"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {/* Action Icons - Top Right */}
+              <div className="absolute top-5 right-5 flex items-center gap-1 z-10">
+                <button
+                  onClick={(e) => handleEditClick(e, job.id)}
+                  className="p-2.5 text-gray-400 hover:text-[#4A4CF0] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200"
+                  title="Edit Job Post"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={(e) => handleDeleteClick(e, job)}
+                  className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
+                  title="Delete Job Post"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </div>
 
               <div
                 onClick={() => navigate(`/employee/job/${job.id}`)}
@@ -373,6 +420,60 @@ export default function JobPosts({ searchQuery = '' }: JobPostsProps) {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalJob && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          onClick={() => !isDeleting && setDeleteModalJob(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Delete Job Post?</h3>
+                <p className="text-sm text-gray-600 mt-1">{deleteModalJob.title}</p>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-6">
+              This action cannot be undone. Applicants and invitations linked to this job post will also be removed.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteModalJob(null)}
+                disabled={isDeleting}
+                className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                className="px-5 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {isDeleting ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

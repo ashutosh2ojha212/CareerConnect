@@ -185,4 +185,36 @@ router.put('/:id/apply', authenticate, async (req: AuthRequest, res, next) => {
   }
 })
 
+// DELETE /api/invitations/:id — job seeker deletes/declines an invitation
+router.delete('/:id', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const userId = req.user!.id
+    const { id } = req.params
+    const model = (prisma as any).referralInvitation
+    if (!model?.delete) {
+      return res.status(503).json({ message: 'Invitations not available.' })
+    }
+
+    const inv = await model.findUnique({ where: { id } })
+    if (!inv) {
+      return res.status(404).json({ message: 'Invitation not found' })
+    }
+    if (inv.candidateId !== userId) {
+      return res.status(403).json({ message: 'You can only delete your own invitations' })
+    }
+
+    await model.delete({ where: { id } })
+
+    res.json({
+      success: true,
+      message: 'Invitation deleted successfully',
+    })
+  } catch (e: any) {
+    if (e.code === 'P2025') {
+      return res.status(404).json({ message: 'Invitation not found' })
+    }
+    next(e)
+  }
+})
+
 export default router

@@ -428,5 +428,61 @@ router.get('/:jobId/form-fields', authenticate, async (req, res, next) => {
   }
 })
 
+// Delete job post (with all associated applications and invitations)
+router.delete('/:jobId', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const { jobId } = req.params
+    const userId = req.user!.id
+
+    // Check if job exists
+    const jobPost = await prisma.jobPost.findUnique({
+      where: { id: jobId },
+      select: { id: true, userId: true, title: true },
+    })
+
+    if (!jobPost) {
+      return res.status(404).json({ message: 'Job post not found' })
+    }
+
+    // Check if user owns this job post
+    if (jobPost.userId !== userId) {
+      return res.status(403).json({ message: 'You are not authorized to delete this job post' })
+    }
+
+    // Use transaction to delete all related data
+    await prisma.$transaction(async (tx) => {
+      // Delete referral invitations linked to this job post
+      await tx.referralInvitation.deleteMany({
+        where: { jobPostId: jobId },
+      })
+
+      // Delete applications (cascade will handle this, but explicit is safer)
+      await tx.referralApplication.deleteMany({
+        where: { jobPostId: jobId },
+      })
+
+      // Delete custom form fields (cascade will handle this, but explicit is safer)
+      await tx.jobCustomFormField.deleteMany({
+        where: { jobPostId: jobId },
+      })
+
+      // Delete the job post
+      await tx.jobPost.delete({
+        where: { id: jobId },
+      })
+    })
+
+    res.json({
+      success: true,
+      message: 'Job post deleted successfully',
+    })
+  } catch (error: any) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ message: 'Job post not found' })
+    }
+    next(error)
+  }
+})
+
 export default router
 
