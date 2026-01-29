@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import GoogleButton from '../../components/GoogleButton'
+import { EyeIcon, EyeSlashIcon } from '../../components/PasswordToggleIcons'
 import { authService, SignUpData } from '../../lib/auth'
 import { useAuthStore } from '../../store/authStore'
 
@@ -15,6 +16,8 @@ export default function SignUp() {
   const setAuth = useAuthStore((state) => state.setAuth)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const {
     register,
     handleSubmit,
@@ -224,28 +227,46 @@ export default function SignUp() {
               >
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                autoComplete="new-password"
-                {...register('password', {
-                  required: 'Password is required',
-                  validate: {
-                    notEmpty: (value) => value.trim() !== '' || 'Password cannot be empty',
-                    minLength: (value) => value.length >= 8 || 'Password must be at least 8 characters',
-                    maxLength: (value) => value.length <= 128 || 'Password is too long (max 128 characters)',
-                    hasUpperCase: (value) => /[A-Z]/.test(value) || 'Password must contain at least one uppercase letter',
-                    hasLowerCase: (value) => /[a-z]/.test(value) || 'Password must contain at least one lowercase letter',
-                    hasNumber: (value) => /[0-9]/.test(value) || 'Password must contain at least one number',
-                    hasSpecialChar: (value) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value) || 'Password must contain at least one special character',
-                    noSpaces: (value) => !/\s/.test(value) || 'Password cannot contain spaces',
-                  }
-                })}
-                className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
-                placeholder="••••••••"
-                aria-invalid={errors.password ? 'true' : 'false'}
-                aria-describedby={errors.password ? 'password-error' : undefined}
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  {...register('password', {
+                    required: 'Password is required',
+                    validate: {
+                      notEmpty: (value) => value.trim() !== '' || 'Password cannot be empty',
+                      minLength: (value) => value.length >= 8 || 'Password must be at least 8 characters',
+                      maxLength: (value) => value.length <= 128 || 'Password is too long (max 128 characters)',
+                      hasUpperCase: (value) => /[A-Z]/.test(value) || 'Password must contain at least one uppercase letter',
+                      hasLowerCase: (value) => /[a-z]/.test(value) || 'Password must contain at least one lowercase letter',
+                      hasNumber: (value) => /[0-9]/.test(value) || 'Password must contain at least one number',
+                      hasSpecialChar: (value) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value) || 'Password must contain at least one special character',
+                      noSpaces: (value) => !/\s/.test(value) || 'Password cannot contain spaces',
+                    }
+                  })}
+                  className="w-full h-12 px-4 pr-11 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
+                  placeholder="••••••••"
+                  aria-invalid={errors.password ? 'true' : 'false'}
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                />
+                <span
+                  data-password-toggle
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowPassword((p) => !p)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setShowPassword((p) => !p)
+                    }
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer select-none outline-none focus:outline-none"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
+                </span>
+              </div>
               {errors.password && (
                 <p
                   id="password-error"
@@ -276,24 +297,42 @@ export default function SignUp() {
               >
                 Confirm password
               </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                {...register('confirmPassword', {
-                  required: 'Please confirm your password',
-                  validate: {
-                    matches: (value: string) => value === password || 'Passwords do not match',
-                    notEmpty: (value: string) => value.trim() !== '' || 'Please confirm your password',
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  {...register('confirmPassword', {
+                    required: 'Please confirm your password',
+                    validate: {
+                      matches: (value: string) => value === password || 'Passwords do not match',
+                      notEmpty: (value: string) => value.trim() !== '' || 'Please confirm your password',
+                    }
+                  })}
+                  className="w-full h-12 px-4 pr-11 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
+                  placeholder="••••••••"
+                  aria-invalid={errors.confirmPassword ? 'true' : 'false'}
+                  aria-describedby={
+                    errors.confirmPassword ? 'confirmPassword-error' : undefined
                   }
-                })}
-                className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
-                placeholder="••••••••"
-                aria-invalid={errors.confirmPassword ? 'true' : 'false'}
-                aria-describedby={
-                  errors.confirmPassword ? 'confirmPassword-error' : undefined
-                }
-              />
+                />
+                <span
+                  data-password-toggle
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowConfirmPassword((p) => !p)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setShowConfirmPassword((p) => !p)
+                    }
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer select-none outline-none focus:outline-none"
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showConfirmPassword ? <EyeIcon /> : <EyeSlashIcon />}
+                </span>
+              </div>
               {errors.confirmPassword && (
                 <p
                   id="confirmPassword-error"

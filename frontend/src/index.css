@@ -27,3 +27,15 @@ body {
   min-height: 100vh;
 }
 
+/* Password visibility toggle: no box, border, or focus ring */
+[data-password-toggle]:focus {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+[data-password-toggle] {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+

@@ -144,3 +144,86 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   }
 }
 
+/** Welcome email sent only on first signup. Uses same HTML template style as other emails. */
+export const sendWelcomeEmail = async (email: string, name: string) => {
+  const displayName = name?.trim() || 'there'
+  let transporter
+  try {
+    transporter = createTransporter()
+  } catch (error: any) {
+    console.error('❌ Failed to create email transporter for welcome email:', error.message)
+    throw error
+  }
+
+  const loginUrl = FRONTEND_URL + '/signin'
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to CareerConnect</title>
+      </head>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #4A4CF0 0%, #6366F1 50%, #7C3AED 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 600;">CareerConnect</h1>
+        </div>
+        <div style="background: #ffffff; padding: 40px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <h2 style="color: #1f2937; margin-top: 0; font-size: 20px;">Welcome to CareerConnect 🎉</h2>
+          <p style="color: #4b5563; font-size: 16px;">Hi ${displayName},</p>
+          <p style="color: #4b5563; font-size: 16px;">Thanks for joining CareerConnect. We're glad to have you!</p>
+          <p style="color: #4b5563; font-size: 16px;">Here’s how you can get started:</p>
+          <ul style="color: #4b5563; font-size: 16px; padding-left: 20px;">
+            <li><strong>Browse Companies</strong> — Explore companies and their job openings.</li>
+            <li><strong>My Applications</strong> — Track your referral applications and status.</li>
+            <li><strong>My Invitations</strong> — See when employees invite you to apply for a role.</li>
+            <li><strong>Creating or applying for jobs</strong> — As a job seeker you can request referrals and apply; as an employee you can post jobs and invite candidates.</li>
+          </ul>
+          <p style="color: #4b5563; font-size: 16px;">We're excited to help you grow your career!</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${loginUrl}" style="display: inline-block; background: linear-gradient(135deg, #4A4CF0 0%, #6366F1 100%); color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">Sign in to CareerConnect</a>
+          </div>
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+          <p style="color: #9ca3af; font-size: 12px; text-align: center; margin: 0;">© ${new Date().getFullYear()} CareerConnect. All rights reserved.</p>
+        </div>
+      </body>
+    </html>
+  `
+  const text = `
+Welcome to CareerConnect 🎉
+
+Hi ${displayName},
+
+Thanks for joining CareerConnect. We're glad to have you!
+
+Here's how you can get started:
+- Browse Companies — Explore companies and their job openings.
+- My Applications — Track your referral applications and status.
+- My Invitations — See when employees invite you to apply for a role.
+- Creating or applying for jobs — As a job seeker you can request referrals and apply; as an employee you can post jobs and invite candidates.
+
+We're excited to help you grow your career!
+
+Sign in: ${loginUrl}
+
+© ${new Date().getFullYear()} CareerConnect. All rights reserved.
+  `.trim()
+
+  const mailOptions = {
+    from: process.env.SMTP_FROM || 'CareerConnect <noreply@careerconnect.com>',
+    to: email,
+    subject: 'Welcome to CareerConnect 🎉',
+    html,
+    text,
+  }
+
+  try {
+    const info = await transporter.sendMail(mailOptions)
+    console.log('✅ Welcome email sent to', email, 'Message ID:', info.messageId)
+    return { success: true, messageId: info.messageId }
+  } catch (error: any) {
+    console.error('❌ Error sending welcome email:', error.message)
+    throw error
+  }
+}
+

@@ -19,6 +19,7 @@ model User {
   role                 String? // "job_seeker" or "referrer"
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
+  welcomeEmailSent     Boolean   @default(false)
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 

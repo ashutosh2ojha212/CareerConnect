@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import GoogleButton from '../../components/GoogleButton'
+import { EyeIcon, EyeSlashIcon } from '../../components/PasswordToggleIcons'
 import { authService, SignInData } from '../../lib/auth'
 import { useAuthStore } from '../../store/authStore'
 
@@ -11,6 +12,7 @@ export default function SignIn() {
   const setAuth = useAuthStore((state) => state.setAuth)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const {
     register,
     handleSubmit,
@@ -171,25 +173,43 @@ export default function SignIn() {
                   Forgot password?
                 </Link>
               </div>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                {...register('password', {
-                  required: 'Password is required',
-                  validate: {
-                    notEmpty: (value) => value.trim() !== '' || 'Password cannot be empty',
-                    minLength: (value) => value.length >= 6 || 'Password must be at least 6 characters',
-                    maxLength: (value) => value.length <= 128 || 'Password is too long (max 128 characters)',
-                    noSpaces: (value) => !/\s/.test(value) || 'Password cannot contain spaces',
-                    noOnlySpaces: (value) => value.trim().length > 0 || 'Password cannot be only spaces',
-                  }
-                })}
-                className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
-                placeholder="••••••••"
-                aria-invalid={errors.password ? 'true' : 'false'}
-                aria-describedby={errors.password ? 'password-error' : undefined}
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  {...register('password', {
+                    required: 'Password is required',
+                    validate: {
+                      notEmpty: (value) => value.trim() !== '' || 'Password cannot be empty',
+                      minLength: (value) => value.length >= 6 || 'Password must be at least 6 characters',
+                      maxLength: (value) => value.length <= 128 || 'Password is too long (max 128 characters)',
+                      noSpaces: (value) => !/\s/.test(value) || 'Password cannot contain spaces',
+                      noOnlySpaces: (value) => value.trim().length > 0 || 'Password cannot be only spaces',
+                    }
+                  })}
+                  className="w-full h-12 px-4 pr-11 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
+                  placeholder="••••••••"
+                  aria-invalid={errors.password ? 'true' : 'false'}
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                />
+                <span
+                  data-password-toggle
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowPassword((p) => !p)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setShowPassword((p) => !p)
+                    }
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer select-none outline-none focus:outline-none"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
+                </span>
+              </div>
               {errors.password && (
                 <p
                   id="password-error"

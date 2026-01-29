@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import api from '../../lib/api'
+import { EyeIcon, EyeSlashIcon } from '../../components/PasswordToggleIcons'
 
 interface ResetPasswordData {
   newPassword: string
@@ -15,6 +16,8 @@ export default function ResetPassword() {
   const [isLoading, setIsLoading] = useState(false)
   const [isValidating, setIsValidating] = useState(true)
   const [isValid, setIsValid] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const {
     register,
     handleSubmit,
@@ -218,21 +221,34 @@ export default function ResetPassword() {
               >
                 New Password
               </label>
-              <input
-                id="newPassword"
-                type="password"
-                autoComplete="new-password"
-                {...register('newPassword', {
-                  required: 'Password is required',
-                  minLength: {
-                    value: 6,
-                    message: 'Password must be at least 6 characters',
-                  },
-                })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
-                placeholder="••••••••"
-                aria-invalid={errors.newPassword ? 'true' : 'false'}
-              />
+              <div className="relative">
+                <input
+                  id="newPassword"
+                  type={showNewPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  {...register('newPassword', {
+                    required: 'Password is required',
+                    minLength: {
+                      value: 6,
+                      message: 'Password must be at least 6 characters',
+                    },
+                  })}
+                  className="w-full h-11 px-4 pr-11 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
+                  placeholder="••••••••"
+                  aria-invalid={errors.newPassword ? 'true' : 'false'}
+                />
+                <span
+                  data-password-toggle
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowNewPassword((p) => !p)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowNewPassword((p) => !p); } }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-gray-500 hover:text-gray-700 cursor-pointer select-none outline-none focus:outline-none"
+                  aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showNewPassword ? <EyeIcon /> : <EyeSlashIcon />}
+                </span>
+              </div>
               {errors.newPassword && (
                 <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1" role="alert">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -251,19 +267,32 @@ export default function ResetPassword() {
               >
                 Confirm Password
               </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                {...register('confirmPassword', {
-                  required: 'Please confirm your password',
-                  validate: (value: string) =>
-                    value === newPassword || 'Passwords do not match',
-                })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
-                placeholder="••••••••"
-                aria-invalid={errors.confirmPassword ? 'true' : 'false'}
-              />
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  {...register('confirmPassword', {
+                    required: 'Please confirm your password',
+                    validate: (value: string) =>
+                      value === newPassword || 'Passwords do not match',
+                  })}
+                  className="w-full h-11 px-4 pr-11 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
+                  placeholder="••••••••"
+                  aria-invalid={errors.confirmPassword ? 'true' : 'false'}
+                />
+                <span
+                  data-password-toggle
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowConfirmPassword((p) => !p)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowConfirmPassword((p) => !p); } }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-gray-500 hover:text-gray-700 cursor-pointer select-none outline-none focus:outline-none"
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showConfirmPassword ? <EyeIcon /> : <EyeSlashIcon />}
+                </span>
+              </div>
               {errors.confirmPassword && (
                 <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1" role="alert">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">

@@ -3,9 +3,19 @@ import crypto from 'crypto'
 import { prisma } from '../lib/prisma'
 import { hashPassword, comparePassword } from '../utils/bcrypt'
 import { generateToken } from '../utils/jwt'
-import { sendPasswordResetEmail } from '../utils/email'
+import { sendPasswordResetEmail, sendWelcomeEmail } from '../utils/email'
 
 const router = express.Router()
+
+/** Send welcome email and set welcomeEmailSent. Non-blocking; do not await before sending response. */
+async function sendWelcomeEmailAndMarkSent(userId: string, email: string, name: string) {
+  try {
+    await sendWelcomeEmail(email, name ?? 'there')
+    await prisma.user.update({ where: { id: userId }, data: { welcomeEmailSent: true } })
+  } catch (err: any) {
+    console.error('Welcome email failed:', err?.message ?? err)
+  }
+}
 
 // Register
 router.post('/register', async (req, res, next) => {
@@ -28,7 +38,7 @@ router.post('/register', async (req, res, next) => {
     // Hash password
     const hashedPassword = await hashPassword(password)
 
-    // Create user
+    // Create user (welcomeEmailSent defaults to false)
     const user = await prisma.user.create({
       data: {
         name,
@@ -50,6 +60,9 @@ router.post('/register', async (req, res, next) => {
       user,
       token,
     })
+
+    // Send welcome email only on first signup; non-blocking (do not await)
+    sendWelcomeEmailAndMarkSent(user.id, user.email, user.name).catch(() => {})
   } catch (error) {
     next(error)
   }
@@ -368,7 +381,7 @@ router.get('/google/callback', async (req, res, next) => {
     })
 
     if (!user) {
-      // Create new user with Google OAuth
+      // Create new user with Google OAuth (welcomeEmailSent defaults to false)
       const hashedPassword = await hashPassword(Math.random().toString(36) + Date.now().toString())
       user = await prisma.user.create({
         data: {
@@ -383,6 +396,8 @@ router.get('/google/callback', async (req, res, next) => {
           role: true,
         },
       })
+      // Send welcome email only on first signup; non-blocking (do not await)
+      sendWelcomeEmailAndMarkSent(user.id, user.email, user.name).catch(() => {})
     }
 
     // Generate JWT token
