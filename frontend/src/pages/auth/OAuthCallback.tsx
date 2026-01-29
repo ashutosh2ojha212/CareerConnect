@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import toast from 'react-hot-toast'
@@ -7,8 +7,12 @@ export default function OAuthCallback() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const setAuth = useAuthStore((state) => state.setAuth)
+  const hasProcessed = useRef(false)
 
   useEffect(() => {
+    if (hasProcessed.current) return
+    hasProcessed.current = true
+
     const token = searchParams.get('token')
     const userParam = searchParams.get('user')
     const error = searchParams.get('error')
