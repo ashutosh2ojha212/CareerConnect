@@ -33,7 +33,11 @@ interface Employee {
   company: { id: string; name: string }
 }
 
-export default function CompanyEmployees() {
+interface CompanyEmployeesProps {
+  searchQuery?: string
+}
+
+export default function CompanyEmployees({ searchQuery = '' }: CompanyEmployeesProps) {
   const { companyId } = useParams<{ companyId: string }>()
   const navigate = useNavigate()
   const [company, setCompany] = useState<CompanyDetail | null>(null)
@@ -125,7 +129,24 @@ export default function CompanyEmployees() {
     )
   }
 
-  const jobPosts = company.jobPosts || []
+  const allJobPosts = company.jobPosts || []
+  const query = searchQuery.trim().toLowerCase()
+  const jobPosts = query
+    ? allJobPosts.filter((job) => {
+        const title = (job.title || '').toLowerCase()
+        const location = (job.location || '').toLowerCase()
+        const experienceStr = job.experience != null ? String(job.experience) : ''
+        const skillsStr = Array.isArray(job.skills)
+          ? job.skills.join(' ').toLowerCase()
+          : (typeof job.skills === 'string' ? job.skills : '').toLowerCase()
+        return (
+          title.includes(query) ||
+          location.includes(query) ||
+          experienceStr.includes(query) ||
+          skillsStr.includes(query)
+        )
+      })
+    : allJobPosts
 
   return (
     <div>
@@ -150,7 +171,11 @@ export default function CompanyEmployees() {
 
       {jobPosts.length === 0 ? (
         <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-8 text-center border border-gray-100">
-          <p className="text-gray-600">No job openings at this company right now.</p>
+          <p className="text-gray-600">
+            {query
+              ? `No job openings match "${searchQuery.trim()}". Try a different search.`
+              : 'No job openings at this company right now.'}
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">

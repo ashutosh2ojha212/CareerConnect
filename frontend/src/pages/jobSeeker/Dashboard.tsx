@@ -115,32 +115,15 @@ export default function JobSeekerDashboard() {
         if (typeof localStorage !== 'undefined') {
           localStorage.setItem(INVITATION_TOAST_KEY, latestId)
         }
-        toast.success(
-          (t) => (
-            <div className="flex items-center justify-between gap-4">
-              <span>You have a new referral invitation.</span>
-              <button
-                type="button"
-                onClick={() => toast.dismiss(t.id)}
-                className="p-1 rounded hover:bg-white/20"
-                aria-label="Close"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          ),
-          {
-            duration: 5000,
-            style: {
-              background: '#059669',
-              color: '#fff',
-              padding: '14px 20px',
-              fontSize: '15px',
-            },
-          }
-        )
+        toast.success('You have a new referral invitation.', {
+          duration: 5000,
+          style: {
+            background: '#059669',
+            color: '#fff',
+            padding: '14px 20px',
+            fontSize: '15px',
+          },
+        })
       }
     }).catch(() => {})
     return () => { cancelled = true }

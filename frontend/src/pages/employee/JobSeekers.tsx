@@ -48,9 +48,9 @@ interface ViewProfileModalProps {
 
 function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
   const [inviting, setInviting] = useState(false)
-  const [invitationSent, setInvitationSent] = useState(false)
   const [showJobSelector, setShowJobSelector] = useState(false)
   const [jobPosts, setJobPosts] = useState<JobPostOption[]>([])
+  const [invitedJobPostIds, setInvitedJobPostIds] = useState<string[]>([])
   const [loadingJobs, setLoadingJobs] = useState(false)
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
 
@@ -68,22 +68,27 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
     ? (profile.resumeUrl.startsWith('http') ? profile.resumeUrl : `${API_BASE}${profile.resumeUrl}`)
     : null
 
-  const fetchJobPosts = async () => {
+  const fetchJobPostsAndInvited = async () => {
     setLoadingJobs(true)
     try {
-      const response = await api.get('/jobs/my-posts')
-      setJobPosts(response.data || [])
+      const [jobsRes, sentRes] = await Promise.all([
+        api.get('/jobs/my-posts'),
+        api.get(`/invitations/sent?candidateId=${encodeURIComponent(profile.userId)}`),
+      ])
+      setJobPosts(jobsRes.data || [])
+      setInvitedJobPostIds((sentRes.data?.jobPostIds ?? []) as string[])
     } catch (e) {
-      console.error('Failed to fetch job posts:', e)
+      console.error('Failed to fetch job posts or sent invitations:', e)
       setJobPosts([])
+      setInvitedJobPostIds([])
     } finally {
       setLoadingJobs(false)
     }
   }
 
-  const handleInviteClick = async () => {
-    // First fetch job posts to let user select
-    await fetchJobPosts()
+  const handleInviteClick = () => {
+    setSelectedJobId(null)
+    fetchJobPostsAndInvited()
     setShowJobSelector(true)
   }
 
@@ -92,19 +97,27 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
       toast.error('Please select a job opening')
       return
     }
+    const alreadyInvited = invitedJobPostIds.includes(selectedJobId)
+    if (alreadyInvited) {
+      toast.error('Invitation already sent to this candidate.')
+      return
+    }
     setInviting(true)
     try {
-      await api.post('/invitations', { 
+      await api.post('/invitations', {
         toJobSeekerId: profile.userId,
-        jobPostId: selectedJobId 
+        jobPostId: selectedJobId,
       })
       toast.success('Invitation sent to the candidate.')
-      setInvitationSent(true)
+      setInvitedJobPostIds((prev) => (prev.includes(selectedJobId) ? prev : [...prev, selectedJobId]))
       setShowJobSelector(false)
+      setSelectedJobId(null)
     } catch (e: any) {
       if (e.response?.status === 409) {
         toast.error('Invitation already sent to this candidate.')
-        setInvitationSent(true)
+        setInvitedJobPostIds((prev) => (prev.includes(selectedJobId) ? prev : [...prev, selectedJobId]))
+        setSelectedJobId(null)
+        // Keep modal open; do not disable main Invite button
       } else {
         toast.error(e.response?.data?.message || 'Failed to send invitation')
       }
@@ -231,10 +244,10 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
               <button
                 type="button"
                 onClick={handleInviteClick}
-                disabled={inviting || invitationSent}
+                disabled={inviting}
                 className="h-11 px-5 rounded-xl bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-semibold hover:shadow-lg disabled:opacity-60 transition-all"
               >
-                {inviting ? 'Sending…' : invitationSent ? 'Invitation sent' : 'Invite to Apply'}
+                {inviting ? 'Sending…' : 'Invite to Apply'}
               </button>
             </div>
           </div>
@@ -273,32 +286,41 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto mb-4">
-                  {jobPosts.map((job) => (
-                    <label
-                      key={job.id}
-                      className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
-                        selectedJobId === job.id
-                          ? 'border-[#4A4CF0] bg-[#EEF0FF]'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="jobPost"
-                        value={job.id}
-                        checked={selectedJobId === job.id}
-                        onChange={() => setSelectedJobId(job.id)}
-                        className="mt-1 h-4 w-4 text-[#4A4CF0] focus:ring-[#4A4CF0]"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-900">{job.title}</p>
-                        <p className="text-sm text-gray-600">{job.companyName}</p>
-                        {job.location && (
-                          <p className="text-xs text-gray-500">{job.location}</p>
-                        )}
-                      </div>
-                    </label>
-                  ))}
+                  {jobPosts.map((job) => {
+                    const alreadyInvited = invitedJobPostIds.includes(job.id)
+                    return (
+                      <label
+                        key={job.id}
+                        className={`flex items-start gap-3 p-3 rounded-xl border-2 transition-all ${
+                          alreadyInvited
+                            ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-80'
+                            : selectedJobId === job.id
+                              ? 'border-[#4A4CF0] bg-[#EEF0FF] cursor-pointer'
+                              : 'border-gray-200 hover:border-gray-300 cursor-pointer'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="jobPost"
+                          value={job.id}
+                          checked={selectedJobId === job.id}
+                          onChange={() => !alreadyInvited && setSelectedJobId(job.id)}
+                          disabled={alreadyInvited}
+                          className="mt-1 h-4 w-4 text-[#4A4CF0] focus:ring-[#4A4CF0] disabled:opacity-50"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-900">{job.title}</p>
+                          <p className="text-sm text-gray-600">{job.companyName}</p>
+                          {job.location && (
+                            <p className="text-xs text-gray-500">{job.location}</p>
+                          )}
+                          {alreadyInvited && (
+                            <p className="text-xs font-medium text-amber-600 mt-1">Already invited</p>
+                          )}
+                        </div>
+                      </label>
+                    )
+                  })}
                 </div>
               )}
 
@@ -314,7 +336,12 @@ function ViewProfileModal({ profile, onClose }: ViewProfileModalProps) {
                 </button>
                 <button
                   onClick={handleSendInvitation}
-                  disabled={!selectedJobId || inviting || jobPosts.length === 0}
+                  disabled={
+                    !selectedJobId ||
+                    inviting ||
+                    jobPosts.length === 0 ||
+                    invitedJobPostIds.includes(selectedJobId)
+                  }
                   className="flex-1 h-10 rounded-xl bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-semibold hover:shadow-lg disabled:opacity-50 transition-all"
                 >
                   {inviting ? 'Sending...' : 'Send Invitation'}

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
+import { Toaster, ToastBar, toast } from 'react-hot-toast'
 import SignIn from './pages/auth/SignIn'
 import SignUp from './pages/auth/SignUp'
 import ForgotPassword from './pages/auth/ForgotPassword'
@@ -13,7 +13,28 @@ import ProtectedRoute from './components/ProtectedRoute'
 function App() {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <Toaster position="top-right" />
+      <Toaster position="top-right">
+        {(t) => (
+          <ToastBar toast={t}>
+            {({ icon, message }) => (
+              <>
+                {icon}
+                <span className="flex-1">{message}</span>
+                <button
+                  type="button"
+                  onClick={() => toast.dismiss(t.id)}
+                  className="ml-2 p-1 rounded hover:bg-black/10 text-inherit focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-black/20"
+                  aria-label="Close"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </>
+            )}
+          </ToastBar>
+        )}
+      </Toaster>
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />

@@ -80,6 +80,37 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
   }
 })
 
+// GET /api/invitations/sent?candidateId=xxx — employee lists invitations they sent to a candidate (for job selector "Already invited")
+router.get('/sent', authenticate, async (req: AuthRequest, res, next) => {
+  try {
+    const inviterId = req.user!.id
+    const candidateId = req.query.candidateId as string | undefined
+    if (!candidateId || typeof candidateId !== 'string') {
+      return res.status(400).json({ message: 'candidateId query is required' })
+    }
+
+    const emp = await prisma.employeeProfile.findUnique({ where: { userId: inviterId } })
+    if (!emp) {
+      return res.json([])
+    }
+
+    const model = (prisma as any).referralInvitation
+    if (!model?.findMany) {
+      return res.json([])
+    }
+
+    const rows = await model.findMany({
+      where: { inviterId, candidateId },
+      select: { jobPostId: true },
+    })
+
+    const jobPostIds = rows.map((r: { jobPostId: string | null }) => r.jobPostId).filter(Boolean) as string[]
+    res.json({ jobPostIds })
+  } catch (error) {
+    next(error)
+  }
+})
+
 // GET /api/invitations/me — job seeker lists received invitations (with job/company/employee)
 router.get('/me', authenticate, async (req: AuthRequest, res, next) => {
   try {
