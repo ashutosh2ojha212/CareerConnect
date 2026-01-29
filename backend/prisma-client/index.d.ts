@@ -11676,7 +11676,7 @@ export namespace Prisma {
 
   export type ReferralInvitationWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    inviterId_candidateId?: ReferralInvitationInviterIdCandidateIdCompoundUniqueInput
+    inviterId_candidateId_jobPostId?: ReferralInvitationInviterIdCandidateIdJobPostIdCompoundUniqueInput
     AND?: ReferralInvitationWhereInput | ReferralInvitationWhereInput[]
     OR?: ReferralInvitationWhereInput[]
     NOT?: ReferralInvitationWhereInput | ReferralInvitationWhereInput[]
@@ -11688,7 +11688,7 @@ export namespace Prisma {
     inviter?: XOR<UserRelationFilter, UserWhereInput>
     candidate?: XOR<UserRelationFilter, UserWhereInput>
     jobPost?: XOR<JobPostNullableRelationFilter, JobPostWhereInput> | null
-  }, "id" | "inviterId_candidateId">
+  }, "id" | "inviterId_candidateId_jobPostId">
 
   export type ReferralInvitationOrderByWithAggregationInput = {
     id?: SortOrder
@@ -13031,9 +13031,10 @@ export namespace Prisma {
     experience?: SortOrder
   }
 
-  export type ReferralInvitationInviterIdCandidateIdCompoundUniqueInput = {
+  export type ReferralInvitationInviterIdCandidateIdJobPostIdCompoundUniqueInput = {
     inviterId: string
     candidateId: string
+    jobPostId: string
   }
 
   export type ReferralInvitationCountOrderByAggregateInput = {

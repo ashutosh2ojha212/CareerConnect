@@ -170,7 +170,7 @@ model ReferralInvitation {
   candidate User     @relation("Candidate", fields: [candidateId], references: [id], onDelete: Cascade)
   jobPost   JobPost? @relation(fields: [jobPostId], references: [id], onDelete: SetNull)
 
-  @@unique([inviterId, candidateId])
+  @@unique([inviterId, candidateId, jobPostId])
   @@index([candidateId])
   @@index([inviterId])
   @@index([jobPostId])

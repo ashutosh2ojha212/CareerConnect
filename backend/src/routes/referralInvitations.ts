@@ -39,16 +39,16 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
       return res.status(503).json({ message: 'Referral invitations not available. Run prisma generate and migrate.' })
     }
 
-    // Prevent duplicate invitations
+    // Prevent duplicate: same (inviter, candidate, job) — this endpoint sends no job, so jobPostId is null
     const existing = await model.findFirst({
-      where: { inviterId, candidateId },
+      where: { inviterId, candidateId, jobPostId: null },
     })
     if (existing) {
       return res.status(409).json({ message: 'Invitation already sent to this candidate' })
     }
 
     const invitation = await model.create({
-      data: { inviterId, candidateId, status: 'pending' },
+      data: { inviterId, candidateId, jobPostId: null, status: 'PENDING' },
     })
 
     res.status(201).json({

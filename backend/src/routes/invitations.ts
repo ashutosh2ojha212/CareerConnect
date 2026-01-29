@@ -43,8 +43,13 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
       return res.status(503).json({ message: 'Invitations not available. Run prisma generate and migrate.' })
     }
 
+    // Block only if the same (employee, candidate, job) invitation already exists
     const existing = await model.findFirst({
-      where: { inviterId: fromEmployeeId, candidateId: toJobSeekerId },
+      where: {
+        inviterId: fromEmployeeId,
+        candidateId: toJobSeekerId,
+        jobPostId: resolvedJobPostId,
+      },
     })
     if (existing) {
       return res.status(409).json({ message: 'Invitation already sent to this candidate' })
