@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useDebounce } from '../hooks/useDebounce'
 
 interface SearchBarProps {
-  mode: 'candidate' | 'jobpost' | 'hidden'
+  mode: 'candidate' | 'jobpost' | 'company' | 'job-search' | 'hidden'
   placeholder: string
   onSearch: (query: string) => void
   debounce?: number

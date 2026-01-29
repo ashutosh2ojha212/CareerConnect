@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../lib/auth'
 import api from '../../lib/api'
+import SearchBar from '../../components/SearchBar'
 import Companies from './Companies'
 import CompanyEmployees from './CompanyEmployees'
 import ApplicationStatus from './ApplicationStatus'
@@ -16,7 +17,23 @@ export default function JobSeekerDashboard() {
   const { user } = useAuthStore()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const invitationToastShown = useRef(false)
+  const INVITATION_TOAST_KEY = 'careerconnect_lastSeenInvitationId'
+  const [navbarSearch, setNavbarSearch] = useState('')
+
+  const isBrowseCompanies = location.pathname === '/job-seeker' || location.pathname === '/job-seeker/'
+  const isCompanyDetails = location.pathname.startsWith('/job-seeker/company/')
+  const isMyApplications = location.pathname.startsWith('/job-seeker/applications')
+  const showNavbarSearch = isBrowseCompanies || isCompanyDetails || isMyApplications
+
+  const getSearchPlaceholder = () => {
+    if (isCompanyDetails) return 'Search job roles…'
+    if (isMyApplications) return 'Search applications…'
+    return 'Search companies…'
+  }
+
+  const handleNavbarSearch = (query: string) => {
+    setNavbarSearch(query)
+  }
 
   // Get user initials for avatar
   const getUserInitials = () => {
@@ -84,25 +101,46 @@ export default function JobSeekerDashboard() {
     })
   }
 
-  // Show toast when job seeker has new invitations
+  // Show toast only once per new invitation; use localStorage to track last seen
   useEffect(() => {
-    if (invitationToastShown.current) return
     let cancelled = false
     api.get('/invitations/me').then(({ data }) => {
-      if (cancelled || invitationToastShown.current) return
+      if (cancelled) return
       const list = Array.isArray(data) ? data : []
       const pending = list.filter((i: any) => i.status !== 'APPLIED')
-      if (pending.length > 0) {
-        invitationToastShown.current = true
-        toast.success('You have a new referral invitation.', {
-          duration: 5000,
-          style: {
-            background: '#059669',
-            color: '#fff',
-            padding: '14px 20px',
-            fontSize: '15px',
-          },
-        })
+      if (pending.length === 0) return
+      const latestId = pending[0]?.id
+      const lastSeen = typeof localStorage !== 'undefined' ? localStorage.getItem(INVITATION_TOAST_KEY) : null
+      if (latestId && latestId !== lastSeen) {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(INVITATION_TOAST_KEY, latestId)
+        }
+        toast.success(
+          (t) => (
+            <div className="flex items-center justify-between gap-4">
+              <span>You have a new referral invitation.</span>
+              <button
+                type="button"
+                onClick={() => toast.dismiss(t.id)}
+                className="p-1 rounded hover:bg-white/20"
+                aria-label="Close"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ),
+          {
+            duration: 5000,
+            style: {
+              background: '#059669',
+              color: '#fff',
+              padding: '14px 20px',
+              fontSize: '15px',
+            },
+          }
+        )
       }
     }).catch(() => {})
     return () => { cancelled = true }
@@ -113,9 +151,9 @@ export default function JobSeekerDashboard() {
       {/* Glossy Background Overlay */}
       <div className="fixed inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent pointer-events-none"></div>
 
-      {/* Premium Navbar */}
+      {/* Premium Navbar — layout and search bar match Employee dashboard */}
       <nav className="w-full sticky top-0 z-50 bg-white/80 backdrop-blur-xl shadow-[0_2px_20px_rgba(0,0,0,0.04)] px-6 lg:px-8 py-4 border-b border-gray-200/60">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Left: Logo */}
           <div className="flex items-center">
             <img
@@ -125,13 +163,25 @@ export default function JobSeekerDashboard() {
             />
           </div>
 
+          {/* Center: Wide search bar (same width/layout as Employee dashboard) */}
+          <div className="flex-1 max-w-2xl mx-4">
+            {showNavbarSearch && (
+              <SearchBar
+                mode={isCompanyDetails ? 'job-search' : isBrowseCompanies ? 'company' : 'jobpost'}
+                placeholder={getSearchPlaceholder()}
+                onSearch={handleNavbarSearch}
+                initialValue={navbarSearch}
+              />
+            )}
+          </div>
+
           {/* Right: Switch Button + Avatar Dropdown */}
           <div className="flex items-center gap-3" ref={dropdownRef}>
             <button
               onClick={() => startTransition(() => navigate('/employee'))}
               className="px-4 py-2 rounded-full bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-medium text-sm shadow-md hover:shadow-lg hover:scale-105 active:scale-100 transition-all duration-200 whitespace-nowrap"
             >
-              Switch to Employee
+              Employee Dashboard
             </button>
             
             <div className="relative cursor-pointer" onClick={toggleDropdown}>
@@ -157,8 +207,8 @@ export default function JobSeekerDashboard() {
         </div>
       </nav>
 
-      {/* Main Content Container */}
-      <div className="max-w-6xl mx-auto px-6">
+      {/* Main Content Container — match Employee dashboard spacing */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Premium Tabs */}
         <div className="w-full flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-10 mb-1 border-b-2 border-gray-200">
           <button
@@ -206,9 +256,9 @@ export default function JobSeekerDashboard() {
         {/* Routes Content */}
         <main className="mt-8">
           <Routes>
-            <Route index element={<Companies />} />
-            <Route path="company/:companyId" element={<CompanyEmployees />} />
-            <Route path="applications" element={<ApplicationStatus />} />
+            <Route index element={<Companies searchQuery={navbarSearch} />} />
+            <Route path="company/:companyId" element={<CompanyEmployees searchQuery={navbarSearch} />} />
+            <Route path="applications" element={<ApplicationStatus searchQuery={navbarSearch} />} />
             <Route path="invitations" element={<MyInvitations />} />
             <Route path="profile" element={<MyProfile />} />
           </Routes>

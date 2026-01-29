@@ -11,11 +11,15 @@ interface Company {
   jobPostCount?: number
 }
 
-export default function Companies() {
+interface CompaniesProps {
+  searchQuery?: string
+}
+
+export default function Companies({ searchQuery: propSearch = '' }: CompaniesProps) {
   const navigate = useNavigate()
   const [companies, setCompanies] = useState<Company[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
+  const searchQuery = propSearch
 
   useEffect(() => {
     fetchCompanies()
@@ -55,27 +59,6 @@ export default function Companies() {
       <div className="mb-6">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Browse Companies</h1>
         <p className="text-gray-600 text-base sm:text-lg">Discover companies and connect with employees for referrals</p>
-      </div>
-
-      {/* Search Bar */}
-      <div className="mb-8">
-        <div className="relative max-w-md">
-          <svg
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search companies..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#4A4CF0] focus:ring-2 focus:ring-[#4A4CF0]/20 outline-none transition-all text-gray-900 placeholder:text-gray-400"
-          />
-        </div>
       </div>
 
       {filteredCompanies.length === 0 ? (

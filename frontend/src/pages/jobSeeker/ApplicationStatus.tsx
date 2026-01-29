@@ -16,11 +16,15 @@ interface Application {
   createdAt: string
 }
 
-export default function ApplicationStatus() {
+interface ApplicationStatusProps {
+  searchQuery?: string
+}
+
+export default function ApplicationStatus({ searchQuery: propSearch = '' }: ApplicationStatusProps) {
   const [applications, setApplications] = useState<Application[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending')
-  const [searchQuery, setSearchQuery] = useState('')
+  const searchQuery = propSearch
 
   useEffect(() => {
     fetchApplications()
@@ -104,27 +108,6 @@ export default function ApplicationStatus() {
       <div className="mb-6">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">My Applications</h1>
         <p className="text-gray-600 text-base sm:text-lg">Track the status of your referral applications</p>
-      </div>
-
-      {/* Search Bar */}
-      <div className="mb-6">
-        <div className="relative max-w-md">
-          <svg
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search by job title, company, or status..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#4A4CF0] focus:ring-2 focus:ring-[#4A4CF0]/20 outline-none transition-all text-gray-900 placeholder:text-gray-400"
-          />
-        </div>
       </div>
 
       {/* Tabs */}

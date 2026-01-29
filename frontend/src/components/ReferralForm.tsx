@@ -66,12 +66,21 @@ export default function ReferralForm({ employee, jobPostId, onBack, onSuccess }:
 
   const fetchFormFields = async () => {
     try {
-      // Fetch the referrer's custom form configuration
-      const response = await api.get(`/referrer/form/${employee.id}`)
-      if (response.data?.fields && response.data.fields.length > 0) {
-        setFormFields(response.data.fields)
+      // When applying to a specific job, use that job's form fields; otherwise use employee's latest job form
+      const url = jobPostId
+        ? `/jobs/${jobPostId}/form-fields`
+        : `/applications/${employee.id}/form-fields`
+      const response = await api.get(url)
+      const fields = Array.isArray(response.data) ? response.data : (response.data?.fields ?? response.data?.customFormFields ?? [])
+      if (fields.length > 0) {
+        setFormFields(fields.map((f: any) => ({
+          id: f.id,
+          label: f.label,
+          type: f.type || 'text',
+          required: f.required ?? false,
+          order: f.order ?? 0,
+        })))
       } else {
-        // Default form fields if none exist
         setFormFields([
           { id: 'name', label: 'Full Name', type: 'text', required: true },
           { id: 'email', label: 'Email', type: 'email', required: true },
@@ -81,7 +90,6 @@ export default function ReferralForm({ employee, jobPostId, onBack, onSuccess }:
         ])
       }
     } catch (error) {
-      // Default form fields if fetch fails
       setFormFields([
         { id: 'name', label: 'Full Name', type: 'text', required: true },
         { id: 'email', label: 'Email', type: 'email', required: true },

@@ -189,8 +189,7 @@ router.post('/me/resume', authenticate, upload.single('resume'), async (req: Aut
 })
 
 // Get job seekers with search (for employees browsing candidates)
-// Exclude: (1) current user's own profile, (2) users who are employees in the SAME company as the viewing employee.
-// Job seekers without an employee profile or from different companies MUST be visible.
+// Return all job seeker profiles except the current user. Do NOT filter by company.
 router.get('/', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const model = (prisma as any).jobSeekerProfile
@@ -201,40 +200,8 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
     const { search } = req.query
     const searchQuery = typeof search === 'string' ? search.trim().toLowerCase() : ''
 
-    // Start with excluding only the current user
-    let excludeUserIds: string[] = [userId]
-    
-    // If the current user is an employee, also exclude other employees from the SAME company
-    const myEmp = await prisma.employeeProfile.findUnique({
-      where: { userId },
-      select: { companyId: true },
-    })
-    
-    if (myEmp?.companyId) {
-      // Get all employees in the same company (excluding those with "Default Company" name to avoid over-filtering)
-      const company = await prisma.company.findUnique({
-        where: { id: myEmp.companyId },
-        select: { name: true },
-      })
-      
-      // Only exclude same-company employees if it's not "Default Company"
-      // (since Default Company is a placeholder and shouldn't be used for exclusion)
-      if (company?.name && company.name !== 'Default Company') {
-        const sameCompanyUserIds = await prisma.employeeProfile.findMany({
-          where: { companyId: myEmp.companyId },
-          select: { userId: true },
-        })
-        // Add same-company employee userIds to exclusion list
-        for (const emp of sameCompanyUserIds) {
-          if (!excludeUserIds.includes(emp.userId)) {
-            excludeUserIds.push(emp.userId)
-          }
-        }
-      }
-    }
-
     let profiles = await model.findMany({
-      where: { userId: { notIn: excludeUserIds } },
+      where: { userId: { not: userId } },
       include: {
         user: {
           select: {

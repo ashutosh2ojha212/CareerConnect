@@ -155,7 +155,7 @@ export default function EmployeeDashboard() {
               onClick={() => startTransition(() => navigate('/job-seeker'))}
               className="px-4 py-2 rounded-full bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-medium text-sm shadow-md hover:shadow-lg hover:scale-105 active:scale-100 transition-all duration-200 whitespace-nowrap"
             >
-              Switch to Job Seeker
+              Find Jobs
             </button>
             
             <div className="relative cursor-pointer" onClick={toggleDropdown}>
