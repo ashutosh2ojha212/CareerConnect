@@ -1,7 +1,7 @@
 /**
  * One-off script to promote a user to admin by email.
- * Usage: ADMIN_EMAIL=your@email.com npx ts-node --compiler-options '{"module":"CommonJS"}' src/scripts/promote-admin.ts
- * Or: set ADMIN_EMAIL=your@email.com && npx ts-node src/scripts/promote-admin.ts
+ * Usage: ADMIN_EMAIL=mycareerconnects@gmail.com npx ts-node --compiler-options '{"module":"CommonJS"}' src/scripts/promote-admin.ts
+ * Or: set ADMIN_EMAIL=mycareerconnects@gmail.com && npx ts-node src/scripts/promote-admin.ts
  */
 import dotenv from 'dotenv'
 import path from 'path'
@@ -13,7 +13,7 @@ import { prisma } from '../lib/prisma'
 async function main() {
   const email = process.env.ADMIN_EMAIL
   if (!email) {
-    console.error('Set ADMIN_EMAIL in .env or environment (e.g. ADMIN_EMAIL=admin@example.com)')
+    console.error('Set ADMIN_EMAIL in .env or environment (e.g. ADMIN_EMAIL=mycareerconnects@gmail.com)')
     process.exit(1)
   }
 
