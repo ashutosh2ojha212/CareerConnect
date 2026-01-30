@@ -17,6 +17,8 @@ model User {
   name                 String
   password             String
   role                 String? // "job_seeker" or "referrer"
+  isAdmin              Boolean   @default(false) // platform admin access
+  deactivated          Boolean   @default(false) // deactivated accounts cannot sign in
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
   welcomeEmailSent     Boolean   @default(false)

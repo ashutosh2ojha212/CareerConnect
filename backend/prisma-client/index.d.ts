@@ -1693,6 +1693,8 @@ export namespace Prisma {
     name: string | null
     password: string | null
     role: string | null
+    isAdmin: boolean | null
+    deactivated: boolean | null
     resetPasswordToken: string | null
     resetPasswordExpires: Date | null
     welcomeEmailSent: boolean | null
@@ -1706,6 +1708,8 @@ export namespace Prisma {
     name: string | null
     password: string | null
     role: string | null
+    isAdmin: boolean | null
+    deactivated: boolean | null
     resetPasswordToken: string | null
     resetPasswordExpires: Date | null
     welcomeEmailSent: boolean | null
@@ -1719,6 +1723,8 @@ export namespace Prisma {
     name: number
     password: number
     role: number
+    isAdmin: number
+    deactivated: number
     resetPasswordToken: number
     resetPasswordExpires: number
     welcomeEmailSent: number
@@ -1734,6 +1740,8 @@ export namespace Prisma {
     name?: true
     password?: true
     role?: true
+    isAdmin?: true
+    deactivated?: true
     resetPasswordToken?: true
     resetPasswordExpires?: true
     welcomeEmailSent?: true
@@ -1747,6 +1755,8 @@ export namespace Prisma {
     name?: true
     password?: true
     role?: true
+    isAdmin?: true
+    deactivated?: true
     resetPasswordToken?: true
     resetPasswordExpires?: true
     welcomeEmailSent?: true
@@ -1760,6 +1770,8 @@ export namespace Prisma {
     name?: true
     password?: true
     role?: true
+    isAdmin?: true
+    deactivated?: true
     resetPasswordToken?: true
     resetPasswordExpires?: true
     welcomeEmailSent?: true
@@ -1846,6 +1858,8 @@ export namespace Prisma {
     name: string
     password: string
     role: string | null
+    isAdmin: boolean
+    deactivated: boolean
     resetPasswordToken: string | null
     resetPasswordExpires: Date | null
     welcomeEmailSent: boolean
@@ -1876,6 +1890,8 @@ export namespace Prisma {
     name?: boolean
     password?: boolean
     role?: boolean
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: boolean
     resetPasswordExpires?: boolean
     welcomeEmailSent?: boolean
@@ -1897,6 +1913,8 @@ export namespace Prisma {
     name?: boolean
     password?: boolean
     role?: boolean
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: boolean
     resetPasswordExpires?: boolean
     welcomeEmailSent?: boolean
@@ -1910,6 +1928,8 @@ export namespace Prisma {
     name?: boolean
     password?: boolean
     role?: boolean
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: boolean
     resetPasswordExpires?: boolean
     welcomeEmailSent?: boolean
@@ -1946,6 +1966,8 @@ export namespace Prisma {
       name: string
       password: string
       role: string | null
+      isAdmin: boolean
+      deactivated: boolean
       resetPasswordToken: string | null
       resetPasswordExpires: Date | null
       welcomeEmailSent: boolean
@@ -2356,6 +2378,8 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
+    readonly isAdmin: FieldRef<"User", 'Boolean'>
+    readonly deactivated: FieldRef<"User", 'Boolean'>
     readonly resetPasswordToken: FieldRef<"User", 'String'>
     readonly resetPasswordExpires: FieldRef<"User", 'DateTime'>
     readonly welcomeEmailSent: FieldRef<"User", 'Boolean'>
@@ -10852,6 +10876,8 @@ export namespace Prisma {
     name: 'name',
     password: 'password',
     role: 'role',
+    isAdmin: 'isAdmin',
+    deactivated: 'deactivated',
     resetPasswordToken: 'resetPasswordToken',
     resetPasswordExpires: 'resetPasswordExpires',
     welcomeEmailSent: 'welcomeEmailSent',
@@ -11004,16 +11030,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
+   * Reference to a field of type 'Boolean'
    */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
   /**
-   * Reference to a field of type 'Boolean'
+   * Reference to a field of type 'DateTime'
    */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
     
 
 
@@ -11043,6 +11069,8 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     role?: StringNullableFilter<"User"> | string | null
+    isAdmin?: BoolFilter<"User"> | boolean
+    deactivated?: BoolFilter<"User"> | boolean
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
     resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     welcomeEmailSent?: BoolFilter<"User"> | boolean
@@ -11063,6 +11091,8 @@ export namespace Prisma {
     name?: SortOrder
     password?: SortOrder
     role?: SortOrderInput | SortOrder
+    isAdmin?: SortOrder
+    deactivated?: SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
     resetPasswordExpires?: SortOrderInput | SortOrder
     welcomeEmailSent?: SortOrder
@@ -11086,6 +11116,8 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     role?: StringNullableFilter<"User"> | string | null
+    isAdmin?: BoolFilter<"User"> | boolean
+    deactivated?: BoolFilter<"User"> | boolean
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
     resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     welcomeEmailSent?: BoolFilter<"User"> | boolean
@@ -11106,6 +11138,8 @@ export namespace Prisma {
     name?: SortOrder
     password?: SortOrder
     role?: SortOrderInput | SortOrder
+    isAdmin?: SortOrder
+    deactivated?: SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
     resetPasswordExpires?: SortOrderInput | SortOrder
     welcomeEmailSent?: SortOrder
@@ -11125,6 +11159,8 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     role?: StringNullableWithAggregatesFilter<"User"> | string | null
+    isAdmin?: BoolWithAggregatesFilter<"User"> | boolean
+    deactivated?: BoolWithAggregatesFilter<"User"> | boolean
     resetPasswordToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     resetPasswordExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     welcomeEmailSent?: BoolWithAggregatesFilter<"User"> | boolean
@@ -11738,6 +11774,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -11758,6 +11796,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -11778,6 +11818,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -11798,6 +11840,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -11818,6 +11862,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -11831,6 +11877,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -11844,6 +11892,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -12510,6 +12560,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | null
@@ -12519,11 +12574,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -12593,6 +12643,8 @@ export namespace Prisma {
     name?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    isAdmin?: SortOrder
+    deactivated?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExpires?: SortOrder
     welcomeEmailSent?: SortOrder
@@ -12606,6 +12658,8 @@ export namespace Prisma {
     name?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    isAdmin?: SortOrder
+    deactivated?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExpires?: SortOrder
     welcomeEmailSent?: SortOrder
@@ -12619,6 +12673,8 @@ export namespace Prisma {
     name?: SortOrder
     password?: SortOrder
     role?: SortOrder
+    isAdmin?: SortOrder
+    deactivated?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExpires?: SortOrder
     welcomeEmailSent?: SortOrder
@@ -12660,6 +12716,14 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | null
@@ -12672,14 +12736,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -13192,12 +13248,12 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -13802,6 +13858,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | null
@@ -13811,11 +13872,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -13885,6 +13941,14 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | null
@@ -13897,14 +13961,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -14500,6 +14556,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -14519,6 +14577,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -14579,6 +14639,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -14598,6 +14660,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -14673,6 +14737,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -14692,6 +14758,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -14841,6 +14909,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -14860,6 +14930,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15019,6 +15091,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15038,6 +15112,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15110,6 +15186,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15129,6 +15207,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15191,6 +15271,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15210,6 +15292,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15245,6 +15329,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15264,6 +15350,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15283,6 +15371,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15302,6 +15392,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15337,6 +15429,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15356,6 +15450,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15375,6 +15471,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15394,6 +15492,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15418,6 +15518,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15437,6 +15539,8 @@ export namespace Prisma {
     name: string
     password: string
     role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15509,6 +15613,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15528,6 +15634,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15558,6 +15666,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15577,6 +15687,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean

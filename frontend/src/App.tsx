@@ -8,7 +8,10 @@ import OAuthCallback from './pages/auth/OAuthCallback'
 import RoleSelection from './pages/RoleSelection'
 import JobSeekerDashboard from './pages/jobSeeker/Dashboard'
 import EmployeeDashboard from './pages/employee/Dashboard'
+import NotAuthorized from './pages/NotAuthorized'
+import AdminLayout from './pages/admin/AdminLayout'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
 
 function App() {
   return (
@@ -63,6 +66,15 @@ function App() {
             <ProtectedRoute>
               <EmployeeDashboard />
             </ProtectedRoute>
+          }
+        />
+        <Route path="/not-authorized" element={<NotAuthorized />} />
+        <Route
+          path="/admin/*"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
           }
         />
         <Route path="/" element={<Navigate to="/signin" replace />} />

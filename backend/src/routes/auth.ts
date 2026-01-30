@@ -50,6 +50,7 @@ router.post('/register', async (req, res, next) => {
         email: true,
         name: true,
         role: true,
+        isAdmin: true,
       },
     })
 
@@ -57,7 +58,10 @@ router.post('/register', async (req, res, next) => {
     const token = generateToken(user.id)
 
     res.status(201).json({
-      user,
+      user: {
+        ...user,
+        accessRole: user.isAdmin ? 'admin' : 'user',
+      },
       token,
     })
 
@@ -80,10 +84,15 @@ router.post('/login', async (req, res, next) => {
     // Find user
     const user = await prisma.user.findUnique({
       where: { email },
+      select: { id: true, email: true, name: true, role: true, isAdmin: true, password: true, deactivated: true },
     })
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' })
+    }
+
+    if (user.deactivated) {
+      return res.status(403).json({ message: 'Account is deactivated' })
     }
 
     // Verify password
@@ -102,6 +111,7 @@ router.post('/login', async (req, res, next) => {
         email: user.email,
         name: user.name,
         role: user.role,
+        accessRole: user.isAdmin ? 'admin' : 'user',
       },
       token,
     })
@@ -374,16 +384,16 @@ router.get('/google/callback', async (req, res, next) => {
     }
 
     // Check if user exists
-    type GoogleAuthUser = { id: string; email: string; name: string | null; role: string | null }
+    type GoogleAuthUser = { id: string; email: string; name: string | null; role: string | null; isAdmin: boolean; deactivated: boolean }
     let user: GoogleAuthUser | null = await prisma.user.findUnique({
       where: { email },
-      select: { id: true, email: true, name: true, role: true },
+      select: { id: true, email: true, name: true, role: true, isAdmin: true, deactivated: true },
     })
 
     if (!user) {
       // Create new user with Google OAuth (welcomeEmailSent defaults to false)
       const hashedPassword = await hashPassword(Math.random().toString(36) + Date.now().toString())
-      user = await prisma.user.create({
+      const created = await prisma.user.create({
         data: {
           name,
           email,
@@ -394,10 +404,17 @@ router.get('/google/callback', async (req, res, next) => {
           email: true,
           name: true,
           role: true,
+          isAdmin: true,
+          deactivated: true,
         },
       })
+      user = created
       // Send welcome email only on first signup; non-blocking (do not await)
       sendWelcomeEmailAndMarkSent(user.id, user.email, user.name).catch(() => {})
+    }
+
+    if (user.deactivated) {
+      return res.redirect(`${FRONTEND_URL}/signin?error=account_deactivated`)
     }
 
     // Generate JWT token
@@ -411,6 +428,7 @@ router.get('/google/callback', async (req, res, next) => {
       email: user.email,
       name: user.name,
       role: user.role,
+      accessRole: user.isAdmin ? 'admin' : 'user',
     }))
 
     res.redirect(redirectUrl.toString())

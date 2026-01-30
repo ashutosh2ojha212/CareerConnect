@@ -18,6 +18,7 @@ export interface AuthResponse {
     email: string
     name: string
     role: 'job_seeker' | 'referrer' | null
+    accessRole?: 'admin' | 'user'
   }
   token: string
 }

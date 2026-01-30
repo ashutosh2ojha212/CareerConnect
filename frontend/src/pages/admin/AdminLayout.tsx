@@ -1,0 +1,109 @@
+import { useState } from 'react'
+import { Routes, Route, NavLink, useNavigate } from 'react-router-dom'
+import { useAuthStore } from '../../store/authStore'
+import { authService } from '../../lib/auth'
+import AdminDashboard from './Dashboard'
+import AdminUsers from './Users'
+import AdminJobPosts from './JobPosts'
+import AdminApplications from './Applications'
+import AdminReferrals from './Referrals'
+
+const navItems = [
+  { to: '/admin', label: 'Dashboard', end: true },
+  { to: '/admin/users', label: 'Users', end: false },
+  { to: '/admin/job-posts', label: 'Job Posts', end: false },
+  { to: '/admin/applications', label: 'Applications', end: false },
+  { to: '/admin/referrals', label: 'Referrals', end: false },
+]
+
+export default function AdminLayout() {
+  const navigate = useNavigate()
+  const { user } = useAuthStore()
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+
+  const handleLogout = () => {
+    authService.logout()
+    navigate('/signin')
+  }
+
+  return (
+    <div className="min-h-screen flex bg-gradient-to-br from-[#fefefe] via-[#faf9f7] to-[#f5f4f2]">
+      {/* Sidebar */}
+      <aside
+        className={`${
+          sidebarOpen ? 'w-56' : 'w-16'
+        } flex flex-col fixed left-0 top-0 h-full z-40 bg-white/90 backdrop-blur-xl border-r border-gray-200/60 shadow-lg transition-all duration-200`}
+      >
+        <div className="p-4 border-b border-gray-200/60 flex items-center justify-between">
+          {sidebarOpen && (
+            <span className="font-semibold text-gray-800 text-sm">Admin</span>
+          )}
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600"
+            aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+          >
+            <svg
+              className={`w-5 h-5 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          </button>
+        </div>
+        <nav className="flex-1 py-4 px-2 space-y-0.5">
+          {navItems.map(({ to, label, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                }`
+              }
+            >
+              <span className="flex-shrink-0 w-5 text-center">{label.charAt(0)}</span>
+              {sidebarOpen && <span>{label}</span>}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="p-2 border-t border-gray-200/60 space-y-2">
+          {sidebarOpen && user && (
+            <p className="px-3 py-2 text-xs text-gray-500 truncate" title={user.email}>
+              {user.email}
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 bg-red-500 text-white px-4 py-2.5 rounded-lg shadow-sm font-semibold hover:bg-red-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+          >
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            {sidebarOpen && <span>Logout</span>}
+          </button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <main className={`flex-1 ${sidebarOpen ? 'ml-56' : 'ml-16'} transition-all duration-200 min-h-screen`}>
+        <div className="p-6 lg:p-8">
+          <Routes>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="job-posts" element={<AdminJobPosts />} />
+            <Route path="applications" element={<AdminApplications />} />
+            <Route path="referrals" element={<AdminReferrals />} />
+          </Routes>
+        </div>
+      </main>
+    </div>
+  )
+}
