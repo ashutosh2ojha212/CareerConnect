@@ -1,4 +1,4 @@
-# Carrier Connect
+# Career Connect
 
 A referral platform connecting job seekers with employees for referrals and job opportunities.
 

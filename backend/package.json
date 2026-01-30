@@ -1,7 +1,7 @@
 {
   "name": "carrier-connect-backend",
   "version": "1.0.0",
-  "description": "Backend API for Carrier Connect",
+  "description": "Backend API for Career Connect",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

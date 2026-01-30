@@ -81,7 +81,7 @@ export default function SignUp() {
               Create your account
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Get started with Carrier Connect today
+              Get started with Career Connect today
             </p>
           </div>
 

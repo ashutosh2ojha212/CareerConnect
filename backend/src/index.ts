@@ -41,7 +41,7 @@ app.use('/api/admin', adminRoutes)
 app.get('/', (req, res) => {
   res.json({ 
     status: 'ok', 
-    message: 'Carrier Connect Backend is working! 🚀',
+    message: 'Career Connect Backend is working! 🚀',
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Carrier Connect API is running' })
+  res.json({ status: 'ok', message: 'Career Connect API is running' })
 })
 
 // Error handling
