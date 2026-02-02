@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../lib/auth'
 import api from '../../lib/api'
+import { calculateProfileCompletion } from '../../utils/profileCompletion'
 import SearchBar from '../../components/SearchBar'
 import Companies from './Companies'
 import CompanyEmployees from './CompanyEmployees'
@@ -19,6 +20,7 @@ export default function JobSeekerDashboard() {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const INVITATION_TOAST_KEY = 'careerconnect_lastSeenInvitationId'
   const [navbarSearch, setNavbarSearch] = useState('')
+  const [profileCompletion, setProfileCompletion] = useState<number | null>(null)
 
   const isBrowseCompanies = location.pathname === '/job-seeker' || location.pathname === '/job-seeker/'
   const isCompanyDetails = location.pathname.startsWith('/job-seeker/company/')
@@ -100,6 +102,21 @@ export default function JobSeekerDashboard() {
       navigate(path)
     })
   }
+
+  // Fetch profile completion to show/hide "Complete your profile" banner (only when ≤50%)
+  useEffect(() => {
+    let cancelled = false
+    api.get('/job-seekers/me')
+      .then(({ data }) => {
+        if (cancelled) return
+        const p = data as { fullName?: string; email?: string; primaryRole?: string; experience?: number; jobPreferences?: string | string[]; preferredLocations?: string[]; skills?: string[]; resumeUrl?: string; profileSummary?: string }
+        setProfileCompletion(calculateProfileCompletion(p))
+      })
+      .catch(() => {
+        if (!cancelled) setProfileCompletion(0)
+      })
+    return () => { cancelled = true }
+  }, [location.pathname])
 
   // Show toast only once per new invitation; use localStorage to track last seen
   useEffect(() => {
@@ -235,6 +252,35 @@ export default function JobSeekerDashboard() {
             )}
           </button>
         </div>
+
+        {/* Profile visibility prompt — only when profile is ≤50% complete so recruiters can discover you */}
+        {profileCompletion !== null && profileCompletion <= 50 && (
+          <div className="mt-6 rounded-2xl bg-gradient-to-r from-indigo-50 via-white to-purple-50 border border-indigo-100/80 shadow-sm overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-5">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm sm:text-base">Get discovered by recruiters</p>
+                  <p className="text-gray-600 text-sm mt-0.5">Complete your profile so recruiters can find you and reach out with referral opportunities.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => startTransition(() => navigate('/job-seeker/profile'))}
+                className="flex-shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold shadow-md hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200"
+              >
+                Complete my profile
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Routes Content */}
         <main className="mt-8">

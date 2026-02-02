@@ -34,6 +34,41 @@ function parsePreferredRoles(s: string | null): string[] {
   }
 }
 
+/** Profile completion 0–100 (same 9 fields as frontend). Only candidates >50% are visible to recruiters. */
+function profileCompletionPercent(profile: {
+  fullName?: string | null
+  email?: string | null
+  primaryRole?: string | null
+  experience?: number | null
+  jobPreferences?: string | null
+  preferredLocations?: string | null
+  skills?: string | null
+  resumeUrl?: string | null
+  profileSummary?: string | null
+}): number {
+  const filled = (v: unknown) => {
+    if (v == null) return false
+    if (typeof v === 'string') return v.trim().length > 0
+    if (Array.isArray(v)) return v.length > 0
+    if (typeof v === 'number') return true
+    return false
+  }
+  const roles = parsePreferredRoles(profile.jobPreferences ?? null)
+  const locs = parseLocations(profile.preferredLocations ?? null)
+  const count = [
+    filled(profile.fullName),
+    filled(profile.email),
+    filled(profile.primaryRole),
+    profile.experience != null && typeof profile.experience === 'number',
+    roles.length > 0,
+    locs.length > 0,
+    filled(profile.skills),
+    filled(profile.resumeUrl),
+    filled(profile.profileSummary),
+  ].filter(Boolean).length
+  return Math.round((count / 9) * 100)
+}
+
 // Get current user's job seeker profile (must be before /:id)
 router.get('/me', authenticate, async (req: AuthRequest, res, next) => {
   try {
@@ -216,6 +251,9 @@ router.get('/', authenticate, async (req: AuthRequest, res, next) => {
         updatedAt: 'desc',
       },
     })
+
+    // Only show candidates with profile completion > 50% to recruiters
+    profiles = profiles.filter((profile: Record<string, unknown>) => profileCompletionPercent(profile as any) > 50)
 
     // Filter by search query if provided
     if (searchQuery) {
