@@ -54,7 +54,20 @@ app.use(express.urlencoded({ extended: true }))
 // Serve uploaded files from same path multer uses
 app.use('/uploads', express.static(uploadDir))
 
-// Routes (no /api prefix — frontend uses VITE_API_URL = origin only)
+// API router: mount under /api so /api/auth/google, /api/jobs, etc. work (VITE_API_URL = .../api)
+const apiRouter = express.Router()
+apiRouter.use('/auth', authRoutes)
+apiRouter.use('/companies', companyRoutes)
+apiRouter.use('/jobs', jobRoutes)
+apiRouter.use('/applications', applicationRoutes)
+apiRouter.use('/referrer', referrerRoutes)
+apiRouter.use('/job-seekers', jobSeekerRoutes)
+apiRouter.use('/referral-invitations', referralInvitationRoutes)
+apiRouter.use('/invitations', invitationRoutes)
+apiRouter.use('/admin', adminRoutes)
+app.use('/api', apiRouter)
+
+// Also mount at root for VITE_API_URL = origin only (no /api)
 app.use('/auth', authRoutes)
 app.use('/companies', companyRoutes)
 app.use('/jobs', jobRoutes)
@@ -73,12 +86,12 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       health: '/health',
-      auth: '/auth',
-      companies: '/companies',
-      jobs: '/jobs',
-      applications: '/applications',
-      referrer: '/referrer',
-      jobSeekers: '/job-seekers',
+      auth: '/auth or /api/auth',
+      companies: '/companies or /api/companies',
+      jobs: '/jobs or /api/jobs',
+      applications: '/applications or /api/applications',
+      referrer: '/referrer or /api/referrer',
+      jobSeekers: '/job-seekers or /api/job-seekers',
     },
   })
 })
