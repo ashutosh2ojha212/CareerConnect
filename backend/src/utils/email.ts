@@ -33,13 +33,15 @@ const createTransporter = () => {
     })
   }
 
-  // Use Gmail SMTP (default or if SMTP_HOST is smtp.gmail.com or not provided)
+  // Use Gmail SMTP with explicit settings (more reliable than service: 'gmail')
   console.log('📧 Using Gmail SMTP service')
   console.log('   SMTP_USER:', SMTP_USER)
   console.log('   SMTP_PASS:', SMTP_PASS ? '***' + SMTP_PASS.slice(-4) : 'NOT SET')
-  
+
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: parseInt(SMTP_PORT || '587', 10),
+    secure: SMTP_PORT === '465',
     auth: {
       user: SMTP_USER,
       pass: SMTP_PASS,
@@ -223,6 +225,9 @@ Sign in: ${loginUrl}
     return { success: true, messageId: info.messageId }
   } catch (error: any) {
     console.error('❌ Error sending welcome email:', error.message)
+    if (error.code === 'EAUTH') {
+      throw new Error('Email authentication failed. Please check your SMTP credentials. Make sure you\'re using a Gmail App Password, not your regular password.')
+    }
     throw error
   }
 }

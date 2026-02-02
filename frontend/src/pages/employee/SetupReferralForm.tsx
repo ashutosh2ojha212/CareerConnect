@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm, useFieldArray } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -22,13 +22,11 @@ export default function SetupReferralForm() {
   const [hasExistingForm, setHasExistingForm] = useState(false)
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
-  const dragRef = useRef<HTMLDivElement>(null)
   const {
     register,
     handleSubmit,
     control,
     setValue,
-    getValues,
     formState: { errors: _formErrors },
   } = useForm<ReferralFormData>({
     defaultValues: {

@@ -162,7 +162,7 @@ router.post(
         })
       }
       
-      // Convert formData to JSON string for SQLite
+      // Store form data as JSON string
       const formDataJson = JSON.stringify(formData)
 
       // Determine jobPostId: use provided one, or get from employee's latest job post

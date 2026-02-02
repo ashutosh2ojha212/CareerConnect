@@ -410,7 +410,7 @@ router.get('/google/callback', async (req, res, next) => {
       })
       user = created
       // Send welcome email only on first signup; non-blocking (do not await)
-      sendWelcomeEmailAndMarkSent(user.id, user.email, user.name).catch(() => {})
+      sendWelcomeEmailAndMarkSent(user.id, user.email, user.name ?? 'there').catch(() => {})
     }
 
     if (user.deactivated) {
@@ -433,7 +433,8 @@ router.get('/google/callback', async (req, res, next) => {
 
     res.redirect(redirectUrl.toString())
   } catch (error: any) {
-    console.error('Google OAuth callback error:', error)
+    console.error('Google OAuth callback error:', error?.message ?? error)
+    if (error?.stack) console.error(error.stack)
     const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
     res.redirect(`${FRONTEND_URL}/signin?error=oauth_error`)
   }

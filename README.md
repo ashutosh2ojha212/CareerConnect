@@ -37,10 +37,12 @@ carrier-connect/
    - Copy `.env.example` to `.env` in both `frontend/` and `backend/` directories
    - Update with your database credentials and JWT secret
 
-4. Set up the database:
+4. Set up the database (PostgreSQL required):
+   - Set `DATABASE_URL` in `backend/.env` to your PostgreSQL connection string (see `backend/.env.example`).
+   - For local dev you can use Docker: `docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=careerconnect -p 5432:5432 postgres:15`, then `DATABASE_URL="postgresql://postgres:postgres@localhost:5432/careerconnect?schema=public"`.
    ```bash
    cd backend
-   npx prisma migrate dev
+   npx prisma migrate deploy
    npx prisma generate
    ```
 
@@ -71,6 +73,15 @@ carrier-connect/
 
 - Frontend: `cd frontend && npm run dev`
 - Backend: `cd backend && npm run dev`
+
+## Production deployment
+
+**PostgreSQL is required.** SQLite is not supported in production. See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for:
+
+- Setting up PostgreSQL (Railway, Supabase, Neon)
+- Backend environment variables
+- Running migrations and promoting the first admin
+- Checklist before go-live
 
 ## License
 

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import GoogleButton from '../../components/GoogleButton'
@@ -7,8 +7,19 @@ import { EyeIcon, EyeSlashIcon } from '../../components/PasswordToggleIcons'
 import { authService, SignInData } from '../../lib/auth'
 import { useAuthStore } from '../../store/authStore'
 
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  oauth_error: 'Google sign-in failed. Try again or use email/password. Check backend logs for details.',
+  oauth_cancelled: 'Google sign-in was cancelled.',
+  oauth_not_configured: 'Google sign-in is not configured on the server.',
+  token_exchange_failed: 'Google sign-in failed at token exchange. Check redirect URI in Google Cloud Console.',
+  userinfo_failed: 'Could not load your Google profile.',
+  missing_user_info: 'Google did not provide email or name.',
+  account_deactivated: 'This account has been deactivated.',
+}
+
 export default function SignIn() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const setAuth = useAuthStore((state) => state.setAuth)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -18,6 +29,14 @@ export default function SignIn() {
     handleSubmit,
     formState: { errors },
   } = useForm<SignInData>()
+
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error && OAUTH_ERROR_MESSAGES[error]) {
+      toast.error(OAUTH_ERROR_MESSAGES[error])
+      setSearchParams({}, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
 
   const handleGoogleAuth = () => {
     setIsGoogleLoading(true)
