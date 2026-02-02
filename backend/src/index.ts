@@ -35,18 +35,19 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })
 }
 
-// CORS: allow FRONTEND_URL and localhost for dev
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  'http://localhost:5173',
-].filter(Boolean) as string[]
-app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true)
-    cb(null, false) // disallow unknown origins (browser will block)
-  },
+// CORS: exact origins (spelling matters — use "career" not "carrer")
+const corsOptions: cors.CorsOptions = {
+  origin: [
+    'https://career-connect-frontend.vercel.app', // production (copy from Vercel → Domains)
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+  ].filter(Boolean) as string[],
   credentials: true,
-}))
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
