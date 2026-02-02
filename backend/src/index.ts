@@ -53,37 +53,37 @@ app.use(express.urlencoded({ extended: true }))
 // Serve uploaded files from same path multer uses
 app.use('/uploads', express.static(uploadDir))
 
-// Routes
-app.use('/api/auth', authRoutes)
-app.use('/api/companies', companyRoutes)
-app.use('/api/jobs', jobRoutes)
-app.use('/api/applications', applicationRoutes)
-app.use('/api/referrer', referrerRoutes)
-app.use('/api/job-seekers', jobSeekerRoutes)
-app.use('/api/referral-invitations', referralInvitationRoutes)
-app.use('/api/invitations', invitationRoutes)
-app.use('/api/admin', adminRoutes)
+// Routes (no /api prefix — frontend uses VITE_API_URL = origin only)
+app.use('/auth', authRoutes)
+app.use('/companies', companyRoutes)
+app.use('/jobs', jobRoutes)
+app.use('/applications', applicationRoutes)
+app.use('/referrer', referrerRoutes)
+app.use('/job-seekers', jobSeekerRoutes)
+app.use('/referral-invitations', referralInvitationRoutes)
+app.use('/invitations', invitationRoutes)
+app.use('/admin', adminRoutes)
 
 // Root endpoint - Backend status
 app.get('/', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     message: 'Career Connect Backend is working! 🚀',
     version: '1.0.0',
     endpoints: {
-      health: '/api/health',
-      auth: '/api/auth',
-      companies: '/api/companies',
-      jobs: '/api/jobs',
-      applications: '/api/applications',
-      referrer: '/api/referrer',
-      jobSeekers: '/api/job-seekers'
-    }
+      health: '/health',
+      auth: '/auth',
+      companies: '/companies',
+      jobs: '/jobs',
+      applications: '/applications',
+      referrer: '/referrer',
+      jobSeekers: '/job-seekers',
+    },
   })
 })
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Career Connect API is running' })
 })
 

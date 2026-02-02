@@ -39,7 +39,7 @@ jest.mock('../lib/prisma', () => ({
 
 const app = express()
 app.use(express.json())
-app.use('/api/auth', authRoutes)
+app.use('/auth', authRoutes)
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -57,7 +57,7 @@ describe('Welcome email on signup', () => {
     })
 
     const res = await request(app)
-      .post('/api/auth/register')
+      .post('/auth/register')
       .send({ name: 'New User', email: 'new@example.com', password: 'password123' })
 
     expect(res.status).toBe(201)
@@ -89,7 +89,7 @@ describe('Welcome email on signup', () => {
     userFindUnique.mockResolvedValue(existingUser)
 
     const res = await request(app)
-      .post('/api/auth/login')
+      .post('/auth/login')
       .send({ email: 'existing@example.com', password: 'password123' })
 
     expect(res.status).toBe(200)
@@ -106,7 +106,7 @@ describe('Welcome email on signup', () => {
     })
 
     const res = await request(app)
-      .post('/api/auth/register')
+      .post('/auth/register')
       .send({ name: 'Existing', email: 'existing@example.com', password: 'password123' })
 
     expect(res.status).toBe(400)

@@ -85,7 +85,7 @@ export default function ApplicationFieldRow({
 
       // Handle relative URLs (uploads)
       if (downloadUrl.startsWith('/uploads/')) {
-        const baseUrl = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:3001/api').replace(/\/api\/?$/, '') || 'http://localhost:3001'
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:3001'
         downloadUrl = `${baseUrl}${downloadUrl}`
       }
 
