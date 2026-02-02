@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
     "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "start": "npm run start --workspace=carrier-connect-backend",
     "lint": "npm run lint --workspace=frontend && npm run lint --workspace=backend"
   },
   "devDependencies": {
