@@ -7,6 +7,8 @@
     "dev": "tsx watch src/index.ts",
     "build": "prisma generate && tsc",
     "start": "node dist/index.js",
+    "postinstall": "prisma generate",
+    "start:railway": "npx prisma migrate deploy && node dist/index.js",
     "lint": "eslint src --ext .ts",
     "test": "npx jest --config jest.config.js",
     "prisma:generate": "prisma generate",
