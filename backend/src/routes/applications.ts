@@ -476,8 +476,8 @@ router.get('/:applicationId/files/:fieldId', authenticate, async (req: AuthReque
       return res.status(404).json({ message: 'File not found' })
     }
 
-    // Remove leading slash if present and construct full path
-    const uploadDir = process.env.UPLOAD_DIR || './uploads'
+    // Remove leading slash if present and construct full path (same base as multer/static)
+    const uploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads')
     const fileName = fileUrl.startsWith('/uploads/') 
       ? fileUrl.replace('/uploads/', '') 
       : fileUrl

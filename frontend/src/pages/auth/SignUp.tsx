@@ -29,7 +29,7 @@ export default function SignUp() {
 
   const handleGoogleAuth = () => {
     setIsGoogleLoading(true)
-    const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001'
+    const backendUrl = (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:3001/api').replace(/\/api\/?$/, '') || 'http://localhost:3001'
     window.location.href = `${backendUrl}/api/auth/google`
   }
 
