@@ -31,35 +31,14 @@ export default function SignUp() {
     window.location.href = `${backendUrl}/auth/google`
   }
 
-  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null)
-
-  const goToVerify = (email: string) => {
-    navigate(`/verify-otp?email=${encodeURIComponent(email)}`, { replace: true })
-  }
-
   const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true)
-    setSubmittedEmail(null)
     try {
       await authService.signUp({ name: data.name, email: data.email, password: data.password })
-      toast.success('Verification code sent to your email')
-      goToVerify(data.email)
+      toast.success('Check your email for the verification code.')
+      navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`)
     } catch (error: any) {
-      const msg = error.response?.data?.message || error.message || 'Failed to create account'
-      if (import.meta.env.DEV) {
-        console.error('Signup error:', error)
-      }
-      // Backend may have succeeded (e.g. CORS blocks reading response) — if so, user got the OTP
-      const mightHaveSucceeded =
-        !error.response ||
-        error.code === 'ERR_NETWORK' ||
-        /network|failed to fetch|cors/i.test(error.message || '')
-      if (mightHaveSucceeded) {
-        setSubmittedEmail(data.email)
-        toast.success('If you received an OTP, click the button below to verify.')
-      } else {
-        toast.error(msg)
-      }
+      toast.error(error.response?.data?.message || error.message || 'Failed to create account')
     } finally {
       setIsLoading(false)
     }
@@ -121,22 +100,6 @@ export default function SignUp() {
               <span className="px-4 bg-white/80 dark:bg-gray-900/80 text-gray-400 dark:text-gray-500">Or continue with email</span>
             </div>
           </div>
-
-          {/* Fallback: Verify OTP (shown when backend likely succeeded but redirect failed) */}
-          {submittedEmail && (
-            <div className="mb-6 p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-700">
-              <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
-                We sent a 6-digit OTP to <strong className="break-all">{submittedEmail}</strong>. Enter it on the verification page.
-              </p>
-              <button
-                type="button"
-                onClick={() => goToVerify(submittedEmail)}
-                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium hover:opacity-90 transition-opacity"
-              >
-                Go to verify OTP
-              </button>
-            </div>
-          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

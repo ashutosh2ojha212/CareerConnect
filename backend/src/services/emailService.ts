@@ -330,3 +330,32 @@ export async function sendOtpEmail(params: {
     { expiryMinutes: params.expiryMinutes }
   )
 }
+
+// ─────────────────────────────────────────────────────────
+// Welcome + OTP — single welcome email with verification code (no separate OTP email)
+// ─────────────────────────────────────────────────────────
+export async function sendWelcomeWithOtpEmail(params: {
+  toEmail: string
+  name: string
+  otp: string
+  expiryMinutes: number
+}): Promise<{ success: boolean; messageId?: string }> {
+  const content = `
+    <h2 style="color: #1f2937; margin-top: 0; font-size: 20px;">Welcome to CareerConnect, ${params.name}!</h2>
+    <p style="color: #4b5563; font-size: 16px;">Thanks for signing up. Use the code below to complete your registration. This code expires in ${params.expiryMinutes} minutes.</p>
+    <div style="text-align: center; margin: 30px 0; padding: 24px; background: #f3f4f6; border-radius: 12px; font-family: monospace; font-size: 28px; font-weight: 700; letter-spacing: 8px; color: #1f2937;">
+      ${params.otp}
+    </div>
+    <p style="color: #6b7280; font-size: 14px;">If you didn't sign up, you can safely ignore this email.</p>
+  `
+  const html = emailWrapper('Welcome to CareerConnect', content)
+  const text = `Welcome to CareerConnect, ${params.name}! Your verification code is: ${params.otp}. It expires in ${params.expiryMinutes} minutes.`
+  return sendEmail(
+    params.toEmail,
+    'Welcome to CareerConnect - Verify your account',
+    html,
+    text,
+    'otp',
+    { expiryMinutes: params.expiryMinutes }
+  )
+}

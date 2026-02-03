@@ -4,7 +4,7 @@ import { prisma } from '../lib/prisma'
 import { hashPassword, comparePassword } from '../utils/bcrypt'
 import { generateToken } from '../utils/jwt'
 import { sendPasswordResetEmail, sendWelcomeEmail } from '../utils/email'
-import { sendOtpEmail } from '../services/emailService'
+import { sendWelcomeWithOtpEmail } from '../services/emailService'
 
 const router = express.Router()
 const OTP_EXPIRY_MINUTES = 10
@@ -69,7 +69,7 @@ router.post('/promote-admin', async (req, res, next) => {
   }
 })
 
-// Register/signup — does NOT create User. Creates OtpVerification only. User created after OTP verify.
+// Register/signup — does NOT create User. Saves OtpVerification, sends welcome email with OTP. Returns { success: true }.
 const registerHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const { name, email, password } = req.body
@@ -78,15 +78,11 @@ const registerHandler = async (req: express.Request, res: express.Response, next
       return res.status(400).json({ message: 'All fields are required' })
     }
 
-    // Reject if User already exists (fully registered)
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    })
+    const existingUser = await prisma.user.findUnique({ where: { email } })
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists with this email. Please sign in.' })
     }
 
-    // Delete any existing pending OTP for this email (allow re-signup)
     await prisma.otpVerification.deleteMany({ where: { email } })
 
     const hashedPassword = await hashPassword(password)
@@ -105,13 +101,13 @@ const registerHandler = async (req: express.Request, res: express.Response, next
     })
 
     try {
-      await sendOtpEmail({
+      await sendWelcomeWithOtpEmail({
         toEmail: email,
+        name: name.trim(),
         otp,
         expiryMinutes: OTP_EXPIRY_MINUTES,
       })
     } catch (emailErr: any) {
-      console.error('OTP email failed:', emailErr?.message)
       await prisma.otpVerification.deleteMany({ where: { email } })
       return res.status(500).json({
         message: 'Failed to send verification email. Please try again later.',
@@ -126,7 +122,7 @@ const registerHandler = async (req: express.Request, res: express.Response, next
 router.post('/register', registerHandler)
 router.post('/signup', registerHandler)
 
-// Verify OTP — creates User only after OTP is valid. Returns { success: true }.
+// Verify OTP — create User, delete OTP, send welcome email. Returns { success: true }. No login token.
 router.post('/verify-otp', async (req, res, next) => {
   try {
     const { email, otp } = req.body
@@ -137,29 +133,21 @@ router.post('/verify-otp', async (req, res, next) => {
 
     const otpHash = crypto.createHash('sha256').update(String(otp).trim()).digest('hex')
     const otpRecord = await prisma.otpVerification.findFirst({
-      where: {
-        email,
-        otpHash,
-        expiresAt: { gt: new Date() },
-      },
+      where: { email, otpHash, expiresAt: { gt: new Date() } },
     })
 
     if (!otpRecord) {
-      return res.status(400).json({
-        message: 'Invalid or expired OTP. Please request a new one.',
-      })
+      return res.status(400).json({ message: 'Invalid or expired OTP. Please request a new one.' })
     }
 
-    // Check user doesn't already exist (edge case)
     const existingUser = await prisma.user.findUnique({ where: { email } })
     if (existingUser) {
-      await prisma.otpVerification.delete({ where: { id: otpRecord.id } })
+      await prisma.otpVerification.deleteMany({ where: { email } })
       return res.status(400).json({ message: 'Account already exists. Please sign in.' })
     }
 
-    // Create User and delete OTP in transaction
-    const user = await prisma.$transaction(async (tx) => {
-      const u = await tx.user.create({
+    await prisma.$transaction(async (tx) => {
+      await tx.user.create({
         data: {
           email: otpRecord.email,
           name: otpRecord.fullName,
@@ -168,10 +156,7 @@ router.post('/verify-otp', async (req, res, next) => {
         },
       })
       await tx.otpVerification.delete({ where: { id: otpRecord.id } })
-      return u
     })
-
-    sendWelcomeEmailAndMarkSent(user.id, user.email, user.name ?? 'there').catch(() => {})
 
     res.json({ success: true, message: 'OTP verified' })
   } catch (error) {
@@ -179,7 +164,7 @@ router.post('/verify-otp', async (req, res, next) => {
   }
 })
 
-// Resend OTP — only works for pending signups (OtpVerification exists, no User yet)
+// Resend OTP — generate new OTP, update record, send welcome email with OTP.
 router.post('/resend-otp', async (req, res, next) => {
   try {
     const { email } = req.body
@@ -194,9 +179,7 @@ router.post('/resend-otp', async (req, res, next) => {
     })
 
     if (!otpRecord) {
-      return res.status(400).json({
-        message: 'No pending verification for this email. Please sign up again.',
-      })
+      return res.status(400).json({ message: 'No pending verification for this email. Please sign up again.' })
     }
 
     await prisma.otpVerification.deleteMany({ where: { email } })
@@ -216,13 +199,13 @@ router.post('/resend-otp', async (req, res, next) => {
     })
 
     try {
-      await sendOtpEmail({
+      await sendWelcomeWithOtpEmail({
         toEmail: email,
+        name: otpRecord.fullName,
         otp,
         expiryMinutes: OTP_EXPIRY_MINUTES,
       })
     } catch (emailErr: any) {
-      console.error('Resend OTP failed:', emailErr?.message)
       return res.status(500).json({
         message: 'Failed to send verification email. Please try again later.',
       })
@@ -257,11 +240,8 @@ router.post('/login', async (req, res, next) => {
       return res.status(403).json({ message: 'Account is deactivated' })
     }
 
-    if (user.status === 'UNVERIFIED' || user.status === 'pending_verification') {
-      return res.status(403).json({
-        error: 'Email not verified',
-        email: user.email,
-      })
+    if (user.status !== 'ACTIVE') {
+      return res.status(403).json({ error: 'Email not verified', email: user.email })
     }
 
     // Verify password

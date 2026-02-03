@@ -15,9 +15,7 @@ export default function VerifyOtp() {
 
   useEffect(() => {
     const emailParam = searchParams.get('email')
-    if (emailParam) {
-      setEmail(decodeURIComponent(emailParam))
-    }
+    if (emailParam) setEmail(decodeURIComponent(emailParam))
   }, [searchParams])
 
   useEffect(() => {
@@ -89,8 +87,7 @@ export default function VerifyOtp() {
       toast.success('Email verified! You can now sign in.')
       navigate('/signin')
     } catch (error: any) {
-      const msg = error.response?.data?.message || 'Verification failed. Please check the code.'
-      toast.error(msg)
+      toast.error(error.response?.data?.message || 'Verification failed. Please check the code.')
     } finally {
       setIsLoading(false)
     }
@@ -105,7 +102,7 @@ export default function VerifyOtp() {
     setIsLoading(true)
     try {
       await authService.resendOtp(email)
-      toast.success('OTP resent')
+      toast.success('Verification code resent')
       setResendCooldown(RESEND_COOLDOWN_SEC)
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to resend code')
@@ -132,7 +129,7 @@ export default function VerifyOtp() {
               Verify Your Email
             </h1>
             <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
-              We've sent a 6-digit OTP to:
+              Enter the 6-digit code sent to:
             </p>
             <p className="text-base font-medium text-gray-800 dark:text-gray-200 mt-1 break-all">
               {email || 'your email'}
@@ -179,7 +176,7 @@ export default function VerifyOtp() {
           </button>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Didn't receive?</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Didn&apos;t receive the code?</p>
             <button
               type="button"
               onClick={handleResend}

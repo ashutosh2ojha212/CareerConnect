@@ -43,6 +43,7 @@ model OtpVerification {
   fullName     String
   passwordHash String
   expiresAt    DateTime
+  attempts     Int?     @default(0)
   createdAt    DateTime @default(now())
 
   @@index([email])

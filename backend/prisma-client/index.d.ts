@@ -3028,8 +3028,18 @@ export namespace Prisma {
 
   export type AggregateOtpVerification = {
     _count: OtpVerificationCountAggregateOutputType | null
+    _avg: OtpVerificationAvgAggregateOutputType | null
+    _sum: OtpVerificationSumAggregateOutputType | null
     _min: OtpVerificationMinAggregateOutputType | null
     _max: OtpVerificationMaxAggregateOutputType | null
+  }
+
+  export type OtpVerificationAvgAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type OtpVerificationSumAggregateOutputType = {
+    attempts: number | null
   }
 
   export type OtpVerificationMinAggregateOutputType = {
@@ -3039,6 +3049,7 @@ export namespace Prisma {
     fullName: string | null
     passwordHash: string | null
     expiresAt: Date | null
+    attempts: number | null
     createdAt: Date | null
   }
 
@@ -3049,6 +3060,7 @@ export namespace Prisma {
     fullName: string | null
     passwordHash: string | null
     expiresAt: Date | null
+    attempts: number | null
     createdAt: Date | null
   }
 
@@ -3059,10 +3071,19 @@ export namespace Prisma {
     fullName: number
     passwordHash: number
     expiresAt: number
+    attempts: number
     createdAt: number
     _all: number
   }
 
+
+  export type OtpVerificationAvgAggregateInputType = {
+    attempts?: true
+  }
+
+  export type OtpVerificationSumAggregateInputType = {
+    attempts?: true
+  }
 
   export type OtpVerificationMinAggregateInputType = {
     id?: true
@@ -3071,6 +3092,7 @@ export namespace Prisma {
     fullName?: true
     passwordHash?: true
     expiresAt?: true
+    attempts?: true
     createdAt?: true
   }
 
@@ -3081,6 +3103,7 @@ export namespace Prisma {
     fullName?: true
     passwordHash?: true
     expiresAt?: true
+    attempts?: true
     createdAt?: true
   }
 
@@ -3091,6 +3114,7 @@ export namespace Prisma {
     fullName?: true
     passwordHash?: true
     expiresAt?: true
+    attempts?: true
     createdAt?: true
     _all?: true
   }
@@ -3133,6 +3157,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: OtpVerificationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OtpVerificationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: OtpVerificationMinAggregateInputType
@@ -3163,6 +3199,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: OtpVerificationCountAggregateInputType | true
+    _avg?: OtpVerificationAvgAggregateInputType
+    _sum?: OtpVerificationSumAggregateInputType
     _min?: OtpVerificationMinAggregateInputType
     _max?: OtpVerificationMaxAggregateInputType
   }
@@ -3174,8 +3212,11 @@ export namespace Prisma {
     fullName: string
     passwordHash: string
     expiresAt: Date
+    attempts: number | null
     createdAt: Date
     _count: OtpVerificationCountAggregateOutputType | null
+    _avg: OtpVerificationAvgAggregateOutputType | null
+    _sum: OtpVerificationSumAggregateOutputType | null
     _min: OtpVerificationMinAggregateOutputType | null
     _max: OtpVerificationMaxAggregateOutputType | null
   }
@@ -3201,6 +3242,7 @@ export namespace Prisma {
     fullName?: boolean
     passwordHash?: boolean
     expiresAt?: boolean
+    attempts?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["otpVerification"]>
 
@@ -3211,6 +3253,7 @@ export namespace Prisma {
     fullName?: boolean
     passwordHash?: boolean
     expiresAt?: boolean
+    attempts?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["otpVerification"]>
 
@@ -3221,6 +3264,7 @@ export namespace Prisma {
     fullName?: boolean
     passwordHash?: boolean
     expiresAt?: boolean
+    attempts?: boolean
     createdAt?: boolean
   }
 
@@ -3235,6 +3279,7 @@ export namespace Prisma {
       fullName: string
       passwordHash: string
       expiresAt: Date
+      attempts: number | null
       createdAt: Date
     }, ExtArgs["result"]["otpVerification"]>
     composites: {}
@@ -3635,6 +3680,7 @@ export namespace Prisma {
     readonly fullName: FieldRef<"OtpVerification", 'String'>
     readonly passwordHash: FieldRef<"OtpVerification", 'String'>
     readonly expiresAt: FieldRef<"OtpVerification", 'DateTime'>
+    readonly attempts: FieldRef<"OtpVerification", 'Int'>
     readonly createdAt: FieldRef<"OtpVerification", 'DateTime'>
   }
     
@@ -12929,6 +12975,7 @@ export namespace Prisma {
     fullName: 'fullName',
     passwordHash: 'passwordHash',
     expiresAt: 'expiresAt',
+    attempts: 'attempts',
     createdAt: 'createdAt'
   };
 
@@ -13281,6 +13328,7 @@ export namespace Prisma {
     fullName?: StringFilter<"OtpVerification"> | string
     passwordHash?: StringFilter<"OtpVerification"> | string
     expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
+    attempts?: IntNullableFilter<"OtpVerification"> | number | null
     createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
   }
 
@@ -13291,6 +13339,7 @@ export namespace Prisma {
     fullName?: SortOrder
     passwordHash?: SortOrder
     expiresAt?: SortOrder
+    attempts?: SortOrderInput | SortOrder
     createdAt?: SortOrder
   }
 
@@ -13304,6 +13353,7 @@ export namespace Prisma {
     fullName?: StringFilter<"OtpVerification"> | string
     passwordHash?: StringFilter<"OtpVerification"> | string
     expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
+    attempts?: IntNullableFilter<"OtpVerification"> | number | null
     createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
   }, "id">
 
@@ -13314,10 +13364,13 @@ export namespace Prisma {
     fullName?: SortOrder
     passwordHash?: SortOrder
     expiresAt?: SortOrder
+    attempts?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: OtpVerificationCountOrderByAggregateInput
+    _avg?: OtpVerificationAvgOrderByAggregateInput
     _max?: OtpVerificationMaxOrderByAggregateInput
     _min?: OtpVerificationMinOrderByAggregateInput
+    _sum?: OtpVerificationSumOrderByAggregateInput
   }
 
   export type OtpVerificationScalarWhereWithAggregatesInput = {
@@ -13330,6 +13383,7 @@ export namespace Prisma {
     fullName?: StringWithAggregatesFilter<"OtpVerification"> | string
     passwordHash?: StringWithAggregatesFilter<"OtpVerification"> | string
     expiresAt?: DateTimeWithAggregatesFilter<"OtpVerification"> | Date | string
+    attempts?: IntNullableWithAggregatesFilter<"OtpVerification"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"OtpVerification"> | Date | string
   }
 
@@ -14152,6 +14206,7 @@ export namespace Prisma {
     fullName: string
     passwordHash: string
     expiresAt: Date | string
+    attempts?: number | null
     createdAt?: Date | string
   }
 
@@ -14162,6 +14217,7 @@ export namespace Prisma {
     fullName: string
     passwordHash: string
     expiresAt: Date | string
+    attempts?: number | null
     createdAt?: Date | string
   }
 
@@ -14172,6 +14228,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attempts?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -14182,6 +14239,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attempts?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -14192,6 +14250,7 @@ export namespace Prisma {
     fullName: string
     passwordHash: string
     expiresAt: Date | string
+    attempts?: number | null
     createdAt?: Date | string
   }
 
@@ -14202,6 +14261,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attempts?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -14212,6 +14272,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     passwordHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attempts?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -15157,6 +15218,17 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type OtpVerificationCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -15164,7 +15236,12 @@ export namespace Prisma {
     fullName?: SortOrder
     passwordHash?: SortOrder
     expiresAt?: SortOrder
+    attempts?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type OtpVerificationAvgOrderByAggregateInput = {
+    attempts?: SortOrder
   }
 
   export type OtpVerificationMaxOrderByAggregateInput = {
@@ -15174,6 +15251,7 @@ export namespace Prisma {
     fullName?: SortOrder
     passwordHash?: SortOrder
     expiresAt?: SortOrder
+    attempts?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -15184,7 +15262,28 @@ export namespace Prisma {
     fullName?: SortOrder
     passwordHash?: SortOrder
     expiresAt?: SortOrder
+    attempts?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type OtpVerificationSumOrderByAggregateInput = {
+    attempts?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EmailLogCountOrderByAggregateInput = {
@@ -15297,17 +15396,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type JobCustomFormFieldListRelationFilter = {
     every?: JobCustomFormFieldWhereInput
     some?: JobCustomFormFieldWhereInput
@@ -15366,22 +15454,6 @@ export namespace Prisma {
 
   export type JobPostSumOrderByAggregateInput = {
     experience?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -15903,6 +15975,14 @@ export namespace Prisma {
     deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type EmployeeProfileCreateNestedManyWithoutCompanyInput = {
     create?: XOR<EmployeeProfileCreateWithoutCompanyInput, EmployeeProfileUncheckedCreateWithoutCompanyInput> | EmployeeProfileCreateWithoutCompanyInput[] | EmployeeProfileUncheckedCreateWithoutCompanyInput[]
     connectOrCreate?: EmployeeProfileCreateOrConnectWithoutCompanyInput | EmployeeProfileCreateOrConnectWithoutCompanyInput[]
@@ -16067,14 +16147,6 @@ export namespace Prisma {
     connectOrCreate?: ReferralInvitationCreateOrConnectWithoutJobPostInput | ReferralInvitationCreateOrConnectWithoutJobPostInput[]
     createMany?: ReferralInvitationCreateManyJobPostInputEnvelope
     connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type CompanyUpdateOneRequiredWithoutJobPostsNestedInput = {
