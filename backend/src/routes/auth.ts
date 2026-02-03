@@ -4,8 +4,10 @@ import { prisma } from '../lib/prisma'
 import { hashPassword, comparePassword } from '../utils/bcrypt'
 import { generateToken } from '../utils/jwt'
 import { sendPasswordResetEmail, sendWelcomeEmail } from '../utils/email'
+import { sendOtpEmail } from '../services/emailService'
 
 const router = express.Router()
+const OTP_EXPIRY_MINUTES = 10
 
 /** Send welcome email and set welcomeEmailSent. Non-blocking; do not await before sending response. */
 async function sendWelcomeEmailAndMarkSent(userId: string, email: string, name: string) {
@@ -67,7 +69,7 @@ router.post('/promote-admin', async (req, res, next) => {
   }
 })
 
-// Register
+// Register — creates pending_verification user, sends OTP
 router.post('/register', async (req, res, next) => {
   try {
     const { name, email, password } = req.body
@@ -82,41 +84,209 @@ router.post('/register', async (req, res, next) => {
     })
 
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' })
+      if (existingUser.status === 'pending_verification') {
+        // Resend OTP - delete old and create new
+        await prisma.otpVerification.deleteMany({ where: { userId: existingUser.id } })
+      } else {
+        return res.status(400).json({ message: 'User already exists' })
+      }
     }
 
     // Hash password
     const hashedPassword = await hashPassword(password)
 
-    // Create user (welcomeEmailSent defaults to false)
-    const user = await prisma.user.create({
+    // Create or update user with pending_verification
+    let user: { id: string; email: string; name: string | null; role: string | null; isAdmin: boolean }
+    if (existingUser && existingUser.status === 'pending_verification') {
+      await prisma.user.update({
+        where: { id: existingUser.id },
+        data: { name, password: hashedPassword },
+      })
+      user = {
+        id: existingUser.id,
+        email: existingUser.email,
+        name: existingUser.name,
+        role: existingUser.role,
+        isAdmin: existingUser.isAdmin,
+      }
+    } else {
+      const created = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+          status: 'pending_verification',
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          isAdmin: true,
+        },
+      })
+      user = created
+    }
+
+    // Generate 6-digit OTP
+    const otp = String(Math.floor(100000 + Math.random() * 900000))
+    const otpHash = crypto.createHash('sha256').update(otp).digest('hex')
+    const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000)
+
+    await prisma.otpVerification.create({
       data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        isAdmin: true,
+        userId: user.id,
+        otpHash,
+        expiresAt,
       },
     })
 
-    // Generate token
-    const token = generateToken(user.id)
+    // Send OTP email
+    try {
+      await sendOtpEmail({
+        toEmail: user.email,
+        otp,
+        expiryMinutes: OTP_EXPIRY_MINUTES,
+      })
+    } catch (emailErr: any) {
+      console.error('OTP email failed:', emailErr?.message)
+      return res.status(500).json({
+        message: 'Failed to send verification email. Please try again later.',
+      })
+    }
 
+    // Return temp token + needsVerification flag (frontend will redirect to OTP page)
+    const token = generateToken(user.id)
     res.status(201).json({
       user: {
         ...user,
         accessRole: user.isAdmin ? 'admin' : 'user',
+        needsVerification: true,
       },
       token,
+      needsVerification: true,
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Verify OTP — activate user
+router.post('/verify-otp', async (req, res, next) => {
+  try {
+    const { email, otp } = req.body
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: 'Email and OTP are required' })
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email },
     })
 
-    // Send welcome email only on first signup; non-blocking (do not await)
-    sendWelcomeEmailAndMarkSent(user.id, user.email, user.name).catch(() => {})
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (user.status !== 'pending_verification') {
+      return res.status(400).json({ message: 'Account is already verified. Please sign in.' })
+    }
+
+    const otpHash = crypto.createHash('sha256').update(String(otp).trim()).digest('hex')
+    const otpRecord = await prisma.otpVerification.findFirst({
+      where: {
+        userId: user.id,
+        otpHash,
+        expiresAt: { gt: new Date() },
+      },
+    })
+
+    if (!otpRecord) {
+      return res.status(400).json({
+        message: 'Invalid or expired OTP. Please request a new one.',
+      })
+    }
+
+    // Activate user and delete OTP
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: { status: 'active' },
+      }),
+      prisma.otpVerification.delete({
+        where: { id: otpRecord.id },
+      }),
+    ])
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmailAndMarkSent(user.id, user.email, user.name ?? 'there').catch(() => {})
+
+    const token = generateToken(user.id)
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        accessRole: user.isAdmin ? 'admin' : 'user',
+      },
+      token,
+      message: 'Email verified successfully',
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+// Resend OTP
+router.post('/resend-otp', async (req, res, next) => {
+  try {
+    const { email } = req.body
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' })
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    })
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (user.status !== 'pending_verification') {
+      return res.status(400).json({ message: 'Account is already verified. Please sign in.' })
+    }
+
+    // Delete old OTPs
+    await prisma.otpVerification.deleteMany({ where: { userId: user.id } })
+
+    const otp = String(Math.floor(100000 + Math.random() * 900000))
+    const otpHash = crypto.createHash('sha256').update(otp).digest('hex')
+    const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000)
+
+    await prisma.otpVerification.create({
+      data: { userId: user.id, otpHash, expiresAt },
+    })
+
+    try {
+      await sendOtpEmail({
+        toEmail: user.email,
+        otp,
+        expiryMinutes: OTP_EXPIRY_MINUTES,
+      })
+    } catch (emailErr: any) {
+      console.error('Resend OTP failed:', emailErr?.message)
+      return res.status(500).json({
+        message: 'Failed to send verification email. Please try again later.',
+      })
+    }
+
+    res.json({
+      success: true,
+      message: 'Verification code sent to your email',
+    })
   } catch (error) {
     next(error)
   }
@@ -134,7 +304,7 @@ router.post('/login', async (req, res, next) => {
     // Find user
     const user = await prisma.user.findUnique({
       where: { email },
-      select: { id: true, email: true, name: true, role: true, isAdmin: true, password: true, deactivated: true },
+      select: { id: true, email: true, name: true, role: true, isAdmin: true, password: true, deactivated: true, status: true },
     })
 
     if (!user) {
@@ -143,6 +313,14 @@ router.post('/login', async (req, res, next) => {
 
     if (user.deactivated) {
       return res.status(403).json({ message: 'Account is deactivated' })
+    }
+
+    if (user.status === 'pending_verification') {
+      return res.status(403).json({
+        message: 'Please verify your email first. Check your inbox for the 6-digit code.',
+        code: 'PENDING_VERIFICATION',
+        email: user.email,
+      })
     }
 
     // Verify password

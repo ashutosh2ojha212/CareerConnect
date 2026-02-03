@@ -382,10 +382,10 @@ export default function JobApplicants() {
   }
 
   return (
-    <div>
+    <div className="min-w-0">
       <button
         onClick={() => navigate('/employee')}
-        className="mb-8 text-[#4A4CF0] hover:text-[#6366F1] font-semibold transition-colors flex items-center gap-2 group"
+        className="mb-6 sm:mb-8 text-[#4A4CF0] hover:text-[#6366F1] font-semibold transition-colors flex items-center gap-2 group min-h-[44px] touch-manipulation"
       >
         <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -393,20 +393,20 @@ export default function JobApplicants() {
         Back to Job Posts
       </button>
 
-      <div className="mb-10">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Applicants</h1>
-        <p className="text-gray-600 text-base sm:text-lg">Review and manage job applications</p>
+      <div className="mb-6 sm:mb-10">
+        <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">Applicants</h1>
+        <p className="text-gray-600 text-sm sm:text-lg">Review and manage job applications</p>
       </div>
 
       {/* Tabs */}
-      <div className="mb-8 border-b-2 border-gray-200">
-        <nav className="flex space-x-8" aria-label="Tabs">
+      <div className="mb-6 sm:mb-8 border-b-2 border-gray-200 overflow-x-auto scrollbar-hide">
+        <nav className="flex space-x-6 sm:space-x-8 min-w-max" aria-label="Tabs">
           {(['pending', 'approved', 'rejected'] as TabStatus[]).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`
-                relative pb-4 px-2 border-b-3 font-bold text-base transition-all duration-200
+                relative pb-4 px-2 border-b-3 font-bold text-sm sm:text-base transition-all duration-200 min-h-[44px] touch-manipulation
                 ${
                   activeTab === tab
                     ? 'border-[#4A4CF0] text-[#4A4CF0]'
@@ -455,30 +455,30 @@ export default function JobApplicants() {
           {applicants.map((applicant) => (
             <div
               key={applicant.id}
-              className="group bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 relative cursor-pointer"
+              className="group bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-4 sm:p-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 relative cursor-pointer min-w-0"
               onClick={() => setSelectedApplicant(applicant)}
             >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center text-white font-bold text-lg shadow-md">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-3">
+                    <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-full bg-gradient-to-br from-[#4A4CF0] to-[#6366F1] flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-md flex-shrink-0">
                       {getInitials(applicant.name)}
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900">{applicant.name}</h3>
-                      <p className="text-sm text-gray-600">{applicant.email}</p>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base sm:text-lg font-bold text-gray-900 truncate">{applicant.name}</h3>
+                      <p className="text-xs sm:text-sm text-gray-600 truncate">{applicant.email}</p>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500 flex items-center gap-1.5 ml-16">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <p className="text-xs sm:text-sm text-gray-500 flex items-center gap-1.5 sm:ml-14">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     Applied on {new Date(applicant.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center justify-between sm:justify-end gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                   <span
-                    className={`px-4 py-2 rounded-full text-sm font-bold shadow-sm ${
+                    className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold shadow-sm ${
                       applicant.status === 'approved'
                         ? 'bg-[#34c759] text-white'
                         : applicant.status === 'rejected'
@@ -493,8 +493,9 @@ export default function JobApplicants() {
                       e.stopPropagation()
                       setShowDeleteConfirm(applicant.id)
                     }}
-                    className="p-2.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200"
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 text-red-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 rounded-xl transition-all duration-200 touch-manipulation"
                     title="Delete applicant"
+                    aria-label="Delete applicant"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

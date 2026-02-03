@@ -38,8 +38,13 @@ export default function SignUp() {
     try {
       const response = await authService.signUp({ name: data.name, email: data.email, password: data.password })
       setAuth(response.user, response.token)
-      toast.success('Account created successfully!')
-      navigate('/role-selection')
+      if (response.needsVerification) {
+        toast.success('Verification code sent to your email')
+        navigate('/verify-email', { state: { email: data.email } })
+      } else {
+        toast.success('Account created successfully!')
+        navigate('/role-selection')
+      }
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to create account')
     } finally {

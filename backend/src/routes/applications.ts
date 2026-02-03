@@ -4,6 +4,10 @@ import { authenticate, AuthRequest } from '../middleware/auth'
 import { upload } from '../utils/upload'
 import path from 'path'
 import fs from 'fs'
+import {
+  sendJobApplicationNotification,
+  sendApplicationStatusNotification,
+} from '../services/emailService'
 
 const router = express.Router()
 // Check if user has already applied for a job (by jobId)
@@ -226,32 +230,47 @@ router.post(
         }
       }
 
-      try {
-        const application = await prisma.referralApplication.create({
-          data: {
-            userId,
-            employeeId,
-            jobPostId,
-            formData: formDataJson,
-            resumeUrl: fileUrl, // Store in resumeUrl for backward compatibility
+      const application = await prisma.referralApplication.create({
+        data: {
+          userId,
+          employeeId,
+          jobPostId,
+          formData: formDataJson,
+          resumeUrl: fileUrl, // Store in resumeUrl for backward compatibility
+        },
+        include: {
+          user: { select: { name: true } },
+          jobPost: {
+            select: {
+              title: true,
+              companyName: true,
+              user: { select: { email: true } },
+            },
           },
-        })
+        },
+      })
 
-        res.status(201).json({
-          id: application.id,
-          message: 'Application submitted successfully',
-        })
-      } catch (error: any) {
-        // Handle unique constraint violation
-        if (error.code === 'P2002' || error.message?.includes('Unique constraint')) {
-          return res.status(409).json({ 
-            message: 'You have already applied to this job.',
-          })
-        }
-        throw error
+      // Send email to job creator (employee)
+      if (application.jobPost?.user?.email) {
+        sendJobApplicationNotification({
+          toEmail: application.jobPost.user.email,
+          candidateName: application.user?.name ?? 'A candidate',
+          jobTitle: application.jobPost.title,
+          companyName: application.jobPost.companyName ?? 'Company',
+          timestamp: application.createdAt,
+        }).catch((e) => console.error('Job application email failed:', e?.message))
       }
 
-    } catch (error) {
+      res.status(201).json({
+        id: application.id,
+        message: 'Application submitted successfully',
+      })
+    } catch (error: any) {
+      if (error.code === 'P2002' || error.message?.includes('Unique constraint')) {
+        return res.status(409).json({ 
+          message: 'You have already applied to this job.',
+        })
+      }
       next(error)
     }
   }
@@ -290,7 +309,25 @@ router.patch('/:applicationId/status', authenticate, async (req: AuthRequest, re
     const updated = await prisma.referralApplication.update({
       where: { id: applicationId },
       data: { status },
+      include: {
+        user: { select: { email: true } },
+        jobPost: { select: { title: true } },
+      },
     })
+
+    // Notify job seeker of status change (only for approved/rejected)
+    if (
+      (status === 'approved' || status === 'rejected') &&
+      updated.user?.email &&
+      updated.jobPost?.title
+    ) {
+      sendApplicationStatusNotification({
+        toEmail: updated.user.email,
+        jobTitle: updated.jobPost.title,
+        status,
+        timestamp: updated.updatedAt,
+      }).catch((e) => console.error('Application status email failed:', e?.message))
+    }
 
     res.json({
       id: updated.id,

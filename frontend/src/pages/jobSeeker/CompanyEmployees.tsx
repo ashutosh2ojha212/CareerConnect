@@ -149,10 +149,10 @@ export default function CompanyEmployees({ searchQuery = '' }: CompanyEmployeesP
     : allJobPosts
 
   return (
-    <div>
+    <div className="min-w-0">
       <button
         onClick={() => navigate('/job-seeker')}
-        className="mb-4 text-[#4A4CF0] hover:text-[#6366F1] font-semibold flex items-center gap-2"
+        className="mb-4 text-[#4A4CF0] hover:text-[#6366F1] font-semibold flex items-center gap-2 min-h-[44px] touch-manipulation"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -230,11 +230,11 @@ export default function CompanyEmployees({ searchQuery = '' }: CompanyEmployeesP
 
       {modalJob && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50"
           onClick={() => setModalJob(null)}
         >
           <div
-            className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6"
+            className="bg-white rounded-t-2xl sm:rounded-2xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header with close button */}

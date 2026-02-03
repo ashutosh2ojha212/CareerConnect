@@ -19,6 +19,16 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model OtpVerification
+ * 
+ */
+export type OtpVerification = $Result.DefaultSelection<Prisma.$OtpVerificationPayload>
+/**
+ * Model EmailLog
+ * 
+ */
+export type EmailLog = $Result.DefaultSelection<Prisma.$EmailLogPayload>
+/**
  * Model Company
  * 
  */
@@ -191,6 +201,26 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs>;
+
+  /**
+   * `prisma.otpVerification`: Exposes CRUD operations for the **OtpVerification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OtpVerifications
+    * const otpVerifications = await prisma.otpVerification.findMany()
+    * ```
+    */
+  get otpVerification(): Prisma.OtpVerificationDelegate<ExtArgs>;
+
+  /**
+   * `prisma.emailLog`: Exposes CRUD operations for the **EmailLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmailLogs
+    * const emailLogs = await prisma.emailLog.findMany()
+    * ```
+    */
+  get emailLog(): Prisma.EmailLogDelegate<ExtArgs>;
 
   /**
    * `prisma.company`: Exposes CRUD operations for the **Company** model.
@@ -713,6 +743,8 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    OtpVerification: 'OtpVerification',
+    EmailLog: 'EmailLog',
     Company: 'Company',
     EmployeeProfile: 'EmployeeProfile',
     JobPost: 'JobPost',
@@ -736,7 +768,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
     meta: {
-      modelProps: "user" | "company" | "employeeProfile" | "jobPost" | "jobCustomFormField" | "referralApplication" | "referralForm" | "jobSeekerProfile" | "referralInvitation"
+      modelProps: "user" | "otpVerification" | "emailLog" | "company" | "employeeProfile" | "jobPost" | "jobCustomFormField" | "referralApplication" | "referralForm" | "jobSeekerProfile" | "referralInvitation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -807,6 +839,146 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      OtpVerification: {
+        payload: Prisma.$OtpVerificationPayload<ExtArgs>
+        fields: Prisma.OtpVerificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OtpVerificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OtpVerificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload>
+          }
+          findFirst: {
+            args: Prisma.OtpVerificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OtpVerificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload>
+          }
+          findMany: {
+            args: Prisma.OtpVerificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload>[]
+          }
+          create: {
+            args: Prisma.OtpVerificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload>
+          }
+          createMany: {
+            args: Prisma.OtpVerificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OtpVerificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload>[]
+          }
+          delete: {
+            args: Prisma.OtpVerificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload>
+          }
+          update: {
+            args: Prisma.OtpVerificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.OtpVerificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OtpVerificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.OtpVerificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OtpVerificationPayload>
+          }
+          aggregate: {
+            args: Prisma.OtpVerificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOtpVerification>
+          }
+          groupBy: {
+            args: Prisma.OtpVerificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OtpVerificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OtpVerificationCountArgs<ExtArgs>
+            result: $Utils.Optional<OtpVerificationCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmailLog: {
+        payload: Prisma.$EmailLogPayload<ExtArgs>
+        fields: Prisma.EmailLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmailLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmailLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload>
+          }
+          findFirst: {
+            args: Prisma.EmailLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmailLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload>
+          }
+          findMany: {
+            args: Prisma.EmailLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload>[]
+          }
+          create: {
+            args: Prisma.EmailLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload>
+          }
+          createMany: {
+            args: Prisma.EmailLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmailLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload>[]
+          }
+          delete: {
+            args: Prisma.EmailLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload>
+          }
+          update: {
+            args: Prisma.EmailLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmailLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmailLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.EmailLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailLogPayload>
+          }
+          aggregate: {
+            args: Prisma.EmailLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmailLog>
+          }
+          groupBy: {
+            args: Prisma.EmailLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmailLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmailLogCountArgs<ExtArgs>
+            result: $Utils.Optional<EmailLogCountAggregateOutputType> | number
           }
         }
       }
@@ -1535,6 +1707,7 @@ export namespace Prisma {
     jobPosts: number
     sentInvitations: number
     receivedInvitations: number
+    otpVerifications: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1542,6 +1715,7 @@ export namespace Prisma {
     jobPosts?: boolean | UserCountOutputTypeCountJobPostsArgs
     sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
     receivedInvitations?: boolean | UserCountOutputTypeCountReceivedInvitationsArgs
+    otpVerifications?: boolean | UserCountOutputTypeCountOtpVerificationsArgs
   }
 
   // Custom InputTypes
@@ -1581,6 +1755,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountReceivedInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReferralInvitationWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountOtpVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OtpVerificationWhereInput
   }
 
 
@@ -1695,6 +1876,7 @@ export namespace Prisma {
     role: string | null
     isAdmin: boolean | null
     deactivated: boolean | null
+    status: string | null
     resetPasswordToken: string | null
     resetPasswordExpires: Date | null
     welcomeEmailSent: boolean | null
@@ -1710,6 +1892,7 @@ export namespace Prisma {
     role: string | null
     isAdmin: boolean | null
     deactivated: boolean | null
+    status: string | null
     resetPasswordToken: string | null
     resetPasswordExpires: Date | null
     welcomeEmailSent: boolean | null
@@ -1725,6 +1908,7 @@ export namespace Prisma {
     role: number
     isAdmin: number
     deactivated: number
+    status: number
     resetPasswordToken: number
     resetPasswordExpires: number
     welcomeEmailSent: number
@@ -1742,6 +1926,7 @@ export namespace Prisma {
     role?: true
     isAdmin?: true
     deactivated?: true
+    status?: true
     resetPasswordToken?: true
     resetPasswordExpires?: true
     welcomeEmailSent?: true
@@ -1757,6 +1942,7 @@ export namespace Prisma {
     role?: true
     isAdmin?: true
     deactivated?: true
+    status?: true
     resetPasswordToken?: true
     resetPasswordExpires?: true
     welcomeEmailSent?: true
@@ -1772,6 +1958,7 @@ export namespace Prisma {
     role?: true
     isAdmin?: true
     deactivated?: true
+    status?: true
     resetPasswordToken?: true
     resetPasswordExpires?: true
     welcomeEmailSent?: true
@@ -1860,6 +2047,7 @@ export namespace Prisma {
     role: string | null
     isAdmin: boolean
     deactivated: boolean
+    status: string
     resetPasswordToken: string | null
     resetPasswordExpires: Date | null
     welcomeEmailSent: boolean
@@ -1892,6 +2080,7 @@ export namespace Prisma {
     role?: boolean
     isAdmin?: boolean
     deactivated?: boolean
+    status?: boolean
     resetPasswordToken?: boolean
     resetPasswordExpires?: boolean
     welcomeEmailSent?: boolean
@@ -1904,6 +2093,7 @@ export namespace Prisma {
     referralForm?: boolean | User$referralFormArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
+    otpVerifications?: boolean | User$otpVerificationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1915,6 +2105,7 @@ export namespace Prisma {
     role?: boolean
     isAdmin?: boolean
     deactivated?: boolean
+    status?: boolean
     resetPasswordToken?: boolean
     resetPasswordExpires?: boolean
     welcomeEmailSent?: boolean
@@ -1930,6 +2121,7 @@ export namespace Prisma {
     role?: boolean
     isAdmin?: boolean
     deactivated?: boolean
+    status?: boolean
     resetPasswordToken?: boolean
     resetPasswordExpires?: boolean
     welcomeEmailSent?: boolean
@@ -1945,6 +2137,7 @@ export namespace Prisma {
     referralForm?: boolean | User$referralFormArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
+    otpVerifications?: boolean | User$otpVerificationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1959,6 +2152,7 @@ export namespace Prisma {
       referralForm: Prisma.$ReferralFormPayload<ExtArgs> | null
       sentInvitations: Prisma.$ReferralInvitationPayload<ExtArgs>[]
       receivedInvitations: Prisma.$ReferralInvitationPayload<ExtArgs>[]
+      otpVerifications: Prisma.$OtpVerificationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1968,6 +2162,7 @@ export namespace Prisma {
       role: string | null
       isAdmin: boolean
       deactivated: boolean
+      status: string
       resetPasswordToken: string | null
       resetPasswordExpires: Date | null
       welcomeEmailSent: boolean
@@ -2344,6 +2539,7 @@ export namespace Prisma {
     referralForm<T extends User$referralFormArgs<ExtArgs> = {}>(args?: Subset<T, User$referralFormArgs<ExtArgs>>): Prisma__ReferralFormClient<$Result.GetResult<Prisma.$ReferralFormPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findMany"> | Null>
     receivedInvitations<T extends User$receivedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findMany"> | Null>
+    otpVerifications<T extends User$otpVerificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$otpVerificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2380,6 +2576,7 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'String'>
     readonly isAdmin: FieldRef<"User", 'Boolean'>
     readonly deactivated: FieldRef<"User", 'Boolean'>
+    readonly status: FieldRef<"User", 'String'>
     readonly resetPasswordToken: FieldRef<"User", 'String'>
     readonly resetPasswordExpires: FieldRef<"User", 'DateTime'>
     readonly welcomeEmailSent: FieldRef<"User", 'Boolean'>
@@ -2824,6 +3021,26 @@ export namespace Prisma {
   }
 
   /**
+   * User.otpVerifications
+   */
+  export type User$otpVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    where?: OtpVerificationWhereInput
+    orderBy?: OtpVerificationOrderByWithRelationInput | OtpVerificationOrderByWithRelationInput[]
+    cursor?: OtpVerificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OtpVerificationScalarFieldEnum | OtpVerificationScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2835,6 +3052,1865 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OtpVerification
+   */
+
+  export type AggregateOtpVerification = {
+    _count: OtpVerificationCountAggregateOutputType | null
+    _min: OtpVerificationMinAggregateOutputType | null
+    _max: OtpVerificationMaxAggregateOutputType | null
+  }
+
+  export type OtpVerificationMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    otpHash: string | null
+    expiresAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type OtpVerificationMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    otpHash: string | null
+    expiresAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type OtpVerificationCountAggregateOutputType = {
+    id: number
+    userId: number
+    otpHash: number
+    expiresAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type OtpVerificationMinAggregateInputType = {
+    id?: true
+    userId?: true
+    otpHash?: true
+    expiresAt?: true
+    createdAt?: true
+  }
+
+  export type OtpVerificationMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    otpHash?: true
+    expiresAt?: true
+    createdAt?: true
+  }
+
+  export type OtpVerificationCountAggregateInputType = {
+    id?: true
+    userId?: true
+    otpHash?: true
+    expiresAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type OtpVerificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OtpVerification to aggregate.
+     */
+    where?: OtpVerificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OtpVerifications to fetch.
+     */
+    orderBy?: OtpVerificationOrderByWithRelationInput | OtpVerificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OtpVerificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OtpVerifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OtpVerifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OtpVerifications
+    **/
+    _count?: true | OtpVerificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OtpVerificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OtpVerificationMaxAggregateInputType
+  }
+
+  export type GetOtpVerificationAggregateType<T extends OtpVerificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateOtpVerification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOtpVerification[P]>
+      : GetScalarType<T[P], AggregateOtpVerification[P]>
+  }
+
+
+
+
+  export type OtpVerificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OtpVerificationWhereInput
+    orderBy?: OtpVerificationOrderByWithAggregationInput | OtpVerificationOrderByWithAggregationInput[]
+    by: OtpVerificationScalarFieldEnum[] | OtpVerificationScalarFieldEnum
+    having?: OtpVerificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OtpVerificationCountAggregateInputType | true
+    _min?: OtpVerificationMinAggregateInputType
+    _max?: OtpVerificationMaxAggregateInputType
+  }
+
+  export type OtpVerificationGroupByOutputType = {
+    id: string
+    userId: string
+    otpHash: string
+    expiresAt: Date
+    createdAt: Date
+    _count: OtpVerificationCountAggregateOutputType | null
+    _min: OtpVerificationMinAggregateOutputType | null
+    _max: OtpVerificationMaxAggregateOutputType | null
+  }
+
+  type GetOtpVerificationGroupByPayload<T extends OtpVerificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OtpVerificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OtpVerificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OtpVerificationGroupByOutputType[P]>
+            : GetScalarType<T[P], OtpVerificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OtpVerificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    otpHash?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["otpVerification"]>
+
+  export type OtpVerificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    otpHash?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["otpVerification"]>
+
+  export type OtpVerificationSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    otpHash?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type OtpVerificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type OtpVerificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $OtpVerificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OtpVerification"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      otpHash: string
+      expiresAt: Date
+      createdAt: Date
+    }, ExtArgs["result"]["otpVerification"]>
+    composites: {}
+  }
+
+  type OtpVerificationGetPayload<S extends boolean | null | undefined | OtpVerificationDefaultArgs> = $Result.GetResult<Prisma.$OtpVerificationPayload, S>
+
+  type OtpVerificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<OtpVerificationFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: OtpVerificationCountAggregateInputType | true
+    }
+
+  export interface OtpVerificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OtpVerification'], meta: { name: 'OtpVerification' } }
+    /**
+     * Find zero or one OtpVerification that matches the filter.
+     * @param {OtpVerificationFindUniqueArgs} args - Arguments to find a OtpVerification
+     * @example
+     * // Get one OtpVerification
+     * const otpVerification = await prisma.otpVerification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OtpVerificationFindUniqueArgs>(args: SelectSubset<T, OtpVerificationFindUniqueArgs<ExtArgs>>): Prisma__OtpVerificationClient<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one OtpVerification that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {OtpVerificationFindUniqueOrThrowArgs} args - Arguments to find a OtpVerification
+     * @example
+     * // Get one OtpVerification
+     * const otpVerification = await prisma.otpVerification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OtpVerificationFindUniqueOrThrowArgs>(args: SelectSubset<T, OtpVerificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OtpVerificationClient<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first OtpVerification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OtpVerificationFindFirstArgs} args - Arguments to find a OtpVerification
+     * @example
+     * // Get one OtpVerification
+     * const otpVerification = await prisma.otpVerification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OtpVerificationFindFirstArgs>(args?: SelectSubset<T, OtpVerificationFindFirstArgs<ExtArgs>>): Prisma__OtpVerificationClient<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first OtpVerification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OtpVerificationFindFirstOrThrowArgs} args - Arguments to find a OtpVerification
+     * @example
+     * // Get one OtpVerification
+     * const otpVerification = await prisma.otpVerification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OtpVerificationFindFirstOrThrowArgs>(args?: SelectSubset<T, OtpVerificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__OtpVerificationClient<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more OtpVerifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OtpVerificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OtpVerifications
+     * const otpVerifications = await prisma.otpVerification.findMany()
+     * 
+     * // Get first 10 OtpVerifications
+     * const otpVerifications = await prisma.otpVerification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const otpVerificationWithIdOnly = await prisma.otpVerification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OtpVerificationFindManyArgs>(args?: SelectSubset<T, OtpVerificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a OtpVerification.
+     * @param {OtpVerificationCreateArgs} args - Arguments to create a OtpVerification.
+     * @example
+     * // Create one OtpVerification
+     * const OtpVerification = await prisma.otpVerification.create({
+     *   data: {
+     *     // ... data to create a OtpVerification
+     *   }
+     * })
+     * 
+     */
+    create<T extends OtpVerificationCreateArgs>(args: SelectSubset<T, OtpVerificationCreateArgs<ExtArgs>>): Prisma__OtpVerificationClient<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many OtpVerifications.
+     * @param {OtpVerificationCreateManyArgs} args - Arguments to create many OtpVerifications.
+     * @example
+     * // Create many OtpVerifications
+     * const otpVerification = await prisma.otpVerification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OtpVerificationCreateManyArgs>(args?: SelectSubset<T, OtpVerificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OtpVerifications and returns the data saved in the database.
+     * @param {OtpVerificationCreateManyAndReturnArgs} args - Arguments to create many OtpVerifications.
+     * @example
+     * // Create many OtpVerifications
+     * const otpVerification = await prisma.otpVerification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OtpVerifications and only return the `id`
+     * const otpVerificationWithIdOnly = await prisma.otpVerification.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OtpVerificationCreateManyAndReturnArgs>(args?: SelectSubset<T, OtpVerificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a OtpVerification.
+     * @param {OtpVerificationDeleteArgs} args - Arguments to delete one OtpVerification.
+     * @example
+     * // Delete one OtpVerification
+     * const OtpVerification = await prisma.otpVerification.delete({
+     *   where: {
+     *     // ... filter to delete one OtpVerification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OtpVerificationDeleteArgs>(args: SelectSubset<T, OtpVerificationDeleteArgs<ExtArgs>>): Prisma__OtpVerificationClient<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one OtpVerification.
+     * @param {OtpVerificationUpdateArgs} args - Arguments to update one OtpVerification.
+     * @example
+     * // Update one OtpVerification
+     * const otpVerification = await prisma.otpVerification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OtpVerificationUpdateArgs>(args: SelectSubset<T, OtpVerificationUpdateArgs<ExtArgs>>): Prisma__OtpVerificationClient<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more OtpVerifications.
+     * @param {OtpVerificationDeleteManyArgs} args - Arguments to filter OtpVerifications to delete.
+     * @example
+     * // Delete a few OtpVerifications
+     * const { count } = await prisma.otpVerification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OtpVerificationDeleteManyArgs>(args?: SelectSubset<T, OtpVerificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OtpVerifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OtpVerificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OtpVerifications
+     * const otpVerification = await prisma.otpVerification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OtpVerificationUpdateManyArgs>(args: SelectSubset<T, OtpVerificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one OtpVerification.
+     * @param {OtpVerificationUpsertArgs} args - Arguments to update or create a OtpVerification.
+     * @example
+     * // Update or create a OtpVerification
+     * const otpVerification = await prisma.otpVerification.upsert({
+     *   create: {
+     *     // ... data to create a OtpVerification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OtpVerification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OtpVerificationUpsertArgs>(args: SelectSubset<T, OtpVerificationUpsertArgs<ExtArgs>>): Prisma__OtpVerificationClient<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of OtpVerifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OtpVerificationCountArgs} args - Arguments to filter OtpVerifications to count.
+     * @example
+     * // Count the number of OtpVerifications
+     * const count = await prisma.otpVerification.count({
+     *   where: {
+     *     // ... the filter for the OtpVerifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends OtpVerificationCountArgs>(
+      args?: Subset<T, OtpVerificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OtpVerificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OtpVerification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OtpVerificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OtpVerificationAggregateArgs>(args: Subset<T, OtpVerificationAggregateArgs>): Prisma.PrismaPromise<GetOtpVerificationAggregateType<T>>
+
+    /**
+     * Group by OtpVerification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OtpVerificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OtpVerificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OtpVerificationGroupByArgs['orderBy'] }
+        : { orderBy?: OtpVerificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OtpVerificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOtpVerificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OtpVerification model
+   */
+  readonly fields: OtpVerificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OtpVerification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OtpVerificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OtpVerification model
+   */ 
+  interface OtpVerificationFieldRefs {
+    readonly id: FieldRef<"OtpVerification", 'String'>
+    readonly userId: FieldRef<"OtpVerification", 'String'>
+    readonly otpHash: FieldRef<"OtpVerification", 'String'>
+    readonly expiresAt: FieldRef<"OtpVerification", 'DateTime'>
+    readonly createdAt: FieldRef<"OtpVerification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OtpVerification findUnique
+   */
+  export type OtpVerificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * Filter, which OtpVerification to fetch.
+     */
+    where: OtpVerificationWhereUniqueInput
+  }
+
+  /**
+   * OtpVerification findUniqueOrThrow
+   */
+  export type OtpVerificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * Filter, which OtpVerification to fetch.
+     */
+    where: OtpVerificationWhereUniqueInput
+  }
+
+  /**
+   * OtpVerification findFirst
+   */
+  export type OtpVerificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * Filter, which OtpVerification to fetch.
+     */
+    where?: OtpVerificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OtpVerifications to fetch.
+     */
+    orderBy?: OtpVerificationOrderByWithRelationInput | OtpVerificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OtpVerifications.
+     */
+    cursor?: OtpVerificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OtpVerifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OtpVerifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OtpVerifications.
+     */
+    distinct?: OtpVerificationScalarFieldEnum | OtpVerificationScalarFieldEnum[]
+  }
+
+  /**
+   * OtpVerification findFirstOrThrow
+   */
+  export type OtpVerificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * Filter, which OtpVerification to fetch.
+     */
+    where?: OtpVerificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OtpVerifications to fetch.
+     */
+    orderBy?: OtpVerificationOrderByWithRelationInput | OtpVerificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OtpVerifications.
+     */
+    cursor?: OtpVerificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OtpVerifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OtpVerifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OtpVerifications.
+     */
+    distinct?: OtpVerificationScalarFieldEnum | OtpVerificationScalarFieldEnum[]
+  }
+
+  /**
+   * OtpVerification findMany
+   */
+  export type OtpVerificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * Filter, which OtpVerifications to fetch.
+     */
+    where?: OtpVerificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OtpVerifications to fetch.
+     */
+    orderBy?: OtpVerificationOrderByWithRelationInput | OtpVerificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OtpVerifications.
+     */
+    cursor?: OtpVerificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OtpVerifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OtpVerifications.
+     */
+    skip?: number
+    distinct?: OtpVerificationScalarFieldEnum | OtpVerificationScalarFieldEnum[]
+  }
+
+  /**
+   * OtpVerification create
+   */
+  export type OtpVerificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OtpVerification.
+     */
+    data: XOR<OtpVerificationCreateInput, OtpVerificationUncheckedCreateInput>
+  }
+
+  /**
+   * OtpVerification createMany
+   */
+  export type OtpVerificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OtpVerifications.
+     */
+    data: OtpVerificationCreateManyInput | OtpVerificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OtpVerification createManyAndReturn
+   */
+  export type OtpVerificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many OtpVerifications.
+     */
+    data: OtpVerificationCreateManyInput | OtpVerificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OtpVerification update
+   */
+  export type OtpVerificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OtpVerification.
+     */
+    data: XOR<OtpVerificationUpdateInput, OtpVerificationUncheckedUpdateInput>
+    /**
+     * Choose, which OtpVerification to update.
+     */
+    where: OtpVerificationWhereUniqueInput
+  }
+
+  /**
+   * OtpVerification updateMany
+   */
+  export type OtpVerificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OtpVerifications.
+     */
+    data: XOR<OtpVerificationUpdateManyMutationInput, OtpVerificationUncheckedUpdateManyInput>
+    /**
+     * Filter which OtpVerifications to update
+     */
+    where?: OtpVerificationWhereInput
+  }
+
+  /**
+   * OtpVerification upsert
+   */
+  export type OtpVerificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OtpVerification to update in case it exists.
+     */
+    where: OtpVerificationWhereUniqueInput
+    /**
+     * In case the OtpVerification found by the `where` argument doesn't exist, create a new OtpVerification with this data.
+     */
+    create: XOR<OtpVerificationCreateInput, OtpVerificationUncheckedCreateInput>
+    /**
+     * In case the OtpVerification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OtpVerificationUpdateInput, OtpVerificationUncheckedUpdateInput>
+  }
+
+  /**
+   * OtpVerification delete
+   */
+  export type OtpVerificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+    /**
+     * Filter which OtpVerification to delete.
+     */
+    where: OtpVerificationWhereUniqueInput
+  }
+
+  /**
+   * OtpVerification deleteMany
+   */
+  export type OtpVerificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OtpVerifications to delete
+     */
+    where?: OtpVerificationWhereInput
+  }
+
+  /**
+   * OtpVerification without action
+   */
+  export type OtpVerificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OtpVerification
+     */
+    select?: OtpVerificationSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OtpVerificationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmailLog
+   */
+
+  export type AggregateEmailLog = {
+    _count: EmailLogCountAggregateOutputType | null
+    _min: EmailLogMinAggregateOutputType | null
+    _max: EmailLogMaxAggregateOutputType | null
+  }
+
+  export type EmailLogMinAggregateOutputType = {
+    id: string | null
+    toEmail: string | null
+    subject: string | null
+    eventType: string | null
+    metadata: string | null
+    success: boolean | null
+    errorMsg: string | null
+    messageId: string | null
+    createdAt: Date | null
+  }
+
+  export type EmailLogMaxAggregateOutputType = {
+    id: string | null
+    toEmail: string | null
+    subject: string | null
+    eventType: string | null
+    metadata: string | null
+    success: boolean | null
+    errorMsg: string | null
+    messageId: string | null
+    createdAt: Date | null
+  }
+
+  export type EmailLogCountAggregateOutputType = {
+    id: number
+    toEmail: number
+    subject: number
+    eventType: number
+    metadata: number
+    success: number
+    errorMsg: number
+    messageId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type EmailLogMinAggregateInputType = {
+    id?: true
+    toEmail?: true
+    subject?: true
+    eventType?: true
+    metadata?: true
+    success?: true
+    errorMsg?: true
+    messageId?: true
+    createdAt?: true
+  }
+
+  export type EmailLogMaxAggregateInputType = {
+    id?: true
+    toEmail?: true
+    subject?: true
+    eventType?: true
+    metadata?: true
+    success?: true
+    errorMsg?: true
+    messageId?: true
+    createdAt?: true
+  }
+
+  export type EmailLogCountAggregateInputType = {
+    id?: true
+    toEmail?: true
+    subject?: true
+    eventType?: true
+    metadata?: true
+    success?: true
+    errorMsg?: true
+    messageId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type EmailLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailLog to aggregate.
+     */
+    where?: EmailLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailLogs to fetch.
+     */
+    orderBy?: EmailLogOrderByWithRelationInput | EmailLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmailLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmailLogs
+    **/
+    _count?: true | EmailLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmailLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmailLogMaxAggregateInputType
+  }
+
+  export type GetEmailLogAggregateType<T extends EmailLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmailLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmailLog[P]>
+      : GetScalarType<T[P], AggregateEmailLog[P]>
+  }
+
+
+
+
+  export type EmailLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailLogWhereInput
+    orderBy?: EmailLogOrderByWithAggregationInput | EmailLogOrderByWithAggregationInput[]
+    by: EmailLogScalarFieldEnum[] | EmailLogScalarFieldEnum
+    having?: EmailLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmailLogCountAggregateInputType | true
+    _min?: EmailLogMinAggregateInputType
+    _max?: EmailLogMaxAggregateInputType
+  }
+
+  export type EmailLogGroupByOutputType = {
+    id: string
+    toEmail: string
+    subject: string
+    eventType: string
+    metadata: string | null
+    success: boolean
+    errorMsg: string | null
+    messageId: string | null
+    createdAt: Date
+    _count: EmailLogCountAggregateOutputType | null
+    _min: EmailLogMinAggregateOutputType | null
+    _max: EmailLogMaxAggregateOutputType | null
+  }
+
+  type GetEmailLogGroupByPayload<T extends EmailLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmailLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmailLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmailLogGroupByOutputType[P]>
+            : GetScalarType<T[P], EmailLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmailLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    toEmail?: boolean
+    subject?: boolean
+    eventType?: boolean
+    metadata?: boolean
+    success?: boolean
+    errorMsg?: boolean
+    messageId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["emailLog"]>
+
+  export type EmailLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    toEmail?: boolean
+    subject?: boolean
+    eventType?: boolean
+    metadata?: boolean
+    success?: boolean
+    errorMsg?: boolean
+    messageId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["emailLog"]>
+
+  export type EmailLogSelectScalar = {
+    id?: boolean
+    toEmail?: boolean
+    subject?: boolean
+    eventType?: boolean
+    metadata?: boolean
+    success?: boolean
+    errorMsg?: boolean
+    messageId?: boolean
+    createdAt?: boolean
+  }
+
+
+  export type $EmailLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmailLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      toEmail: string
+      subject: string
+      eventType: string
+      metadata: string | null
+      success: boolean
+      errorMsg: string | null
+      messageId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["emailLog"]>
+    composites: {}
+  }
+
+  type EmailLogGetPayload<S extends boolean | null | undefined | EmailLogDefaultArgs> = $Result.GetResult<Prisma.$EmailLogPayload, S>
+
+  type EmailLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<EmailLogFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: EmailLogCountAggregateInputType | true
+    }
+
+  export interface EmailLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmailLog'], meta: { name: 'EmailLog' } }
+    /**
+     * Find zero or one EmailLog that matches the filter.
+     * @param {EmailLogFindUniqueArgs} args - Arguments to find a EmailLog
+     * @example
+     * // Get one EmailLog
+     * const emailLog = await prisma.emailLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmailLogFindUniqueArgs>(args: SelectSubset<T, EmailLogFindUniqueArgs<ExtArgs>>): Prisma__EmailLogClient<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "findUnique"> | null, null, ExtArgs>
+
+    /**
+     * Find one EmailLog that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {EmailLogFindUniqueOrThrowArgs} args - Arguments to find a EmailLog
+     * @example
+     * // Get one EmailLog
+     * const emailLog = await prisma.emailLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmailLogFindUniqueOrThrowArgs>(args: SelectSubset<T, EmailLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmailLogClient<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "findUniqueOrThrow">, never, ExtArgs>
+
+    /**
+     * Find the first EmailLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailLogFindFirstArgs} args - Arguments to find a EmailLog
+     * @example
+     * // Get one EmailLog
+     * const emailLog = await prisma.emailLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmailLogFindFirstArgs>(args?: SelectSubset<T, EmailLogFindFirstArgs<ExtArgs>>): Prisma__EmailLogClient<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "findFirst"> | null, null, ExtArgs>
+
+    /**
+     * Find the first EmailLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailLogFindFirstOrThrowArgs} args - Arguments to find a EmailLog
+     * @example
+     * // Get one EmailLog
+     * const emailLog = await prisma.emailLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmailLogFindFirstOrThrowArgs>(args?: SelectSubset<T, EmailLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmailLogClient<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "findFirstOrThrow">, never, ExtArgs>
+
+    /**
+     * Find zero or more EmailLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmailLogs
+     * const emailLogs = await prisma.emailLog.findMany()
+     * 
+     * // Get first 10 EmailLogs
+     * const emailLogs = await prisma.emailLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const emailLogWithIdOnly = await prisma.emailLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmailLogFindManyArgs>(args?: SelectSubset<T, EmailLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "findMany">>
+
+    /**
+     * Create a EmailLog.
+     * @param {EmailLogCreateArgs} args - Arguments to create a EmailLog.
+     * @example
+     * // Create one EmailLog
+     * const EmailLog = await prisma.emailLog.create({
+     *   data: {
+     *     // ... data to create a EmailLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmailLogCreateArgs>(args: SelectSubset<T, EmailLogCreateArgs<ExtArgs>>): Prisma__EmailLogClient<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "create">, never, ExtArgs>
+
+    /**
+     * Create many EmailLogs.
+     * @param {EmailLogCreateManyArgs} args - Arguments to create many EmailLogs.
+     * @example
+     * // Create many EmailLogs
+     * const emailLog = await prisma.emailLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmailLogCreateManyArgs>(args?: SelectSubset<T, EmailLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmailLogs and returns the data saved in the database.
+     * @param {EmailLogCreateManyAndReturnArgs} args - Arguments to create many EmailLogs.
+     * @example
+     * // Create many EmailLogs
+     * const emailLog = await prisma.emailLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmailLogs and only return the `id`
+     * const emailLogWithIdOnly = await prisma.emailLog.createManyAndReturn({ 
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmailLogCreateManyAndReturnArgs>(args?: SelectSubset<T, EmailLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "createManyAndReturn">>
+
+    /**
+     * Delete a EmailLog.
+     * @param {EmailLogDeleteArgs} args - Arguments to delete one EmailLog.
+     * @example
+     * // Delete one EmailLog
+     * const EmailLog = await prisma.emailLog.delete({
+     *   where: {
+     *     // ... filter to delete one EmailLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmailLogDeleteArgs>(args: SelectSubset<T, EmailLogDeleteArgs<ExtArgs>>): Prisma__EmailLogClient<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "delete">, never, ExtArgs>
+
+    /**
+     * Update one EmailLog.
+     * @param {EmailLogUpdateArgs} args - Arguments to update one EmailLog.
+     * @example
+     * // Update one EmailLog
+     * const emailLog = await prisma.emailLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmailLogUpdateArgs>(args: SelectSubset<T, EmailLogUpdateArgs<ExtArgs>>): Prisma__EmailLogClient<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "update">, never, ExtArgs>
+
+    /**
+     * Delete zero or more EmailLogs.
+     * @param {EmailLogDeleteManyArgs} args - Arguments to filter EmailLogs to delete.
+     * @example
+     * // Delete a few EmailLogs
+     * const { count } = await prisma.emailLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmailLogDeleteManyArgs>(args?: SelectSubset<T, EmailLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmailLogs
+     * const emailLog = await prisma.emailLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmailLogUpdateManyArgs>(args: SelectSubset<T, EmailLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one EmailLog.
+     * @param {EmailLogUpsertArgs} args - Arguments to update or create a EmailLog.
+     * @example
+     * // Update or create a EmailLog
+     * const emailLog = await prisma.emailLog.upsert({
+     *   create: {
+     *     // ... data to create a EmailLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmailLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmailLogUpsertArgs>(args: SelectSubset<T, EmailLogUpsertArgs<ExtArgs>>): Prisma__EmailLogClient<$Result.GetResult<Prisma.$EmailLogPayload<ExtArgs>, T, "upsert">, never, ExtArgs>
+
+
+    /**
+     * Count the number of EmailLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailLogCountArgs} args - Arguments to filter EmailLogs to count.
+     * @example
+     * // Count the number of EmailLogs
+     * const count = await prisma.emailLog.count({
+     *   where: {
+     *     // ... the filter for the EmailLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmailLogCountArgs>(
+      args?: Subset<T, EmailLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmailLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmailLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmailLogAggregateArgs>(args: Subset<T, EmailLogAggregateArgs>): Prisma.PrismaPromise<GetEmailLogAggregateType<T>>
+
+    /**
+     * Group by EmailLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmailLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmailLogGroupByArgs['orderBy'] }
+        : { orderBy?: EmailLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmailLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmailLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmailLog model
+   */
+  readonly fields: EmailLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmailLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmailLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmailLog model
+   */ 
+  interface EmailLogFieldRefs {
+    readonly id: FieldRef<"EmailLog", 'String'>
+    readonly toEmail: FieldRef<"EmailLog", 'String'>
+    readonly subject: FieldRef<"EmailLog", 'String'>
+    readonly eventType: FieldRef<"EmailLog", 'String'>
+    readonly metadata: FieldRef<"EmailLog", 'String'>
+    readonly success: FieldRef<"EmailLog", 'Boolean'>
+    readonly errorMsg: FieldRef<"EmailLog", 'String'>
+    readonly messageId: FieldRef<"EmailLog", 'String'>
+    readonly createdAt: FieldRef<"EmailLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmailLog findUnique
+   */
+  export type EmailLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * Filter, which EmailLog to fetch.
+     */
+    where: EmailLogWhereUniqueInput
+  }
+
+  /**
+   * EmailLog findUniqueOrThrow
+   */
+  export type EmailLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * Filter, which EmailLog to fetch.
+     */
+    where: EmailLogWhereUniqueInput
+  }
+
+  /**
+   * EmailLog findFirst
+   */
+  export type EmailLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * Filter, which EmailLog to fetch.
+     */
+    where?: EmailLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailLogs to fetch.
+     */
+    orderBy?: EmailLogOrderByWithRelationInput | EmailLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailLogs.
+     */
+    cursor?: EmailLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailLogs.
+     */
+    distinct?: EmailLogScalarFieldEnum | EmailLogScalarFieldEnum[]
+  }
+
+  /**
+   * EmailLog findFirstOrThrow
+   */
+  export type EmailLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * Filter, which EmailLog to fetch.
+     */
+    where?: EmailLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailLogs to fetch.
+     */
+    orderBy?: EmailLogOrderByWithRelationInput | EmailLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailLogs.
+     */
+    cursor?: EmailLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailLogs.
+     */
+    distinct?: EmailLogScalarFieldEnum | EmailLogScalarFieldEnum[]
+  }
+
+  /**
+   * EmailLog findMany
+   */
+  export type EmailLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * Filter, which EmailLogs to fetch.
+     */
+    where?: EmailLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailLogs to fetch.
+     */
+    orderBy?: EmailLogOrderByWithRelationInput | EmailLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmailLogs.
+     */
+    cursor?: EmailLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailLogs.
+     */
+    skip?: number
+    distinct?: EmailLogScalarFieldEnum | EmailLogScalarFieldEnum[]
+  }
+
+  /**
+   * EmailLog create
+   */
+  export type EmailLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * The data needed to create a EmailLog.
+     */
+    data: XOR<EmailLogCreateInput, EmailLogUncheckedCreateInput>
+  }
+
+  /**
+   * EmailLog createMany
+   */
+  export type EmailLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmailLogs.
+     */
+    data: EmailLogCreateManyInput | EmailLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailLog createManyAndReturn
+   */
+  export type EmailLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * The data used to create many EmailLogs.
+     */
+    data: EmailLogCreateManyInput | EmailLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailLog update
+   */
+  export type EmailLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * The data needed to update a EmailLog.
+     */
+    data: XOR<EmailLogUpdateInput, EmailLogUncheckedUpdateInput>
+    /**
+     * Choose, which EmailLog to update.
+     */
+    where: EmailLogWhereUniqueInput
+  }
+
+  /**
+   * EmailLog updateMany
+   */
+  export type EmailLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmailLogs.
+     */
+    data: XOR<EmailLogUpdateManyMutationInput, EmailLogUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailLogs to update
+     */
+    where?: EmailLogWhereInput
+  }
+
+  /**
+   * EmailLog upsert
+   */
+  export type EmailLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * The filter to search for the EmailLog to update in case it exists.
+     */
+    where: EmailLogWhereUniqueInput
+    /**
+     * In case the EmailLog found by the `where` argument doesn't exist, create a new EmailLog with this data.
+     */
+    create: XOR<EmailLogCreateInput, EmailLogUncheckedCreateInput>
+    /**
+     * In case the EmailLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmailLogUpdateInput, EmailLogUncheckedUpdateInput>
+  }
+
+  /**
+   * EmailLog delete
+   */
+  export type EmailLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
+    /**
+     * Filter which EmailLog to delete.
+     */
+    where: EmailLogWhereUniqueInput
+  }
+
+  /**
+   * EmailLog deleteMany
+   */
+  export type EmailLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailLogs to delete
+     */
+    where?: EmailLogWhereInput
+  }
+
+  /**
+   * EmailLog without action
+   */
+  export type EmailLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailLog
+     */
+    select?: EmailLogSelect<ExtArgs> | null
   }
 
 
@@ -10899,6 +12975,7 @@ export namespace Prisma {
     role: 'role',
     isAdmin: 'isAdmin',
     deactivated: 'deactivated',
+    status: 'status',
     resetPasswordToken: 'resetPasswordToken',
     resetPasswordExpires: 'resetPasswordExpires',
     welcomeEmailSent: 'welcomeEmailSent',
@@ -10907,6 +12984,32 @@ export namespace Prisma {
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const OtpVerificationScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    otpHash: 'otpHash',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt'
+  };
+
+  export type OtpVerificationScalarFieldEnum = (typeof OtpVerificationScalarFieldEnum)[keyof typeof OtpVerificationScalarFieldEnum]
+
+
+  export const EmailLogScalarFieldEnum: {
+    id: 'id',
+    toEmail: 'toEmail',
+    subject: 'subject',
+    eventType: 'eventType',
+    metadata: 'metadata',
+    success: 'success',
+    errorMsg: 'errorMsg',
+    messageId: 'messageId',
+    createdAt: 'createdAt'
+  };
+
+  export type EmailLogScalarFieldEnum = (typeof EmailLogScalarFieldEnum)[keyof typeof EmailLogScalarFieldEnum]
 
 
   export const CompanyScalarFieldEnum: {
@@ -11128,6 +13231,7 @@ export namespace Prisma {
     role?: StringNullableFilter<"User"> | string | null
     isAdmin?: BoolFilter<"User"> | boolean
     deactivated?: BoolFilter<"User"> | boolean
+    status?: StringFilter<"User"> | string
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
     resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     welcomeEmailSent?: BoolFilter<"User"> | boolean
@@ -11140,6 +13244,7 @@ export namespace Prisma {
     referralForm?: XOR<ReferralFormNullableRelationFilter, ReferralFormWhereInput> | null
     sentInvitations?: ReferralInvitationListRelationFilter
     receivedInvitations?: ReferralInvitationListRelationFilter
+    otpVerifications?: OtpVerificationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -11150,6 +13255,7 @@ export namespace Prisma {
     role?: SortOrderInput | SortOrder
     isAdmin?: SortOrder
     deactivated?: SortOrder
+    status?: SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
     resetPasswordExpires?: SortOrderInput | SortOrder
     welcomeEmailSent?: SortOrder
@@ -11162,6 +13268,7 @@ export namespace Prisma {
     referralForm?: ReferralFormOrderByWithRelationInput
     sentInvitations?: ReferralInvitationOrderByRelationAggregateInput
     receivedInvitations?: ReferralInvitationOrderByRelationAggregateInput
+    otpVerifications?: OtpVerificationOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -11175,6 +13282,7 @@ export namespace Prisma {
     role?: StringNullableFilter<"User"> | string | null
     isAdmin?: BoolFilter<"User"> | boolean
     deactivated?: BoolFilter<"User"> | boolean
+    status?: StringFilter<"User"> | string
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
     resetPasswordExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     welcomeEmailSent?: BoolFilter<"User"> | boolean
@@ -11187,6 +13295,7 @@ export namespace Prisma {
     referralForm?: XOR<ReferralFormNullableRelationFilter, ReferralFormWhereInput> | null
     sentInvitations?: ReferralInvitationListRelationFilter
     receivedInvitations?: ReferralInvitationListRelationFilter
+    otpVerifications?: OtpVerificationListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -11197,6 +13306,7 @@ export namespace Prisma {
     role?: SortOrderInput | SortOrder
     isAdmin?: SortOrder
     deactivated?: SortOrder
+    status?: SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
     resetPasswordExpires?: SortOrderInput | SortOrder
     welcomeEmailSent?: SortOrder
@@ -11218,11 +13328,139 @@ export namespace Prisma {
     role?: StringNullableWithAggregatesFilter<"User"> | string | null
     isAdmin?: BoolWithAggregatesFilter<"User"> | boolean
     deactivated?: BoolWithAggregatesFilter<"User"> | boolean
+    status?: StringWithAggregatesFilter<"User"> | string
     resetPasswordToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     resetPasswordExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     welcomeEmailSent?: BoolWithAggregatesFilter<"User"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type OtpVerificationWhereInput = {
+    AND?: OtpVerificationWhereInput | OtpVerificationWhereInput[]
+    OR?: OtpVerificationWhereInput[]
+    NOT?: OtpVerificationWhereInput | OtpVerificationWhereInput[]
+    id?: StringFilter<"OtpVerification"> | string
+    userId?: StringFilter<"OtpVerification"> | string
+    otpHash?: StringFilter<"OtpVerification"> | string
+    expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
+    createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }
+
+  export type OtpVerificationOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    otpHash?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type OtpVerificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: OtpVerificationWhereInput | OtpVerificationWhereInput[]
+    OR?: OtpVerificationWhereInput[]
+    NOT?: OtpVerificationWhereInput | OtpVerificationWhereInput[]
+    userId?: StringFilter<"OtpVerification"> | string
+    otpHash?: StringFilter<"OtpVerification"> | string
+    expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
+    createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type OtpVerificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    otpHash?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    _count?: OtpVerificationCountOrderByAggregateInput
+    _max?: OtpVerificationMaxOrderByAggregateInput
+    _min?: OtpVerificationMinOrderByAggregateInput
+  }
+
+  export type OtpVerificationScalarWhereWithAggregatesInput = {
+    AND?: OtpVerificationScalarWhereWithAggregatesInput | OtpVerificationScalarWhereWithAggregatesInput[]
+    OR?: OtpVerificationScalarWhereWithAggregatesInput[]
+    NOT?: OtpVerificationScalarWhereWithAggregatesInput | OtpVerificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"OtpVerification"> | string
+    userId?: StringWithAggregatesFilter<"OtpVerification"> | string
+    otpHash?: StringWithAggregatesFilter<"OtpVerification"> | string
+    expiresAt?: DateTimeWithAggregatesFilter<"OtpVerification"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"OtpVerification"> | Date | string
+  }
+
+  export type EmailLogWhereInput = {
+    AND?: EmailLogWhereInput | EmailLogWhereInput[]
+    OR?: EmailLogWhereInput[]
+    NOT?: EmailLogWhereInput | EmailLogWhereInput[]
+    id?: StringFilter<"EmailLog"> | string
+    toEmail?: StringFilter<"EmailLog"> | string
+    subject?: StringFilter<"EmailLog"> | string
+    eventType?: StringFilter<"EmailLog"> | string
+    metadata?: StringNullableFilter<"EmailLog"> | string | null
+    success?: BoolFilter<"EmailLog"> | boolean
+    errorMsg?: StringNullableFilter<"EmailLog"> | string | null
+    messageId?: StringNullableFilter<"EmailLog"> | string | null
+    createdAt?: DateTimeFilter<"EmailLog"> | Date | string
+  }
+
+  export type EmailLogOrderByWithRelationInput = {
+    id?: SortOrder
+    toEmail?: SortOrder
+    subject?: SortOrder
+    eventType?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    success?: SortOrder
+    errorMsg?: SortOrderInput | SortOrder
+    messageId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EmailLogWhereInput | EmailLogWhereInput[]
+    OR?: EmailLogWhereInput[]
+    NOT?: EmailLogWhereInput | EmailLogWhereInput[]
+    toEmail?: StringFilter<"EmailLog"> | string
+    subject?: StringFilter<"EmailLog"> | string
+    eventType?: StringFilter<"EmailLog"> | string
+    metadata?: StringNullableFilter<"EmailLog"> | string | null
+    success?: BoolFilter<"EmailLog"> | boolean
+    errorMsg?: StringNullableFilter<"EmailLog"> | string | null
+    messageId?: StringNullableFilter<"EmailLog"> | string | null
+    createdAt?: DateTimeFilter<"EmailLog"> | Date | string
+  }, "id">
+
+  export type EmailLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    toEmail?: SortOrder
+    subject?: SortOrder
+    eventType?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    success?: SortOrder
+    errorMsg?: SortOrderInput | SortOrder
+    messageId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: EmailLogCountOrderByAggregateInput
+    _max?: EmailLogMaxOrderByAggregateInput
+    _min?: EmailLogMinOrderByAggregateInput
+  }
+
+  export type EmailLogScalarWhereWithAggregatesInput = {
+    AND?: EmailLogScalarWhereWithAggregatesInput | EmailLogScalarWhereWithAggregatesInput[]
+    OR?: EmailLogScalarWhereWithAggregatesInput[]
+    NOT?: EmailLogScalarWhereWithAggregatesInput | EmailLogScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmailLog"> | string
+    toEmail?: StringWithAggregatesFilter<"EmailLog"> | string
+    subject?: StringWithAggregatesFilter<"EmailLog"> | string
+    eventType?: StringWithAggregatesFilter<"EmailLog"> | string
+    metadata?: StringNullableWithAggregatesFilter<"EmailLog"> | string | null
+    success?: BoolWithAggregatesFilter<"EmailLog"> | boolean
+    errorMsg?: StringNullableWithAggregatesFilter<"EmailLog"> | string | null
+    messageId?: StringNullableWithAggregatesFilter<"EmailLog"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EmailLog"> | Date | string
   }
 
   export type CompanyWhereInput = {
@@ -11833,6 +14071,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -11845,6 +14084,7 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -11855,6 +14095,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -11867,6 +14108,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -11877,6 +14119,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -11889,6 +14132,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11899,6 +14143,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -11911,6 +14156,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -11921,6 +14167,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -11936,6 +14183,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -11951,11 +14199,151 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OtpVerificationCreateInput = {
+    id?: string
+    otpHash: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutOtpVerificationsInput
+  }
+
+  export type OtpVerificationUncheckedCreateInput = {
+    id?: string
+    userId: string
+    otpHash: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type OtpVerificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    otpHash?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutOtpVerificationsNestedInput
+  }
+
+  export type OtpVerificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    otpHash?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OtpVerificationCreateManyInput = {
+    id?: string
+    userId: string
+    otpHash: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type OtpVerificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    otpHash?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OtpVerificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    otpHash?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailLogCreateInput = {
+    id?: string
+    toEmail: string
+    subject: string
+    eventType: string
+    metadata?: string | null
+    success: boolean
+    errorMsg?: string | null
+    messageId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type EmailLogUncheckedCreateInput = {
+    id?: string
+    toEmail: string
+    subject: string
+    eventType: string
+    metadata?: string | null
+    success: boolean
+    errorMsg?: string | null
+    messageId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type EmailLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    toEmail?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    success?: BoolFieldUpdateOperationsInput | boolean
+    errorMsg?: NullableStringFieldUpdateOperationsInput | string | null
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    toEmail?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    success?: BoolFieldUpdateOperationsInput | boolean
+    errorMsg?: NullableStringFieldUpdateOperationsInput | string | null
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailLogCreateManyInput = {
+    id?: string
+    toEmail: string
+    subject: string
+    eventType: string
+    metadata?: string | null
+    success: boolean
+    errorMsg?: string | null
+    messageId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type EmailLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    toEmail?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    success?: BoolFieldUpdateOperationsInput | boolean
+    errorMsg?: NullableStringFieldUpdateOperationsInput | string | null
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    toEmail?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    success?: BoolFieldUpdateOperationsInput | boolean
+    errorMsg?: NullableStringFieldUpdateOperationsInput | string | null
+    messageId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CompanyCreateInput = {
@@ -12679,6 +15067,12 @@ export namespace Prisma {
     none?: ReferralInvitationWhereInput
   }
 
+  export type OtpVerificationListRelationFilter = {
+    every?: OtpVerificationWhereInput
+    some?: OtpVerificationWhereInput
+    none?: OtpVerificationWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -12696,6 +15090,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type OtpVerificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
@@ -12704,6 +15102,7 @@ export namespace Prisma {
     role?: SortOrder
     isAdmin?: SortOrder
     deactivated?: SortOrder
+    status?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExpires?: SortOrder
     welcomeEmailSent?: SortOrder
@@ -12719,6 +15118,7 @@ export namespace Prisma {
     role?: SortOrder
     isAdmin?: SortOrder
     deactivated?: SortOrder
+    status?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExpires?: SortOrder
     welcomeEmailSent?: SortOrder
@@ -12734,6 +15134,7 @@ export namespace Prisma {
     role?: SortOrder
     isAdmin?: SortOrder
     deactivated?: SortOrder
+    status?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExpires?: SortOrder
     welcomeEmailSent?: SortOrder
@@ -12813,6 +15214,71 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type UserRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type OtpVerificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    otpHash?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OtpVerificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    otpHash?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type OtpVerificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    otpHash?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    toEmail?: SortOrder
+    subject?: SortOrder
+    eventType?: SortOrder
+    metadata?: SortOrder
+    success?: SortOrder
+    errorMsg?: SortOrder
+    messageId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    toEmail?: SortOrder
+    subject?: SortOrder
+    eventType?: SortOrder
+    metadata?: SortOrder
+    success?: SortOrder
+    errorMsg?: SortOrder
+    messageId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EmailLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    toEmail?: SortOrder
+    subject?: SortOrder
+    eventType?: SortOrder
+    metadata?: SortOrder
+    success?: SortOrder
+    errorMsg?: SortOrder
+    messageId?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type EmployeeProfileListRelationFilter = {
     every?: EmployeeProfileWhereInput
     some?: EmployeeProfileWhereInput
@@ -12848,11 +15314,6 @@ export namespace Prisma {
     logo?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type UserRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
   }
 
   export type CompanyRelationFilter = {
@@ -13255,6 +15716,13 @@ export namespace Prisma {
     connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
   }
 
+  export type OtpVerificationCreateNestedManyWithoutUserInput = {
+    create?: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput> | OtpVerificationCreateWithoutUserInput[] | OtpVerificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OtpVerificationCreateOrConnectWithoutUserInput | OtpVerificationCreateOrConnectWithoutUserInput[]
+    createMany?: OtpVerificationCreateManyUserInputEnvelope
+    connect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+  }
+
   export type EmployeeProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmployeeProfileCreateOrConnectWithoutUserInput
@@ -13299,6 +15767,13 @@ export namespace Prisma {
     connectOrCreate?: ReferralInvitationCreateOrConnectWithoutCandidateInput | ReferralInvitationCreateOrConnectWithoutCandidateInput[]
     createMany?: ReferralInvitationCreateManyCandidateInputEnvelope
     connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
+  }
+
+  export type OtpVerificationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput> | OtpVerificationCreateWithoutUserInput[] | OtpVerificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OtpVerificationCreateOrConnectWithoutUserInput | OtpVerificationCreateOrConnectWithoutUserInput[]
+    createMany?: OtpVerificationCreateManyUserInputEnvelope
+    connect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -13407,6 +15882,20 @@ export namespace Prisma {
     deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
   }
 
+  export type OtpVerificationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput> | OtpVerificationCreateWithoutUserInput[] | OtpVerificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OtpVerificationCreateOrConnectWithoutUserInput | OtpVerificationCreateOrConnectWithoutUserInput[]
+    upsert?: OtpVerificationUpsertWithWhereUniqueWithoutUserInput | OtpVerificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: OtpVerificationCreateManyUserInputEnvelope
+    set?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+    disconnect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+    delete?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+    connect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+    update?: OtpVerificationUpdateWithWhereUniqueWithoutUserInput | OtpVerificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: OtpVerificationUpdateManyWithWhereWithoutUserInput | OtpVerificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: OtpVerificationScalarWhereInput | OtpVerificationScalarWhereInput[]
+  }
+
   export type EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmployeeProfileCreateOrConnectWithoutUserInput
@@ -13491,6 +15980,34 @@ export namespace Prisma {
     update?: ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput | ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput[]
     updateMany?: ReferralInvitationUpdateManyWithWhereWithoutCandidateInput | ReferralInvitationUpdateManyWithWhereWithoutCandidateInput[]
     deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
+  }
+
+  export type OtpVerificationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput> | OtpVerificationCreateWithoutUserInput[] | OtpVerificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OtpVerificationCreateOrConnectWithoutUserInput | OtpVerificationCreateOrConnectWithoutUserInput[]
+    upsert?: OtpVerificationUpsertWithWhereUniqueWithoutUserInput | OtpVerificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: OtpVerificationCreateManyUserInputEnvelope
+    set?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+    disconnect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+    delete?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+    connect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
+    update?: OtpVerificationUpdateWithWhereUniqueWithoutUserInput | OtpVerificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: OtpVerificationUpdateManyWithWhereWithoutUserInput | OtpVerificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: OtpVerificationScalarWhereInput | OtpVerificationScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutOtpVerificationsInput = {
+    create?: XOR<UserCreateWithoutOtpVerificationsInput, UserUncheckedCreateWithoutOtpVerificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOtpVerificationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutOtpVerificationsNestedInput = {
+    create?: XOR<UserCreateWithoutOtpVerificationsInput, UserUncheckedCreateWithoutOtpVerificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutOtpVerificationsInput
+    upsert?: UserUpsertWithoutOtpVerificationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOtpVerificationsInput, UserUpdateWithoutOtpVerificationsInput>, UserUncheckedUpdateWithoutOtpVerificationsInput>
   }
 
   export type EmployeeProfileCreateNestedManyWithoutCompanyInput = {
@@ -14299,6 +16816,30 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OtpVerificationCreateWithoutUserInput = {
+    id?: string
+    otpHash: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type OtpVerificationUncheckedCreateWithoutUserInput = {
+    id?: string
+    otpHash: string
+    expiresAt: Date | string
+    createdAt?: Date | string
+  }
+
+  export type OtpVerificationCreateOrConnectWithoutUserInput = {
+    where: OtpVerificationWhereUniqueInput
+    create: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type OtpVerificationCreateManyUserInputEnvelope = {
+    data: OtpVerificationCreateManyUserInput | OtpVerificationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type EmployeeProfileUpsertWithoutUserInput = {
     update: XOR<EmployeeProfileUpdateWithoutUserInput, EmployeeProfileUncheckedUpdateWithoutUserInput>
     create: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
@@ -14505,6 +17046,141 @@ export namespace Prisma {
     data: XOR<ReferralInvitationUpdateManyMutationInput, ReferralInvitationUncheckedUpdateManyWithoutCandidateInput>
   }
 
+  export type OtpVerificationUpsertWithWhereUniqueWithoutUserInput = {
+    where: OtpVerificationWhereUniqueInput
+    update: XOR<OtpVerificationUpdateWithoutUserInput, OtpVerificationUncheckedUpdateWithoutUserInput>
+    create: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type OtpVerificationUpdateWithWhereUniqueWithoutUserInput = {
+    where: OtpVerificationWhereUniqueInput
+    data: XOR<OtpVerificationUpdateWithoutUserInput, OtpVerificationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type OtpVerificationUpdateManyWithWhereWithoutUserInput = {
+    where: OtpVerificationScalarWhereInput
+    data: XOR<OtpVerificationUpdateManyMutationInput, OtpVerificationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type OtpVerificationScalarWhereInput = {
+    AND?: OtpVerificationScalarWhereInput | OtpVerificationScalarWhereInput[]
+    OR?: OtpVerificationScalarWhereInput[]
+    NOT?: OtpVerificationScalarWhereInput | OtpVerificationScalarWhereInput[]
+    id?: StringFilter<"OtpVerification"> | string
+    userId?: StringFilter<"OtpVerification"> | string
+    otpHash?: StringFilter<"OtpVerification"> | string
+    expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
+    createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
+  }
+
+  export type UserCreateWithoutOtpVerificationsInput = {
+    id?: string
+    email: string
+    name: string
+    password: string
+    role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
+    status?: string
+    resetPasswordToken?: string | null
+    resetPasswordExpires?: Date | string | null
+    welcomeEmailSent?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employeeProfile?: EmployeeProfileCreateNestedOneWithoutUserInput
+    jobSeekerProfile?: JobSeekerProfileCreateNestedOneWithoutUserInput
+    applications?: ReferralApplicationCreateNestedManyWithoutUserInput
+    jobPosts?: JobPostCreateNestedManyWithoutUserInput
+    referralForm?: ReferralFormCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+  }
+
+  export type UserUncheckedCreateWithoutOtpVerificationsInput = {
+    id?: string
+    email: string
+    name: string
+    password: string
+    role?: string | null
+    isAdmin?: boolean
+    deactivated?: boolean
+    status?: string
+    resetPasswordToken?: string | null
+    resetPasswordExpires?: Date | string | null
+    welcomeEmailSent?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    employeeProfile?: EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+    jobSeekerProfile?: JobSeekerProfileUncheckedCreateNestedOneWithoutUserInput
+    applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
+    jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
+    referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
+    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type UserCreateOrConnectWithoutOtpVerificationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutOtpVerificationsInput, UserUncheckedCreateWithoutOtpVerificationsInput>
+  }
+
+  export type UserUpsertWithoutOtpVerificationsInput = {
+    update: XOR<UserUpdateWithoutOtpVerificationsInput, UserUncheckedUpdateWithoutOtpVerificationsInput>
+    create: XOR<UserCreateWithoutOtpVerificationsInput, UserUncheckedCreateWithoutOtpVerificationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutOtpVerificationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutOtpVerificationsInput, UserUncheckedUpdateWithoutOtpVerificationsInput>
+  }
+
+  export type UserUpdateWithoutOtpVerificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employeeProfile?: EmployeeProfileUpdateOneWithoutUserNestedInput
+    jobSeekerProfile?: JobSeekerProfileUpdateOneWithoutUserNestedInput
+    applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
+    jobPosts?: JobPostUpdateManyWithoutUserNestedInput
+    referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutOtpVerificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    isAdmin?: BoolFieldUpdateOperationsInput | boolean
+    deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    employeeProfile?: EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+    jobSeekerProfile?: JobSeekerProfileUncheckedUpdateOneWithoutUserNestedInput
+    applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
+    jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
+    referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
+    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
   export type EmployeeProfileCreateWithoutCompanyInput = {
     id?: string
     position?: string | null
@@ -14625,6 +17301,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -14636,6 +17313,7 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmployeeProfileInput = {
@@ -14646,6 +17324,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -14657,6 +17336,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmployeeProfileInput = {
@@ -14708,6 +17388,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -14719,6 +17400,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmployeeProfileInput = {
@@ -14729,6 +17411,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -14740,6 +17423,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyUpsertWithoutEmployeesInput = {
@@ -14806,6 +17490,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -14817,6 +17502,7 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutJobPostsInput = {
@@ -14827,6 +17513,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -14838,6 +17525,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutJobPostsInput = {
@@ -14981,6 +17669,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -14992,6 +17681,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobPostsInput = {
@@ -15002,6 +17692,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15013,6 +17704,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type JobCustomFormFieldUpsertWithWhereUniqueWithoutJobPostInput = {
@@ -15163,6 +17855,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15174,6 +17867,7 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutApplicationsInput = {
@@ -15184,6 +17878,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15195,6 +17890,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutApplicationsInput = {
@@ -15258,6 +17954,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15269,6 +17966,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApplicationsInput = {
@@ -15279,6 +17977,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15290,6 +17989,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type JobPostUpsertWithoutApplicationsInput = {
@@ -15343,6 +18043,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15354,6 +18055,7 @@ export namespace Prisma {
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReferralFormInput = {
@@ -15364,6 +18066,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15375,6 +18078,7 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReferralFormInput = {
@@ -15401,6 +18105,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15412,6 +18117,7 @@ export namespace Prisma {
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReferralFormInput = {
@@ -15422,6 +18128,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15433,6 +18140,7 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutJobSeekerProfileInput = {
@@ -15443,6 +18151,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15454,6 +18163,7 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutJobSeekerProfileInput = {
@@ -15464,6 +18174,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15475,6 +18186,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutJobSeekerProfileInput = {
@@ -15501,6 +18213,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15512,6 +18225,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobSeekerProfileInput = {
@@ -15522,6 +18236,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15533,6 +18248,7 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSentInvitationsInput = {
@@ -15543,6 +18259,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15554,6 +18271,7 @@ export namespace Prisma {
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -15564,6 +18282,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15575,6 +18294,7 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
+    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -15590,6 +18310,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15601,6 +18322,7 @@ export namespace Prisma {
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
+    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
@@ -15611,6 +18333,7 @@ export namespace Prisma {
     role?: string | null
     isAdmin?: boolean
     deactivated?: boolean
+    status?: string
     resetPasswordToken?: string | null
     resetPasswordExpires?: Date | string | null
     welcomeEmailSent?: boolean
@@ -15622,6 +18345,7 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
+    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
@@ -15685,6 +18409,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15696,6 +18421,7 @@ export namespace Prisma {
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -15706,6 +18432,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15717,6 +18444,7 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
+    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutReceivedInvitationsInput = {
@@ -15738,6 +18466,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15749,6 +18478,7 @@ export namespace Prisma {
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
+    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
@@ -15759,6 +18489,7 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     isAdmin?: BoolFieldUpdateOperationsInput | boolean
     deactivated?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
@@ -15770,6 +18501,7 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
+    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type JobPostUpsertWithoutReferralInvitationsInput = {
@@ -15853,6 +18585,13 @@ export namespace Prisma {
     inviterId: string
     jobPostId?: string | null
     status?: string
+    createdAt?: Date | string
+  }
+
+  export type OtpVerificationCreateManyUserInput = {
+    id?: string
+    otpHash: string
+    expiresAt: Date | string
     createdAt?: Date | string
   }
 
@@ -15982,6 +18721,27 @@ export namespace Prisma {
     inviterId?: StringFieldUpdateOperationsInput | string
     jobPostId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OtpVerificationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    otpHash?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OtpVerificationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    otpHash?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OtpVerificationUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    otpHash?: StringFieldUpdateOperationsInput | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -16208,6 +18968,14 @@ export namespace Prisma {
      * @deprecated Use UserDefaultArgs instead
      */
     export type UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = UserDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use OtpVerificationDefaultArgs instead
+     */
+    export type OtpVerificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = OtpVerificationDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use EmailLogDefaultArgs instead
+     */
+    export type EmailLogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EmailLogDefaultArgs<ExtArgs>
     /**
      * @deprecated Use CompanyDefaultArgs instead
      */

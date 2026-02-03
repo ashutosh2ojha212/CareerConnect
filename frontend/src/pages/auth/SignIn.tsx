@@ -52,7 +52,13 @@ export default function SignIn() {
       toast.success('Signed in successfully!')
       navigate('/role-selection')
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to sign in')
+      const errData = error.response?.data
+      if (errData?.code === 'PENDING_VERIFICATION' && errData?.email) {
+        toast.error('Please verify your email first')
+        navigate('/verify-email', { state: { email: errData.email } })
+      } else {
+        toast.error(errData?.message || 'Failed to sign in')
+      }
     } finally {
       setIsLoading(false)
     }

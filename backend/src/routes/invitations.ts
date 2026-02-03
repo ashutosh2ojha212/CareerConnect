@@ -1,6 +1,11 @@
 import express from 'express'
 import { prisma } from '../lib/prisma'
 import { authenticate, AuthRequest } from '../middleware/auth'
+import {
+  sendReferralInvitationNotification,
+  sendReferralAcceptedNotification,
+  sendReferralRejectedNotification,
+} from '../services/emailService'
 
 const router = express.Router()
 
@@ -63,6 +68,26 @@ router.post('/', authenticate, async (req: AuthRequest, res, next) => {
         status: 'PENDING',
       },
     })
+
+    // Send email to job seeker
+    const jobPost = resolvedJobPostId
+      ? await prisma.jobPost.findUnique({
+          where: { id: resolvedJobPostId },
+          select: { title: true, companyName: true },
+        })
+      : await prisma.jobPost.findFirst({
+          where: { userId: fromEmployeeId },
+          orderBy: { createdAt: 'desc' },
+          select: { title: true, companyName: true },
+        })
+    if (candidate.email) {
+      sendReferralInvitationNotification({
+        toEmail: candidate.email,
+        inviterName: (await prisma.user.findUnique({ where: { id: fromEmployeeId }, select: { name: true } }))?.name ?? 'An employee',
+        jobTitle: jobPost?.title ?? 'a role',
+        companyName: jobPost?.companyName ?? 'Company',
+      }).catch((e) => console.error('Referral invitation email failed:', e?.message))
+    }
 
     res.status(201).json({
       id: inv.id,
@@ -207,6 +232,29 @@ router.put('/:id/apply', authenticate, async (req: AuthRequest, res, next) => {
       data: { status: 'APPLIED' },
     })
 
+    // Notify employee that candidate accepted and applied
+    const inviter = await prisma.user.findUnique({
+      where: { id: inv.inviterId },
+      select: { email: true },
+    })
+    const jobPost = inv.jobPostId
+      ? await prisma.jobPost.findUnique({
+          where: { id: inv.jobPostId },
+          select: { title: true },
+        })
+      : null
+    const candidateUser = await prisma.user.findUnique({
+      where: { id: inv.candidateId },
+      select: { name: true },
+    })
+    if (inviter?.email && candidateUser?.name) {
+      sendReferralAcceptedNotification({
+        toEmail: inviter.email,
+        candidateName: candidateUser.name,
+        jobTitle: jobPost?.title ?? 'your job',
+      }).catch((e) => console.error('Referral accepted email failed:', e?.message))
+    }
+
     res.json({
       id: updated.id,
       status: updated.status,
@@ -231,12 +279,28 @@ router.delete('/:id', authenticate, async (req: AuthRequest, res, next) => {
       return res.status(503).json({ message: 'Invitations not available.' })
     }
 
-    const inv = await model.findUnique({ where: { id } })
+    const inv = await model.findUnique({
+      where: { id },
+      include: {
+        inviter: { select: { email: true } },
+        jobPost: { select: { title: true } },
+        candidate: { select: { name: true } },
+      },
+    })
     if (!inv) {
       return res.status(404).json({ message: 'Invitation not found' })
     }
     if (inv.candidateId !== userId) {
       return res.status(403).json({ message: 'You can only delete your own invitations' })
+    }
+
+    // Notify employee that candidate declined (before deleting)
+    if (inv.inviter?.email && inv.candidate?.name) {
+      sendReferralRejectedNotification({
+        toEmail: inv.inviter.email,
+        candidateName: inv.candidate.name,
+        jobTitle: inv.jobPost?.title ?? 'your job',
+      }).catch((e) => console.error('Referral rejected email failed:', e?.message))
     }
 
     await model.delete({ where: { id } })

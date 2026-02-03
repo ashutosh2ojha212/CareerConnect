@@ -130,11 +130,32 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   isAdmin: 'isAdmin',
   deactivated: 'deactivated',
+  status: 'status',
   resetPasswordToken: 'resetPasswordToken',
   resetPasswordExpires: 'resetPasswordExpires',
   welcomeEmailSent: 'welcomeEmailSent',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OtpVerificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  otpHash: 'otpHash',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.EmailLogScalarFieldEnum = {
+  id: 'id',
+  toEmail: 'toEmail',
+  subject: 'subject',
+  eventType: 'eventType',
+  metadata: 'metadata',
+  success: 'success',
+  errorMsg: 'errorMsg',
+  messageId: 'messageId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.CompanyScalarFieldEnum = {
@@ -244,6 +265,8 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  OtpVerification: 'OtpVerification',
+  EmailLog: 'EmailLog',
   Company: 'Company',
   EmployeeProfile: 'EmployeeProfile',
   JobPost: 'JobPost',

@@ -67,13 +67,13 @@ export default function RoleSelection() {
       <div className="fixed inset-0 bg-white/30 backdrop-blur-[6px] z-0"></div>
 
       {/* Top Navigation Bar - Fixed and Visible */}
-      <nav className="fixed top-0 left-0 right-0 w-full bg-white/40 backdrop-blur-xl shadow-sm px-6 h-[70px] flex items-center justify-between z-50 border-b border-white/20">
+      <nav className="fixed top-0 left-0 right-0 w-full bg-white/40 backdrop-blur-xl shadow-sm px-4 sm:px-6 h-14 sm:h-[70px] flex items-center justify-between z-50 border-b border-white/20">
         {/* Left: Logo Only */}
         <div className="flex items-center">
           <img
             src="/logo.png"
             alt="CareerConnect"
-            className="h-10 w-auto object-contain drop-shadow-md"
+            className="h-9 sm:h-10 w-auto object-contain drop-shadow-md"
             style={{
               imageRendering: 'crisp-edges',
             }}
@@ -81,14 +81,14 @@ export default function RoleSelection() {
         </div>
 
         {/* Right: User Info & Sign Out */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {/* User Avatar */}
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold shadow-md text-sm">
+          <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold shadow-md text-xs sm:text-sm">
             {getUserInitials()}
           </div>
           
-          {/* Username */}
-          <span className="text-gray-700 dark:text-gray-200 font-medium">
+          {/* Username — hide on very small screens */}
+          <span className="text-gray-700 dark:text-gray-200 font-medium text-sm sm:text-base hidden xs:inline min-w-0">
             Hi, {getDisplayName()}
           </span>
 
@@ -106,10 +106,10 @@ export default function RoleSelection() {
       </nav>
 
       {/* Main Content - Account for Fixed Navbar */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-20 sm:pt-24">
         {/* Heading Block - Proper Top Spacing */}
-        <div className="text-center mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3">
             Choose Your Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-lg mt-2">
@@ -118,15 +118,15 @@ export default function RoleSelection() {
         </div>
 
         {/* Role Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 max-w-5xl mx-auto mt-6 sm:mt-10">
           {/* Job Seeker Card */}
           <div
             onClick={() => handleRoleSelect('job_seeker')}
-            className="bg-white/80 dark:bg-white/10 backdrop-blur-xl p-8 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-white/10 hover:shadow-[0_12px_50px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_50px_rgba(0,0,0,0.4)] transition-all duration-300 cursor-pointer"
+            className="bg-white/80 dark:bg-white/10 backdrop-blur-xl p-6 sm:p-8 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-white/10 hover:shadow-[0_12px_50px_rgba(0,0,0,0.08)] transition-all duration-300 cursor-pointer"
           >
             <div className="text-center">
               {/* Icon */}
-              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 text-white flex items-center justify-center shadow-md mx-auto mb-6">
+              <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 text-white flex items-center justify-center shadow-md mx-auto mb-4 sm:mb-6">
                 <svg
                   className="h-8 w-8"
                   fill="none"

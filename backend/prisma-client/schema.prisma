@@ -19,6 +19,7 @@ model User {
   role                 String? // "job_seeker" or "referrer"
   isAdmin              Boolean   @default(false) // platform admin access
   deactivated          Boolean   @default(false) // deactivated accounts cannot sign in
+  status               String    @default("active") // "pending_verification" | "active"
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
   welcomeEmailSent     Boolean   @default(false)
@@ -33,6 +34,35 @@ model User {
   referralForm        ReferralForm?
   sentInvitations     ReferralInvitation[]  @relation("Inviter")
   receivedInvitations ReferralInvitation[]  @relation("Candidate")
+  otpVerifications    OtpVerification[]
+}
+
+model OtpVerification {
+  id        String   @id @default(uuid())
+  userId    String
+  otpHash   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model EmailLog {
+  id        String   @id @default(uuid())
+  toEmail   String
+  subject   String
+  eventType String // "job_application" | "referral_invitation" | "referral_accepted" | "referral_rejected" | "application_status" | "otp" | "password_reset" | "welcome"
+  metadata  String?  @default("{}") // JSON with event-specific data
+  success   Boolean
+  errorMsg  String?
+  messageId String?
+  createdAt DateTime @default(now())
+
+  @@index([toEmail])
+  @@index([eventType])
+  @@index([createdAt])
 }
 
 model Company {
