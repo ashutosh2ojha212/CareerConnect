@@ -38,7 +38,8 @@ if (!fs.existsSync(uploadDir)) {
 // CORS: exact origins (spelling matters — use "career" not "carrer")
 const corsOptions: cors.CorsOptions = {
   origin: [
-    'https://career-connect-frontend.vercel.app', // production (copy from Vercel → Domains)
+    'https://mycareerconnects.in',
+    'https://career-connect-frontend.vercel.app',
     process.env.FRONTEND_URL,
     'http://localhost:5173',
   ].filter(Boolean) as string[],

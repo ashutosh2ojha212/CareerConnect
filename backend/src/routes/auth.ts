@@ -17,6 +17,56 @@ async function sendWelcomeEmailAndMarkSent(userId: string, email: string, name: 
   }
 }
 
+/**
+ * One-time promote first admin (for production when you can't run the script locally).
+ * Set ADMIN_EMAIL and ADMIN_PROMOTE_SECRET in Railway, then call:
+ *   GET /auth/promote-admin?secret=YOUR_ADMIN_PROMOTE_SECRET
+ * or POST /auth/promote-admin with body { "secret": "YOUR_ADMIN_PROMOTE_SECRET" }
+ * After use, remove ADMIN_PROMOTE_SECRET from Railway to disable.
+ */
+router.get('/promote-admin', async (req, res, next) => {
+  try {
+    const email = process.env.ADMIN_EMAIL
+    const secret = process.env.ADMIN_PROMOTE_SECRET
+    const provided = (req.query.secret as string) || (req.body && (req.body as { secret?: string }).secret)
+    if (!email || !secret || provided !== secret) {
+      return res.status(400).json({
+        message: 'Promote admin not configured or invalid. Set ADMIN_EMAIL and ADMIN_PROMOTE_SECRET in env and call with ?secret=ADMIN_PROMOTE_SECRET',
+      })
+    }
+    const user = await prisma.user.findUnique({ where: { email } })
+    if (!user) {
+      return res.status(404).json({ message: `User not found: ${email}. Sign in once with that email, then call this again.` })
+    }
+    await prisma.user.update({ where: { email }, data: { isAdmin: true } })
+    console.log(`✅ ${email} promoted to admin via /auth/promote-admin`)
+    return res.json({ success: true, message: `${email} is now an admin. Sign in again and go to /admin` })
+  } catch (error) {
+    next(error)
+  }
+})
+router.post('/promote-admin', async (req, res, next) => {
+  try {
+    const email = process.env.ADMIN_EMAIL
+    const secret = process.env.ADMIN_PROMOTE_SECRET
+    const provided = (req.query.secret as string) || (req.body && (req.body as { secret?: string }).secret)
+    if (!email || !secret || provided !== secret) {
+      return res.status(400).json({
+        message: 'Promote admin not configured or invalid. Set ADMIN_EMAIL and ADMIN_PROMOTE_SECRET in env and call with body { "secret": "ADMIN_PROMOTE_SECRET" }',
+      })
+    }
+    const user = await prisma.user.findUnique({ where: { email } })
+    if (!user) {
+      return res.status(404).json({ message: `User not found: ${email}. Sign in once with that email, then call this again.` })
+    }
+    await prisma.user.update({ where: { email }, data: { isAdmin: true } })
+    console.log(`✅ ${email} promoted to admin via /auth/promote-admin`)
+    return res.json({ success: true, message: `${email} is now an admin. Sign in again and go to /admin` })
+  } catch (error) {
+    next(error)
+  }
+})
+
 // Register
 router.post('/register', async (req, res, next) => {
   try {
