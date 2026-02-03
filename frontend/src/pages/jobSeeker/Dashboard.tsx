@@ -189,6 +189,7 @@ export default function JobSeekerDashboard() {
                 <div className="absolute right-0 mt-2 w-52 bg-white shadow-xl rounded-2xl py-2 border border-gray-100 z-50 overflow-hidden">
                   <p className="px-4 py-2.5 text-gray-700 text-sm font-medium">Welcome, {getDisplayName()}</p>
                   <div className="h-px bg-gray-100 my-1" />
+                  <Link to="/job-seeker/profile" className="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsDropdownOpen(false)}>Profile</Link>
                   <Link to="/help" className="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors" onClick={() => setIsDropdownOpen(false)}>Help</Link>
                   <button className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors" onClick={handleLogout}>Sign Out</button>
                 </div>
@@ -226,6 +227,7 @@ export default function JobSeekerDashboard() {
             )}
             <div className="flex flex-col gap-1">
               <button onClick={() => { startTransition(() => navigate('/employee')); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-medium text-sm">Employee Dashboard</button>
+              <Link to="/job-seeker/profile" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 text-sm font-medium">Profile</Link>
               <Link to="/help" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 text-sm font-medium">Help</Link>
               <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 text-sm font-medium">Sign Out</button>
             </div>

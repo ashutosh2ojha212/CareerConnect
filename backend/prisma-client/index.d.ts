@@ -3036,6 +3036,8 @@ export namespace Prisma {
     id: string | null
     email: string | null
     otpHash: string | null
+    fullName: string | null
+    passwordHash: string | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -3044,6 +3046,8 @@ export namespace Prisma {
     id: string | null
     email: string | null
     otpHash: string | null
+    fullName: string | null
+    passwordHash: string | null
     expiresAt: Date | null
     createdAt: Date | null
   }
@@ -3052,6 +3056,8 @@ export namespace Prisma {
     id: number
     email: number
     otpHash: number
+    fullName: number
+    passwordHash: number
     expiresAt: number
     createdAt: number
     _all: number
@@ -3062,6 +3068,8 @@ export namespace Prisma {
     id?: true
     email?: true
     otpHash?: true
+    fullName?: true
+    passwordHash?: true
     expiresAt?: true
     createdAt?: true
   }
@@ -3070,6 +3078,8 @@ export namespace Prisma {
     id?: true
     email?: true
     otpHash?: true
+    fullName?: true
+    passwordHash?: true
     expiresAt?: true
     createdAt?: true
   }
@@ -3078,6 +3088,8 @@ export namespace Prisma {
     id?: true
     email?: true
     otpHash?: true
+    fullName?: true
+    passwordHash?: true
     expiresAt?: true
     createdAt?: true
     _all?: true
@@ -3159,6 +3171,8 @@ export namespace Prisma {
     id: string
     email: string
     otpHash: string
+    fullName: string
+    passwordHash: string
     expiresAt: Date
     createdAt: Date
     _count: OtpVerificationCountAggregateOutputType | null
@@ -3184,6 +3198,8 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     otpHash?: boolean
+    fullName?: boolean
+    passwordHash?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["otpVerification"]>
@@ -3192,6 +3208,8 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     otpHash?: boolean
+    fullName?: boolean
+    passwordHash?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["otpVerification"]>
@@ -3200,6 +3218,8 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     otpHash?: boolean
+    fullName?: boolean
+    passwordHash?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }
@@ -3212,6 +3232,8 @@ export namespace Prisma {
       id: string
       email: string
       otpHash: string
+      fullName: string
+      passwordHash: string
       expiresAt: Date
       createdAt: Date
     }, ExtArgs["result"]["otpVerification"]>
@@ -3610,6 +3632,8 @@ export namespace Prisma {
     readonly id: FieldRef<"OtpVerification", 'String'>
     readonly email: FieldRef<"OtpVerification", 'String'>
     readonly otpHash: FieldRef<"OtpVerification", 'String'>
+    readonly fullName: FieldRef<"OtpVerification", 'String'>
+    readonly passwordHash: FieldRef<"OtpVerification", 'String'>
     readonly expiresAt: FieldRef<"OtpVerification", 'DateTime'>
     readonly createdAt: FieldRef<"OtpVerification", 'DateTime'>
   }
@@ -12902,6 +12926,8 @@ export namespace Prisma {
     id: 'id',
     email: 'email',
     otpHash: 'otpHash',
+    fullName: 'fullName',
+    passwordHash: 'passwordHash',
     expiresAt: 'expiresAt',
     createdAt: 'createdAt'
   };
@@ -13252,6 +13278,8 @@ export namespace Prisma {
     id?: StringFilter<"OtpVerification"> | string
     email?: StringFilter<"OtpVerification"> | string
     otpHash?: StringFilter<"OtpVerification"> | string
+    fullName?: StringFilter<"OtpVerification"> | string
+    passwordHash?: StringFilter<"OtpVerification"> | string
     expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
     createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
   }
@@ -13260,6 +13288,8 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     otpHash?: SortOrder
+    fullName?: SortOrder
+    passwordHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -13271,6 +13301,8 @@ export namespace Prisma {
     NOT?: OtpVerificationWhereInput | OtpVerificationWhereInput[]
     email?: StringFilter<"OtpVerification"> | string
     otpHash?: StringFilter<"OtpVerification"> | string
+    fullName?: StringFilter<"OtpVerification"> | string
+    passwordHash?: StringFilter<"OtpVerification"> | string
     expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
     createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
   }, "id">
@@ -13279,6 +13311,8 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     otpHash?: SortOrder
+    fullName?: SortOrder
+    passwordHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
     _count?: OtpVerificationCountOrderByAggregateInput
@@ -13293,6 +13327,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"OtpVerification"> | string
     email?: StringWithAggregatesFilter<"OtpVerification"> | string
     otpHash?: StringWithAggregatesFilter<"OtpVerification"> | string
+    fullName?: StringWithAggregatesFilter<"OtpVerification"> | string
+    passwordHash?: StringWithAggregatesFilter<"OtpVerification"> | string
     expiresAt?: DateTimeWithAggregatesFilter<"OtpVerification"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"OtpVerification"> | Date | string
   }
@@ -14113,6 +14149,8 @@ export namespace Prisma {
     id?: string
     email: string
     otpHash: string
+    fullName: string
+    passwordHash: string
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -14121,6 +14159,8 @@ export namespace Prisma {
     id?: string
     email: string
     otpHash: string
+    fullName: string
+    passwordHash: string
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -14129,6 +14169,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     otpHash?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14137,6 +14179,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     otpHash?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14145,6 +14189,8 @@ export namespace Prisma {
     id?: string
     email: string
     otpHash: string
+    fullName: string
+    passwordHash: string
     expiresAt: Date | string
     createdAt?: Date | string
   }
@@ -14153,6 +14199,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     otpHash?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14161,6 +14209,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     otpHash?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15111,6 +15161,8 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     otpHash?: SortOrder
+    fullName?: SortOrder
+    passwordHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -15119,6 +15171,8 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     otpHash?: SortOrder
+    fullName?: SortOrder
+    passwordHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }
@@ -15127,6 +15181,8 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     otpHash?: SortOrder
+    fullName?: SortOrder
+    passwordHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
   }

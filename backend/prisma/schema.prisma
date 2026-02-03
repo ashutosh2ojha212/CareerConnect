@@ -37,11 +37,13 @@ model User {
 }
 
 model OtpVerification {
-  id        String   @id @default(uuid())
-  email     String
-  otpHash   String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  email        String
+  otpHash      String
+  fullName     String
+  passwordHash String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
 
   @@index([email])
 }

@@ -51,9 +51,9 @@ export default function Help() {
               />
             </svg>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Need Assistance?</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Help & Support</h1>
           <p className="text-gray-600 text-base sm:text-lg mb-6">
-            For help or any issues, contact us at:
+            For any issues, contact us at:
           </p>
           <a
             href={`mailto:${SUPPORT_EMAIL}`}

@@ -142,6 +142,8 @@ exports.Prisma.OtpVerificationScalarFieldEnum = {
   id: 'id',
   email: 'email',
   otpHash: 'otpHash',
+  fullName: 'fullName',
+  passwordHash: 'passwordHash',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 };
