@@ -38,7 +38,11 @@ export default function SignUp() {
       toast.success('Verification code sent to your email')
       navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`)
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to create account')
+      const msg = error.response?.data?.message || error.message || 'Failed to create account'
+      if (import.meta.env.DEV) {
+        console.error('Signup error:', error)
+      }
+      toast.error(msg)
     } finally {
       setIsLoading(false)
     }

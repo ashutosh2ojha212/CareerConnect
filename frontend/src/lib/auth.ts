@@ -30,8 +30,11 @@ export const authService = {
   },
 
   signUp: async (data: SignUpData): Promise<{ success: boolean }> => {
-    const response = await api.post<{ success: boolean }>('/auth/register', data)
-    return response.data
+    const response = await api.post<{ success?: boolean; message?: string }>('/auth/register', data)
+    if (response.status === 201) {
+      return { success: true }
+    }
+    throw new Error(response.data?.message || 'Failed to create account')
   },
 
   verifyOtp: async (email: string, otp: string): Promise<{ verified: boolean }> => {

@@ -39,6 +39,7 @@ if (!fs.existsSync(uploadDir)) {
 const corsOptions: cors.CorsOptions = {
   origin: [
     'https://mycareerconnects.in',
+    'https://www.mycareerconnects.in',
     'https://career-connect-frontend.vercel.app',
     process.env.FRONTEND_URL,
     'http://localhost:5173',
