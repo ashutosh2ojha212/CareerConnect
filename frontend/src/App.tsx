@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster, ToastBar, toast } from 'react-hot-toast'
 import SignIn from './pages/auth/SignIn'
 import SignUp from './pages/auth/SignUp'
-import VerifyEmail from './pages/auth/VerifyEmail'
+import VerifyOtp from './pages/auth/VerifyOtp'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import ResetPassword from './pages/auth/ResetPassword'
 import OAuthCallback from './pages/auth/OAuthCallback'
@@ -43,7 +43,7 @@ function App() {
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<OAuthCallback />} />

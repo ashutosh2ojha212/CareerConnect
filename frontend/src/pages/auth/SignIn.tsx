@@ -53,9 +53,9 @@ export default function SignIn() {
       navigate('/role-selection')
     } catch (error: any) {
       const errData = error.response?.data
-      if (errData?.code === 'PENDING_VERIFICATION' && errData?.email) {
+      if (errData?.error === 'Email not verified' && errData?.email) {
         toast.error('Please verify your email first')
-        navigate('/verify-email', { state: { email: errData.email } })
+        navigate(`/verify-otp?email=${encodeURIComponent(errData.email)}`)
       } else {
         toast.error(errData?.message || 'Failed to sign in')
       }

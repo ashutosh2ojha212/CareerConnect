@@ -5,7 +5,6 @@ import toast from 'react-hot-toast'
 import GoogleButton from '../../components/GoogleButton'
 import { EyeIcon, EyeSlashIcon } from '../../components/PasswordToggleIcons'
 import { authService, SignUpData } from '../../lib/auth'
-import { useAuthStore } from '../../store/authStore'
 
 interface SignUpFormData extends SignUpData {
   confirmPassword: string
@@ -13,7 +12,6 @@ interface SignUpFormData extends SignUpData {
 
 export default function SignUp() {
   const navigate = useNavigate()
-  const setAuth = useAuthStore((state) => state.setAuth)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -36,15 +34,9 @@ export default function SignUp() {
   const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true)
     try {
-      const response = await authService.signUp({ name: data.name, email: data.email, password: data.password })
-      setAuth(response.user, response.token)
-      if (response.needsVerification) {
-        toast.success('Verification code sent to your email')
-        navigate('/verify-email', { state: { email: data.email } })
-      } else {
-        toast.success('Account created successfully!')
-        navigate('/role-selection')
-      }
+      await authService.signUp({ name: data.name, email: data.email, password: data.password })
+      toast.success('Verification code sent to your email')
+      navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`)
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to create account')
     } finally {

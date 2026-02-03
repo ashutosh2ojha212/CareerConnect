@@ -1707,7 +1707,6 @@ export namespace Prisma {
     jobPosts: number
     sentInvitations: number
     receivedInvitations: number
-    otpVerifications: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1715,7 +1714,6 @@ export namespace Prisma {
     jobPosts?: boolean | UserCountOutputTypeCountJobPostsArgs
     sentInvitations?: boolean | UserCountOutputTypeCountSentInvitationsArgs
     receivedInvitations?: boolean | UserCountOutputTypeCountReceivedInvitationsArgs
-    otpVerifications?: boolean | UserCountOutputTypeCountOtpVerificationsArgs
   }
 
   // Custom InputTypes
@@ -1755,13 +1753,6 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountReceivedInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReferralInvitationWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountOtpVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: OtpVerificationWhereInput
   }
 
 
@@ -2093,7 +2084,6 @@ export namespace Prisma {
     referralForm?: boolean | User$referralFormArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
-    otpVerifications?: boolean | User$otpVerificationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2137,7 +2127,6 @@ export namespace Prisma {
     referralForm?: boolean | User$referralFormArgs<ExtArgs>
     sentInvitations?: boolean | User$sentInvitationsArgs<ExtArgs>
     receivedInvitations?: boolean | User$receivedInvitationsArgs<ExtArgs>
-    otpVerifications?: boolean | User$otpVerificationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2152,7 +2141,6 @@ export namespace Prisma {
       referralForm: Prisma.$ReferralFormPayload<ExtArgs> | null
       sentInvitations: Prisma.$ReferralInvitationPayload<ExtArgs>[]
       receivedInvitations: Prisma.$ReferralInvitationPayload<ExtArgs>[]
-      otpVerifications: Prisma.$OtpVerificationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2539,7 +2527,6 @@ export namespace Prisma {
     referralForm<T extends User$referralFormArgs<ExtArgs> = {}>(args?: Subset<T, User$referralFormArgs<ExtArgs>>): Prisma__ReferralFormClient<$Result.GetResult<Prisma.$ReferralFormPayload<ExtArgs>, T, "findUniqueOrThrow"> | null, null, ExtArgs>
     sentInvitations<T extends User$sentInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$sentInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findMany"> | Null>
     receivedInvitations<T extends User$receivedInvitationsArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReferralInvitationPayload<ExtArgs>, T, "findMany"> | Null>
-    otpVerifications<T extends User$otpVerificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$otpVerificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OtpVerificationPayload<ExtArgs>, T, "findMany"> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3021,26 +3008,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.otpVerifications
-   */
-  export type User$otpVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the OtpVerification
-     */
-    select?: OtpVerificationSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
-    where?: OtpVerificationWhereInput
-    orderBy?: OtpVerificationOrderByWithRelationInput | OtpVerificationOrderByWithRelationInput[]
-    cursor?: OtpVerificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: OtpVerificationScalarFieldEnum | OtpVerificationScalarFieldEnum[]
-  }
-
-  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3067,7 +3034,7 @@ export namespace Prisma {
 
   export type OtpVerificationMinAggregateOutputType = {
     id: string | null
-    userId: string | null
+    email: string | null
     otpHash: string | null
     expiresAt: Date | null
     createdAt: Date | null
@@ -3075,7 +3042,7 @@ export namespace Prisma {
 
   export type OtpVerificationMaxAggregateOutputType = {
     id: string | null
-    userId: string | null
+    email: string | null
     otpHash: string | null
     expiresAt: Date | null
     createdAt: Date | null
@@ -3083,7 +3050,7 @@ export namespace Prisma {
 
   export type OtpVerificationCountAggregateOutputType = {
     id: number
-    userId: number
+    email: number
     otpHash: number
     expiresAt: number
     createdAt: number
@@ -3093,7 +3060,7 @@ export namespace Prisma {
 
   export type OtpVerificationMinAggregateInputType = {
     id?: true
-    userId?: true
+    email?: true
     otpHash?: true
     expiresAt?: true
     createdAt?: true
@@ -3101,7 +3068,7 @@ export namespace Prisma {
 
   export type OtpVerificationMaxAggregateInputType = {
     id?: true
-    userId?: true
+    email?: true
     otpHash?: true
     expiresAt?: true
     createdAt?: true
@@ -3109,7 +3076,7 @@ export namespace Prisma {
 
   export type OtpVerificationCountAggregateInputType = {
     id?: true
-    userId?: true
+    email?: true
     otpHash?: true
     expiresAt?: true
     createdAt?: true
@@ -3190,7 +3157,7 @@ export namespace Prisma {
 
   export type OtpVerificationGroupByOutputType = {
     id: string
-    userId: string
+    email: string
     otpHash: string
     expiresAt: Date
     createdAt: Date
@@ -3215,45 +3182,35 @@ export namespace Prisma {
 
   export type OtpVerificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    userId?: boolean
+    email?: boolean
     otpHash?: boolean
     expiresAt?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["otpVerification"]>
 
   export type OtpVerificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    userId?: boolean
+    email?: boolean
     otpHash?: boolean
     expiresAt?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["otpVerification"]>
 
   export type OtpVerificationSelectScalar = {
     id?: boolean
-    userId?: boolean
+    email?: boolean
     otpHash?: boolean
     expiresAt?: boolean
     createdAt?: boolean
   }
 
-  export type OtpVerificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type OtpVerificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
 
   export type $OtpVerificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "OtpVerification"
-    objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-    }
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      userId: string
+      email: string
       otpHash: string
       expiresAt: Date
       createdAt: Date
@@ -3621,7 +3578,6 @@ export namespace Prisma {
    */
   export interface Prisma__OtpVerificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow"> | Null, Null, ExtArgs>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3652,7 +3608,7 @@ export namespace Prisma {
    */ 
   interface OtpVerificationFieldRefs {
     readonly id: FieldRef<"OtpVerification", 'String'>
-    readonly userId: FieldRef<"OtpVerification", 'String'>
+    readonly email: FieldRef<"OtpVerification", 'String'>
     readonly otpHash: FieldRef<"OtpVerification", 'String'>
     readonly expiresAt: FieldRef<"OtpVerification", 'DateTime'>
     readonly createdAt: FieldRef<"OtpVerification", 'DateTime'>
@@ -3669,10 +3625,6 @@ export namespace Prisma {
      */
     select?: OtpVerificationSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
-    /**
      * Filter, which OtpVerification to fetch.
      */
     where: OtpVerificationWhereUniqueInput
@@ -3687,10 +3639,6 @@ export namespace Prisma {
      */
     select?: OtpVerificationSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
-    /**
      * Filter, which OtpVerification to fetch.
      */
     where: OtpVerificationWhereUniqueInput
@@ -3704,10 +3652,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the OtpVerification
      */
     select?: OtpVerificationSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
     /**
      * Filter, which OtpVerification to fetch.
      */
@@ -3753,10 +3697,6 @@ export namespace Prisma {
      */
     select?: OtpVerificationSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
-    /**
      * Filter, which OtpVerification to fetch.
      */
     where?: OtpVerificationWhereInput
@@ -3801,10 +3741,6 @@ export namespace Prisma {
      */
     select?: OtpVerificationSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
-    /**
      * Filter, which OtpVerifications to fetch.
      */
     where?: OtpVerificationWhereInput
@@ -3844,10 +3780,6 @@ export namespace Prisma {
      */
     select?: OtpVerificationSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
-    /**
      * The data needed to create a OtpVerification.
      */
     data: XOR<OtpVerificationCreateInput, OtpVerificationUncheckedCreateInput>
@@ -3877,10 +3809,6 @@ export namespace Prisma {
      */
     data: OtpVerificationCreateManyInput | OtpVerificationCreateManyInput[]
     skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3891,10 +3819,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the OtpVerification
      */
     select?: OtpVerificationSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
     /**
      * The data needed to update a OtpVerification.
      */
@@ -3928,10 +3852,6 @@ export namespace Prisma {
      */
     select?: OtpVerificationSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
-    /**
      * The filter to search for the OtpVerification to update in case it exists.
      */
     where: OtpVerificationWhereUniqueInput
@@ -3953,10 +3873,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the OtpVerification
      */
     select?: OtpVerificationSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
     /**
      * Filter which OtpVerification to delete.
      */
@@ -3981,10 +3897,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the OtpVerification
      */
     select?: OtpVerificationSelect<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: OtpVerificationInclude<ExtArgs> | null
   }
 
 
@@ -12988,7 +12900,7 @@ export namespace Prisma {
 
   export const OtpVerificationScalarFieldEnum: {
     id: 'id',
-    userId: 'userId',
+    email: 'email',
     otpHash: 'otpHash',
     expiresAt: 'expiresAt',
     createdAt: 'createdAt'
@@ -13244,7 +13156,6 @@ export namespace Prisma {
     referralForm?: XOR<ReferralFormNullableRelationFilter, ReferralFormWhereInput> | null
     sentInvitations?: ReferralInvitationListRelationFilter
     receivedInvitations?: ReferralInvitationListRelationFilter
-    otpVerifications?: OtpVerificationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -13268,7 +13179,6 @@ export namespace Prisma {
     referralForm?: ReferralFormOrderByWithRelationInput
     sentInvitations?: ReferralInvitationOrderByRelationAggregateInput
     receivedInvitations?: ReferralInvitationOrderByRelationAggregateInput
-    otpVerifications?: OtpVerificationOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -13295,7 +13205,6 @@ export namespace Prisma {
     referralForm?: XOR<ReferralFormNullableRelationFilter, ReferralFormWhereInput> | null
     sentInvitations?: ReferralInvitationListRelationFilter
     receivedInvitations?: ReferralInvitationListRelationFilter
-    otpVerifications?: OtpVerificationListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -13341,20 +13250,18 @@ export namespace Prisma {
     OR?: OtpVerificationWhereInput[]
     NOT?: OtpVerificationWhereInput | OtpVerificationWhereInput[]
     id?: StringFilter<"OtpVerification"> | string
-    userId?: StringFilter<"OtpVerification"> | string
+    email?: StringFilter<"OtpVerification"> | string
     otpHash?: StringFilter<"OtpVerification"> | string
     expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
     createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
-    user?: XOR<UserRelationFilter, UserWhereInput>
   }
 
   export type OtpVerificationOrderByWithRelationInput = {
     id?: SortOrder
-    userId?: SortOrder
+    email?: SortOrder
     otpHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
-    user?: UserOrderByWithRelationInput
   }
 
   export type OtpVerificationWhereUniqueInput = Prisma.AtLeast<{
@@ -13362,16 +13269,15 @@ export namespace Prisma {
     AND?: OtpVerificationWhereInput | OtpVerificationWhereInput[]
     OR?: OtpVerificationWhereInput[]
     NOT?: OtpVerificationWhereInput | OtpVerificationWhereInput[]
-    userId?: StringFilter<"OtpVerification"> | string
+    email?: StringFilter<"OtpVerification"> | string
     otpHash?: StringFilter<"OtpVerification"> | string
     expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
     createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
-    user?: XOR<UserRelationFilter, UserWhereInput>
   }, "id">
 
   export type OtpVerificationOrderByWithAggregationInput = {
     id?: SortOrder
-    userId?: SortOrder
+    email?: SortOrder
     otpHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
@@ -13385,7 +13291,7 @@ export namespace Prisma {
     OR?: OtpVerificationScalarWhereWithAggregatesInput[]
     NOT?: OtpVerificationScalarWhereWithAggregatesInput | OtpVerificationScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"OtpVerification"> | string
-    userId?: StringWithAggregatesFilter<"OtpVerification"> | string
+    email?: StringWithAggregatesFilter<"OtpVerification"> | string
     otpHash?: StringWithAggregatesFilter<"OtpVerification"> | string
     expiresAt?: DateTimeWithAggregatesFilter<"OtpVerification"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"OtpVerification"> | Date | string
@@ -14084,7 +13990,6 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -14108,7 +14013,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -14132,7 +14036,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -14156,7 +14059,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -14209,15 +14111,15 @@ export namespace Prisma {
 
   export type OtpVerificationCreateInput = {
     id?: string
+    email: string
     otpHash: string
     expiresAt: Date | string
     createdAt?: Date | string
-    user: UserCreateNestedOneWithoutOtpVerificationsInput
   }
 
   export type OtpVerificationUncheckedCreateInput = {
     id?: string
-    userId: string
+    email: string
     otpHash: string
     expiresAt: Date | string
     createdAt?: Date | string
@@ -14225,15 +14127,15 @@ export namespace Prisma {
 
   export type OtpVerificationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     otpHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutOtpVerificationsNestedInput
   }
 
   export type OtpVerificationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     otpHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14241,7 +14143,7 @@ export namespace Prisma {
 
   export type OtpVerificationCreateManyInput = {
     id?: string
-    userId: string
+    email: string
     otpHash: string
     expiresAt: Date | string
     createdAt?: Date | string
@@ -14249,6 +14151,7 @@ export namespace Prisma {
 
   export type OtpVerificationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     otpHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14256,7 +14159,7 @@ export namespace Prisma {
 
   export type OtpVerificationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     otpHash?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15067,12 +14970,6 @@ export namespace Prisma {
     none?: ReferralInvitationWhereInput
   }
 
-  export type OtpVerificationListRelationFilter = {
-    every?: OtpVerificationWhereInput
-    some?: OtpVerificationWhereInput
-    none?: OtpVerificationWhereInput
-  }
-
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -15087,10 +14984,6 @@ export namespace Prisma {
   }
 
   export type ReferralInvitationOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type OtpVerificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -15214,14 +15107,9 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type UserRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
   export type OtpVerificationCountOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
+    email?: SortOrder
     otpHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
@@ -15229,7 +15117,7 @@ export namespace Prisma {
 
   export type OtpVerificationMaxOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
+    email?: SortOrder
     otpHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
@@ -15237,7 +15125,7 @@ export namespace Prisma {
 
   export type OtpVerificationMinOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
+    email?: SortOrder
     otpHash?: SortOrder
     expiresAt?: SortOrder
     createdAt?: SortOrder
@@ -15314,6 +15202,11 @@ export namespace Prisma {
     logo?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type UserRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
   }
 
   export type CompanyRelationFilter = {
@@ -15716,13 +15609,6 @@ export namespace Prisma {
     connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
   }
 
-  export type OtpVerificationCreateNestedManyWithoutUserInput = {
-    create?: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput> | OtpVerificationCreateWithoutUserInput[] | OtpVerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: OtpVerificationCreateOrConnectWithoutUserInput | OtpVerificationCreateOrConnectWithoutUserInput[]
-    createMany?: OtpVerificationCreateManyUserInputEnvelope
-    connect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-  }
-
   export type EmployeeProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmployeeProfileCreateOrConnectWithoutUserInput
@@ -15767,13 +15653,6 @@ export namespace Prisma {
     connectOrCreate?: ReferralInvitationCreateOrConnectWithoutCandidateInput | ReferralInvitationCreateOrConnectWithoutCandidateInput[]
     createMany?: ReferralInvitationCreateManyCandidateInputEnvelope
     connect?: ReferralInvitationWhereUniqueInput | ReferralInvitationWhereUniqueInput[]
-  }
-
-  export type OtpVerificationUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput> | OtpVerificationCreateWithoutUserInput[] | OtpVerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: OtpVerificationCreateOrConnectWithoutUserInput | OtpVerificationCreateOrConnectWithoutUserInput[]
-    createMany?: OtpVerificationCreateManyUserInputEnvelope
-    connect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -15882,20 +15761,6 @@ export namespace Prisma {
     deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
   }
 
-  export type OtpVerificationUpdateManyWithoutUserNestedInput = {
-    create?: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput> | OtpVerificationCreateWithoutUserInput[] | OtpVerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: OtpVerificationCreateOrConnectWithoutUserInput | OtpVerificationCreateOrConnectWithoutUserInput[]
-    upsert?: OtpVerificationUpsertWithWhereUniqueWithoutUserInput | OtpVerificationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: OtpVerificationCreateManyUserInputEnvelope
-    set?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-    disconnect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-    delete?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-    connect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-    update?: OtpVerificationUpdateWithWhereUniqueWithoutUserInput | OtpVerificationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: OtpVerificationUpdateManyWithWhereWithoutUserInput | OtpVerificationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: OtpVerificationScalarWhereInput | OtpVerificationScalarWhereInput[]
-  }
-
   export type EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: EmployeeProfileCreateOrConnectWithoutUserInput
@@ -15980,34 +15845,6 @@ export namespace Prisma {
     update?: ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput | ReferralInvitationUpdateWithWhereUniqueWithoutCandidateInput[]
     updateMany?: ReferralInvitationUpdateManyWithWhereWithoutCandidateInput | ReferralInvitationUpdateManyWithWhereWithoutCandidateInput[]
     deleteMany?: ReferralInvitationScalarWhereInput | ReferralInvitationScalarWhereInput[]
-  }
-
-  export type OtpVerificationUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput> | OtpVerificationCreateWithoutUserInput[] | OtpVerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: OtpVerificationCreateOrConnectWithoutUserInput | OtpVerificationCreateOrConnectWithoutUserInput[]
-    upsert?: OtpVerificationUpsertWithWhereUniqueWithoutUserInput | OtpVerificationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: OtpVerificationCreateManyUserInputEnvelope
-    set?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-    disconnect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-    delete?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-    connect?: OtpVerificationWhereUniqueInput | OtpVerificationWhereUniqueInput[]
-    update?: OtpVerificationUpdateWithWhereUniqueWithoutUserInput | OtpVerificationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: OtpVerificationUpdateManyWithWhereWithoutUserInput | OtpVerificationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: OtpVerificationScalarWhereInput | OtpVerificationScalarWhereInput[]
-  }
-
-  export type UserCreateNestedOneWithoutOtpVerificationsInput = {
-    create?: XOR<UserCreateWithoutOtpVerificationsInput, UserUncheckedCreateWithoutOtpVerificationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutOtpVerificationsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type UserUpdateOneRequiredWithoutOtpVerificationsNestedInput = {
-    create?: XOR<UserCreateWithoutOtpVerificationsInput, UserUncheckedCreateWithoutOtpVerificationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutOtpVerificationsInput
-    upsert?: UserUpsertWithoutOtpVerificationsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutOtpVerificationsInput, UserUpdateWithoutOtpVerificationsInput>, UserUncheckedUpdateWithoutOtpVerificationsInput>
   }
 
   export type EmployeeProfileCreateNestedManyWithoutCompanyInput = {
@@ -16816,30 +16653,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type OtpVerificationCreateWithoutUserInput = {
-    id?: string
-    otpHash: string
-    expiresAt: Date | string
-    createdAt?: Date | string
-  }
-
-  export type OtpVerificationUncheckedCreateWithoutUserInput = {
-    id?: string
-    otpHash: string
-    expiresAt: Date | string
-    createdAt?: Date | string
-  }
-
-  export type OtpVerificationCreateOrConnectWithoutUserInput = {
-    where: OtpVerificationWhereUniqueInput
-    create: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput>
-  }
-
-  export type OtpVerificationCreateManyUserInputEnvelope = {
-    data: OtpVerificationCreateManyUserInput | OtpVerificationCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
   export type EmployeeProfileUpsertWithoutUserInput = {
     update: XOR<EmployeeProfileUpdateWithoutUserInput, EmployeeProfileUncheckedUpdateWithoutUserInput>
     create: XOR<EmployeeProfileCreateWithoutUserInput, EmployeeProfileUncheckedCreateWithoutUserInput>
@@ -17046,141 +16859,6 @@ export namespace Prisma {
     data: XOR<ReferralInvitationUpdateManyMutationInput, ReferralInvitationUncheckedUpdateManyWithoutCandidateInput>
   }
 
-  export type OtpVerificationUpsertWithWhereUniqueWithoutUserInput = {
-    where: OtpVerificationWhereUniqueInput
-    update: XOR<OtpVerificationUpdateWithoutUserInput, OtpVerificationUncheckedUpdateWithoutUserInput>
-    create: XOR<OtpVerificationCreateWithoutUserInput, OtpVerificationUncheckedCreateWithoutUserInput>
-  }
-
-  export type OtpVerificationUpdateWithWhereUniqueWithoutUserInput = {
-    where: OtpVerificationWhereUniqueInput
-    data: XOR<OtpVerificationUpdateWithoutUserInput, OtpVerificationUncheckedUpdateWithoutUserInput>
-  }
-
-  export type OtpVerificationUpdateManyWithWhereWithoutUserInput = {
-    where: OtpVerificationScalarWhereInput
-    data: XOR<OtpVerificationUpdateManyMutationInput, OtpVerificationUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type OtpVerificationScalarWhereInput = {
-    AND?: OtpVerificationScalarWhereInput | OtpVerificationScalarWhereInput[]
-    OR?: OtpVerificationScalarWhereInput[]
-    NOT?: OtpVerificationScalarWhereInput | OtpVerificationScalarWhereInput[]
-    id?: StringFilter<"OtpVerification"> | string
-    userId?: StringFilter<"OtpVerification"> | string
-    otpHash?: StringFilter<"OtpVerification"> | string
-    expiresAt?: DateTimeFilter<"OtpVerification"> | Date | string
-    createdAt?: DateTimeFilter<"OtpVerification"> | Date | string
-  }
-
-  export type UserCreateWithoutOtpVerificationsInput = {
-    id?: string
-    email: string
-    name: string
-    password: string
-    role?: string | null
-    isAdmin?: boolean
-    deactivated?: boolean
-    status?: string
-    resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
-    welcomeEmailSent?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    employeeProfile?: EmployeeProfileCreateNestedOneWithoutUserInput
-    jobSeekerProfile?: JobSeekerProfileCreateNestedOneWithoutUserInput
-    applications?: ReferralApplicationCreateNestedManyWithoutUserInput
-    jobPosts?: JobPostCreateNestedManyWithoutUserInput
-    referralForm?: ReferralFormCreateNestedOneWithoutUserInput
-    sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
-    receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
-  }
-
-  export type UserUncheckedCreateWithoutOtpVerificationsInput = {
-    id?: string
-    email: string
-    name: string
-    password: string
-    role?: string | null
-    isAdmin?: boolean
-    deactivated?: boolean
-    status?: string
-    resetPasswordToken?: string | null
-    resetPasswordExpires?: Date | string | null
-    welcomeEmailSent?: boolean
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    employeeProfile?: EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
-    jobSeekerProfile?: JobSeekerProfileUncheckedCreateNestedOneWithoutUserInput
-    applications?: ReferralApplicationUncheckedCreateNestedManyWithoutUserInput
-    jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
-    referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
-    sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
-    receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
-  }
-
-  export type UserCreateOrConnectWithoutOtpVerificationsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutOtpVerificationsInput, UserUncheckedCreateWithoutOtpVerificationsInput>
-  }
-
-  export type UserUpsertWithoutOtpVerificationsInput = {
-    update: XOR<UserUpdateWithoutOtpVerificationsInput, UserUncheckedUpdateWithoutOtpVerificationsInput>
-    create: XOR<UserCreateWithoutOtpVerificationsInput, UserUncheckedCreateWithoutOtpVerificationsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutOtpVerificationsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutOtpVerificationsInput, UserUncheckedUpdateWithoutOtpVerificationsInput>
-  }
-
-  export type UserUpdateWithoutOtpVerificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    role?: NullableStringFieldUpdateOperationsInput | string | null
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
-    deactivated?: BoolFieldUpdateOperationsInput | boolean
-    status?: StringFieldUpdateOperationsInput | string
-    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    employeeProfile?: EmployeeProfileUpdateOneWithoutUserNestedInput
-    jobSeekerProfile?: JobSeekerProfileUpdateOneWithoutUserNestedInput
-    applications?: ReferralApplicationUpdateManyWithoutUserNestedInput
-    jobPosts?: JobPostUpdateManyWithoutUserNestedInput
-    referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
-    sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
-    receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutOtpVerificationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    role?: NullableStringFieldUpdateOperationsInput | string | null
-    isAdmin?: BoolFieldUpdateOperationsInput | boolean
-    deactivated?: BoolFieldUpdateOperationsInput | boolean
-    status?: StringFieldUpdateOperationsInput | string
-    resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
-    resetPasswordExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    welcomeEmailSent?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    employeeProfile?: EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
-    jobSeekerProfile?: JobSeekerProfileUncheckedUpdateOneWithoutUserNestedInput
-    applications?: ReferralApplicationUncheckedUpdateManyWithoutUserNestedInput
-    jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
-    referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
-    sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
-    receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
-  }
-
   export type EmployeeProfileCreateWithoutCompanyInput = {
     id?: string
     position?: string | null
@@ -17313,7 +16991,6 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutEmployeeProfileInput = {
@@ -17336,7 +17013,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutEmployeeProfileInput = {
@@ -17400,7 +17076,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEmployeeProfileInput = {
@@ -17423,7 +17098,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyUpsertWithoutEmployeesInput = {
@@ -17502,7 +17176,6 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutJobPostsInput = {
@@ -17525,7 +17198,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutJobPostsInput = {
@@ -17681,7 +17353,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobPostsInput = {
@@ -17704,7 +17375,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type JobCustomFormFieldUpsertWithWhereUniqueWithoutJobPostInput = {
@@ -17867,7 +17537,6 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutApplicationsInput = {
@@ -17890,7 +17559,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutApplicationsInput = {
@@ -17966,7 +17634,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApplicationsInput = {
@@ -17989,7 +17656,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type JobPostUpsertWithoutApplicationsInput = {
@@ -18055,7 +17721,6 @@ export namespace Prisma {
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReferralFormInput = {
@@ -18078,7 +17743,6 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReferralFormInput = {
@@ -18117,7 +17781,6 @@ export namespace Prisma {
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReferralFormInput = {
@@ -18140,7 +17803,6 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutJobSeekerProfileInput = {
@@ -18163,7 +17825,6 @@ export namespace Prisma {
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutJobSeekerProfileInput = {
@@ -18186,7 +17847,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutJobSeekerProfileInput = {
@@ -18225,7 +17885,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutJobSeekerProfileInput = {
@@ -18248,7 +17907,6 @@ export namespace Prisma {
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSentInvitationsInput = {
@@ -18271,7 +17929,6 @@ export namespace Prisma {
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     receivedInvitations?: ReferralInvitationCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -18294,7 +17951,6 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     receivedInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutCandidateInput
-    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -18322,7 +17978,6 @@ export namespace Prisma {
     jobPosts?: JobPostCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationCreateNestedManyWithoutInviterInput
-    otpVerifications?: OtpVerificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutReceivedInvitationsInput = {
@@ -18345,7 +18000,6 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedCreateNestedManyWithoutUserInput
     referralForm?: ReferralFormUncheckedCreateNestedOneWithoutUserInput
     sentInvitations?: ReferralInvitationUncheckedCreateNestedManyWithoutInviterInput
-    otpVerifications?: OtpVerificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutReceivedInvitationsInput = {
@@ -18421,7 +18075,6 @@ export namespace Prisma {
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     receivedInvitations?: ReferralInvitationUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -18444,7 +18097,6 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     receivedInvitations?: ReferralInvitationUncheckedUpdateManyWithoutCandidateNestedInput
-    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutReceivedInvitationsInput = {
@@ -18478,7 +18130,6 @@ export namespace Prisma {
     jobPosts?: JobPostUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUpdateManyWithoutInviterNestedInput
-    otpVerifications?: OtpVerificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedInvitationsInput = {
@@ -18501,7 +18152,6 @@ export namespace Prisma {
     jobPosts?: JobPostUncheckedUpdateManyWithoutUserNestedInput
     referralForm?: ReferralFormUncheckedUpdateOneWithoutUserNestedInput
     sentInvitations?: ReferralInvitationUncheckedUpdateManyWithoutInviterNestedInput
-    otpVerifications?: OtpVerificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type JobPostUpsertWithoutReferralInvitationsInput = {
@@ -18585,13 +18235,6 @@ export namespace Prisma {
     inviterId: string
     jobPostId?: string | null
     status?: string
-    createdAt?: Date | string
-  }
-
-  export type OtpVerificationCreateManyUserInput = {
-    id?: string
-    otpHash: string
-    expiresAt: Date | string
     createdAt?: Date | string
   }
 
@@ -18721,27 +18364,6 @@ export namespace Prisma {
     inviterId?: StringFieldUpdateOperationsInput | string
     jobPostId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type OtpVerificationUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    otpHash?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type OtpVerificationUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    otpHash?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type OtpVerificationUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    otpHash?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

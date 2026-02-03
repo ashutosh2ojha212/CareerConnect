@@ -1,28 +1,24 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { authService } from '../../lib/auth'
-import { useAuthStore } from '../../store/authStore'
 
 const RESEND_COOLDOWN_SEC = 30
 
-export default function VerifyEmail() {
+export default function VerifyOtp() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const { user } = useAuthStore()
+  const [searchParams] = useSearchParams()
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [resendCooldown, setResendCooldown] = useState(0)
 
   useEffect(() => {
-    const stateEmail = (location.state as { email?: string })?.email
-    if (stateEmail) {
-      setEmail(stateEmail)
-    } else if (user?.email) {
-      setEmail(user.email)
+    const emailParam = searchParams.get('email')
+    if (emailParam) {
+      setEmail(decodeURIComponent(emailParam))
     }
-  }, [location.state, user?.email])
+  }, [searchParams])
 
   useEffect(() => {
     if (resendCooldown <= 0) return
@@ -89,10 +85,9 @@ export default function VerifyEmail() {
     }
     setIsLoading(true)
     try {
-      const response = await authService.verifyOtp(email, otpString)
-      useAuthStore.getState().setAuth(response.user, response.token)
-      toast.success('Email verified! Welcome to CareerConnect.')
-      navigate('/role-selection')
+      await authService.verifyOtp(email, otpString)
+      toast.success('Email verified! You can now sign in.')
+      navigate('/signin')
     } catch (error: any) {
       const msg = error.response?.data?.message || 'Verification failed. Please check the code.'
       toast.error(msg)
@@ -110,7 +105,7 @@ export default function VerifyEmail() {
     setIsLoading(true)
     try {
       await authService.resendOtp(email)
-      toast.success('Verification code sent to your email')
+      toast.success('OTP resent')
       setResendCooldown(RESEND_COOLDOWN_SEC)
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to resend code')
@@ -127,17 +122,20 @@ export default function VerifyEmail() {
       />
       <div className="fixed inset-0 bg-gradient-to-br from-white/10 via-indigo-200/10 to-purple-300/10 dark:from-black/40 dark:via-indigo-900/20 dark:to-purple-900/20 backdrop-blur-[12px] z-0" />
 
-      <div className="relative w-full max-w-md z-10">
-        <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] border border-white/50 dark:border-white/10 p-8 sm:p-10">
+      <div className="relative w-[90%] max-w-md z-10 mx-auto">
+        <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] border border-white/50 dark:border-white/10 p-6 sm:p-10">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-6">
               <img src="/logo.png" alt="CareerConnect" className="h-14 sm:h-16 w-auto object-contain" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Verify your email
+              Verify Your Email
             </h1>
             <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
-              Enter the 6-digit code sent to <span className="font-medium text-gray-700 dark:text-gray-300">{email || 'your email'}</span>
+              We've sent a 6-digit OTP to:
+            </p>
+            <p className="text-base font-medium text-gray-800 dark:text-gray-200 mt-1 break-all">
+              {email || 'your email'}
             </p>
           </div>
 
@@ -181,7 +179,7 @@ export default function VerifyEmail() {
           </button>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Didn't receive the code?</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Didn't receive?</p>
             <button
               type="button"
               onClick={handleResend}
@@ -194,7 +192,7 @@ export default function VerifyEmail() {
 
           <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
             <Link to="/signin" className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
-              Back to sign in
+              Back to Sign In
             </Link>
           </p>
         </div>
