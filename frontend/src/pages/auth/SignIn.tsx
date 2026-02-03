@@ -52,13 +52,7 @@ export default function SignIn() {
       toast.success('Signed in successfully!')
       navigate('/role-selection')
     } catch (error: any) {
-      const errData = error.response?.data
-      if (errData?.error === 'Email not verified' && errData?.email) {
-        toast.error('Please verify your email first')
-        navigate(`/verify-otp?email=${encodeURIComponent(errData.email)}`)
-      } else {
-        toast.error(errData?.message || 'Failed to sign in')
-      }
+      toast.error(error.response?.data?.message || 'Failed to sign in')
     } finally {
       setIsLoading(false)
     }

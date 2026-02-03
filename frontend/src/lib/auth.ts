@@ -29,22 +29,8 @@ export const authService = {
     return response.data
   },
 
-  signUp: async (data: SignUpData): Promise<{ success: boolean }> => {
-    const response = await api.post<{ success?: boolean; message?: string }>('/auth/register', data, {
-      validateStatus: (s) => s >= 200 && s < 500,
-    })
-    if (response.status === 201) return { success: true }
-    const msg = (response.data as { message?: string })?.message || 'Failed to create account'
-    throw new Error(msg)
-  },
-
-  verifyOtp: async (email: string, otp: string): Promise<{ success: boolean }> => {
-    const response = await api.post<{ success?: boolean }>('/auth/verify-otp', { email, otp })
-    return { success: !!response.data?.success }
-  },
-
-  resendOtp: async (email: string): Promise<{ sent: boolean }> => {
-    const response = await api.post<{ sent: boolean }>('/auth/resend-otp', { email })
+  signUp: async (data: SignUpData): Promise<AuthResponse & { success: boolean; message?: string }> => {
+    const response = await api.post<AuthResponse & { success: boolean; message?: string }>('/auth/register', data)
     return response.data
   },
 

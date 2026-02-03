@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import GoogleButton from '../../components/GoogleButton'
 import { EyeIcon, EyeSlashIcon } from '../../components/PasswordToggleIcons'
 import { authService, SignUpData } from '../../lib/auth'
+import { useAuthStore } from '../../store/authStore'
 
 interface SignUpFormData extends SignUpData {
   confirmPassword: string
@@ -12,6 +13,7 @@ interface SignUpFormData extends SignUpData {
 
 export default function SignUp() {
   const navigate = useNavigate()
+  const setAuth = useAuthStore((state) => state.setAuth)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -34,9 +36,10 @@ export default function SignUp() {
   const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true)
     try {
-      await authService.signUp({ name: data.name, email: data.email, password: data.password })
-      toast.success('Check your email for the verification code.')
-      navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`)
+      const res = await authService.signUp({ name: data.name, email: data.email, password: data.password })
+      setAuth(res.user, res.token)
+      toast.success('Account created! Welcome.')
+      navigate('/role-selection')
     } catch (error: any) {
       toast.error(error.response?.data?.message || error.message || 'Failed to create account')
     } finally {
