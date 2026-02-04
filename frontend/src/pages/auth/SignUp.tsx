@@ -98,15 +98,10 @@ export default function SignUp() {
           </div>
 
           {/* Divider */}
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-card-border" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-transparent text-muted">
-                Or continue with email
-              </span>
-            </div>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex-1 h-px bg-foreground/25 dark:bg-foreground-muted/50" aria-hidden="true" />
+            <span className="text-sm text-muted flex-shrink-0">Or continue with email</span>
+            <div className="flex-1 h-px bg-foreground/25 dark:bg-foreground-muted/50" aria-hidden="true" />
           </div>
 
           {/* Form */}
