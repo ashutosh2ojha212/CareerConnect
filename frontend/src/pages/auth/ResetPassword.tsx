@@ -95,13 +95,13 @@ export default function ResetPassword() {
             backgroundImage: `url('/background.png')`,
           }}
         >
-          <div className="fixed inset-0 bg-black/10 backdrop-blur-[6px] z-0"></div>
+          <div className="fixed inset-0 bg-black/20 dark:bg-black/40 z-0" />
         </div>
 
-        <div className="relative w-full max-w-md z-10">
-          <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 text-center">
+        <div className="relative w-full max-w-[380px] sm:max-w-md mx-auto z-10 px-4">
+          <div className="auth-frosted-card p-6 py-8 sm:p-10 rounded-2xl text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Validating reset link...</p>
+            <p className="text-muted">Validating reset link...</p>
           </div>
         </div>
       </div>
@@ -118,11 +118,11 @@ export default function ResetPassword() {
             backgroundImage: `url('/background.png')`,
           }}
         >
-          <div className="fixed inset-0 bg-black/10 backdrop-blur-[6px] z-0"></div>
+          <div className="fixed inset-0 bg-black/20 dark:bg-black/40 z-0" />
         </div>
 
-        <div className="relative w-full max-w-md z-10">
-          <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="relative w-full max-w-[380px] sm:max-w-md mx-auto z-10 px-4">
+          <div className="auth-frosted-card p-6 py-8 sm:p-10 rounded-2xl text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex justify-center mb-6">
               <div className="relative">
                 {/* Subtle gradient badge background */}
@@ -146,8 +146,8 @@ export default function ResetPassword() {
                 </div>
               </div>
             </div>
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2">Invalid Link</h1>
-            <p className="text-sm text-gray-600 mb-8">
+            <h1 className="text-3xl font-semibold text-foreground mb-2">Invalid Link</h1>
+            <p className="text-sm text-muted mb-8">
               This password reset link is invalid or has expired. Please request a new one.
             </p>
             <Link
@@ -171,13 +171,13 @@ export default function ResetPassword() {
           backgroundImage: `url('/background.png')`,
         }}
       >
-        {/* Deeper blur overlay */}
-        <div className="fixed inset-0 bg-black/10 backdrop-blur-[6px] z-0"></div>
+        {/* Contrast overlay */}
+        <div className="fixed inset-0 bg-black/20 dark:bg-black/40 z-0" />
       </div>
 
-      <div className="relative w-full max-w-md z-10">
-        {/* Premium Auth Card */}
-        <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="relative w-full max-w-[380px] sm:max-w-md mx-auto z-10 px-4">
+        {/* Auth Card */}
+        <div className="auth-frosted-card p-6 py-8 sm:p-10 rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
           <div className="text-center mb-10">
             <div className="flex justify-center mb-6">
@@ -203,10 +203,10 @@ export default function ResetPassword() {
                 </div>
               </div>
             </div>
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+            <h1 className="text-3xl font-semibold text-foreground mb-2">
               Reset your password
             </h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted">
               Enter your new password below
             </p>
           </div>
@@ -217,7 +217,7 @@ export default function ResetPassword() {
             <div>
               <label
                 htmlFor="newPassword"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 New Password
               </label>
@@ -233,7 +233,7 @@ export default function ResetPassword() {
                       message: 'Password must be at least 6 characters',
                     },
                   })}
-                  className="w-full h-11 px-4 pr-11 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
+                  className="auth-frosted-input w-full h-11 px-4 pr-11 rounded-lg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 text-sm"
                   placeholder="••••••••"
                   aria-invalid={errors.newPassword ? 'true' : 'false'}
                 />
@@ -243,7 +243,7 @@ export default function ResetPassword() {
                   tabIndex={0}
                   onClick={() => setShowNewPassword((p) => !p)}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowNewPassword((p) => !p); } }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-gray-500 hover:text-gray-700 cursor-pointer select-none outline-none focus:outline-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-muted hover:text-foreground cursor-pointer select-none outline-none focus:outline-none transition-all duration-200"
                   aria-label={showNewPassword ? 'Hide password' : 'Show password'}
                 >
                   {showNewPassword ? <EyeIcon /> : <EyeSlashIcon />}
@@ -263,7 +263,7 @@ export default function ResetPassword() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 Confirm Password
               </label>
@@ -277,7 +277,7 @@ export default function ResetPassword() {
                     validate: (value: string) =>
                       value === newPassword || 'Passwords do not match',
                   })}
-                  className="w-full h-11 px-4 pr-11 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
+                  className="auth-frosted-input w-full h-11 px-4 pr-11 rounded-lg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 text-sm"
                   placeholder="••••••••"
                   aria-invalid={errors.confirmPassword ? 'true' : 'false'}
                 />
@@ -287,7 +287,7 @@ export default function ResetPassword() {
                   tabIndex={0}
                   onClick={() => setShowConfirmPassword((p) => !p)}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setShowConfirmPassword((p) => !p); } }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-gray-500 hover:text-gray-700 cursor-pointer select-none outline-none focus:outline-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-muted hover:text-foreground cursor-pointer select-none outline-none focus:outline-none transition-all duration-200"
                   aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
                   {showConfirmPassword ? <EyeIcon /> : <EyeSlashIcon />}
@@ -324,7 +324,7 @@ export default function ResetPassword() {
           </form>
 
           {/* Sign In Link */}
-          <p className="mt-8 text-center text-sm text-gray-600">
+          <p className="mt-8 text-center text-sm text-muted">
             Remember your password?{' '}
             <Link to="/signin" className="text-blue-600 hover:text-blue-700 hover:underline font-medium transition-colors">
               Sign in

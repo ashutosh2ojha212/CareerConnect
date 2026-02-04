@@ -61,12 +61,12 @@ export default function ForgotPassword() {
             backgroundImage: `url('/background.png')`,
           }}
         >
-          {/* Deeper blur overlay */}
-          <div className="fixed inset-0 bg-black/10 backdrop-blur-[6px] z-0"></div>
+          {/* Contrast overlay */}
+          <div className="fixed inset-0 bg-black/20 dark:bg-black/40 z-0" />
         </div>
 
-        <div className="relative w-full max-w-md z-10">
-          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white/50 p-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="relative w-full max-w-[380px] sm:max-w-md mx-auto z-10 px-4">
+          <div className="auth-frosted-card p-6 py-8 sm:p-10 rounded-2xl text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex justify-center mb-6 scale-125 md:scale-150">
               <img
                 src="/logo.png"
@@ -94,8 +94,8 @@ export default function ForgotPassword() {
                 />
               </svg>
             </div>
-            <h2 className="text-3xl font-semibold text-gray-900 mb-2">Check your email</h2>
-            <p className="text-sm text-gray-600 mb-8">
+            <h2 className="text-3xl font-semibold text-foreground mb-2">Check your email</h2>
+            <p className="text-sm text-muted mb-8">
               We've sent a password reset link to your email address. Please check your inbox and
               follow the instructions to reset your password.
             </p>
@@ -120,13 +120,13 @@ export default function ForgotPassword() {
           backgroundImage: `url('/background.png')`,
         }}
       >
-        {/* Deeper blur overlay */}
-        <div className="fixed inset-0 bg-black/10 backdrop-blur-[6px] z-0"></div>
+        {/* Contrast overlay */}
+        <div className="fixed inset-0 bg-black/20 dark:bg-black/40 z-0" />
       </div>
 
-      <div className="relative w-full max-w-md z-10">
-        {/* Premium Auth Card */}
-        <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="relative w-full max-w-[380px] sm:max-w-md mx-auto z-10 px-4">
+        {/* Auth Card */}
+        <div className="auth-frosted-card p-6 py-8 sm:p-10 rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
           <div className="text-center mb-10">
             <div className="flex justify-center mb-6 scale-125 md:scale-150">
@@ -141,10 +141,10 @@ export default function ForgotPassword() {
                 decoding="sync"
               />
             </div>
-            <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+            <h1 className="text-3xl font-semibold text-foreground mb-2">
               Reset your password
             </h1>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted">
               Enter your email address and we'll send you a link to reset your password.
             </p>
           </div>
@@ -155,7 +155,7 @@ export default function ForgotPassword() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 Email address
               </label>
@@ -163,6 +163,7 @@ export default function ForgotPassword() {
                 id="email"
                 type="email"
                 autoComplete="email"
+                className="auth-frosted-input w-full h-11 px-4 rounded-lg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 text-sm"
                 {...register('email', {
                   required: 'Email is required',
                   validate: {
@@ -183,7 +184,6 @@ export default function ForgotPassword() {
                     }
                   }
                 })}
-                className="w-full h-11 px-4 border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 focus:shadow-sm transition-all duration-200 text-sm"
                 placeholder="you@example.com"
                 aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? 'email-error' : undefined}
@@ -277,11 +277,11 @@ export default function ForgotPassword() {
           </form>
 
           {/* Sign In Link */}
-          <p className="mt-8 text-center text-sm text-gray-600">
+          <p className="mt-8 text-center text-sm text-muted">
             Remember your password?{' '}
             <Link
               to="/signin"
-              className="text-blue-600 hover:text-blue-700 hover:underline font-medium transition-colors"
+              className="text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 hover:underline font-medium transition-all duration-200"
             >
               Sign in
             </Link>

@@ -16,6 +16,16 @@ export default {
     },
     extend: {
       colors: {
+        foreground: 'rgb(var(--foreground) / <alpha-value>)',
+        muted: 'rgb(var(--foreground-muted) / <alpha-value>)',
+        card: {
+          DEFAULT: 'rgb(var(--card-bg) / <alpha-value>)',
+          border: 'rgb(var(--card-border) / <alpha-value>)',
+        },
+        input: {
+          DEFAULT: 'rgb(var(--input-bg) / <alpha-value>)',
+          border: 'rgb(var(--input-border) / <alpha-value>)',
+        },
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',

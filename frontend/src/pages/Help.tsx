@@ -8,10 +8,10 @@ export default function Help() {
   const mailto = `mailto:${SUPPORT_EMAIL}?subject=CareerConnect%20Support%20Request`
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fefefe] via-[#faf9f7] to-[#f5f4f2]">
-      <div className="fixed inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent pointer-events-none" />
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fefefe] via-[#faf9f7] to-[#f5f4f2] dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+      <div className="fixed inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent dark:from-black/20 pointer-events-none" />
 
-      <nav className="w-full sticky top-0 z-50 bg-white/80 backdrop-blur-xl shadow-[0_2px_20px_rgba(0,0,0,0.04)] px-4 sm:px-6 py-4 border-b border-gray-200/60">
+      <nav className="w-full sticky top-0 z-50 bg-card/90 backdrop-blur-xl shadow-[0_2px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_20px_rgba(0,0,0,0.2)] px-4 sm:px-6 py-4 border-b border-card-border">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center">
             <img src="/logo.png" alt="CareerConnect" className="h-9 sm:h-10 w-auto object-contain" />
@@ -19,14 +19,14 @@ export default function Help() {
           {isAuthenticated() ? (
             <Link
               to="/role-selection"
-              className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+              className="text-sm font-medium text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 transition-all duration-200"
             >
               Dashboard
             </Link>
           ) : (
             <Link
               to="/signin"
-              className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+              className="text-sm font-medium text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 transition-all duration-200"
             >
               Sign in
             </Link>
@@ -35,7 +35,7 @@ export default function Help() {
       </nav>
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.08)] border border-gray-100 p-8 sm:p-12 text-center">
+        <div className="bg-card/90 dark:bg-card/95 backdrop-blur-xl rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.25)] border border-card-border p-6 py-8 sm:p-12 text-center max-w-[380px] sm:max-w-2xl w-full mx-auto">
           <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-6 shadow-lg">
             <svg
               className="h-8 w-8 text-white"
@@ -51,13 +51,13 @@ export default function Help() {
               />
             </svg>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Help & Support</h1>
-          <p className="text-gray-600 text-base sm:text-lg mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">Help & Support</h1>
+          <p className="text-muted text-base sm:text-lg mb-6">
             For any issues, contact us at:
           </p>
           <a
             href={`mailto:${SUPPORT_EMAIL}`}
-            className="inline-block text-indigo-600 hover:text-indigo-700 font-semibold text-lg break-all mb-8"
+            className="inline-block text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 font-semibold text-lg break-all mb-8 transition-all duration-200"
           >
             {SUPPORT_EMAIL}
           </a>

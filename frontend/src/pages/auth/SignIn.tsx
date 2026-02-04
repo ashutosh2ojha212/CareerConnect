@@ -59,7 +59,7 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center p-3 sm:p-6 lg:p-8 overflow-hidden">
       {/* Animated Background Image */}
       <div 
         className="fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -68,12 +68,14 @@ export default function SignIn() {
         }}
       />
 
-      {/* Animated Gradient Overlay */}
-      <div className="fixed inset-0 bg-gradient-to-br from-white/10 via-indigo-200/10 to-purple-300/10 dark:from-black/40 dark:via-indigo-900/20 dark:to-purple-900/20 animate-gradientMove backdrop-blur-[12px] z-0"></div>
+      {/* Gradient overlay */}
+      <div className="fixed inset-0 bg-gradient-to-br from-white/20 via-indigo-100/30 to-purple-200/30 dark:from-indigo-950/50 dark:via-purple-900/40 dark:to-indigo-950/50 animate-gradientMove z-0" />
+      {/* Contrast overlay - increases readability in both themes */}
+      <div className="fixed inset-0 bg-black/20 dark:bg-black/40 z-0" />
 
-      <div className="relative w-full max-w-md md:max-w-lg z-10">
-        {/* Premium Auth Card */}
-        <div className="bg-white/80 dark:bg-white/10 backdrop-blur-2xl rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] border border-white/50 dark:border-white/10 p-10 md:p-12 transition-all duration-300 animate-fadeInUp">
+      <div className="relative w-full max-w-[380px] sm:max-w-md md:max-w-lg mx-auto z-10 px-4">
+        {/* Frosted-glass card - design token based */}
+        <div className="auth-frosted-card ring-1 ring-black/5 dark:ring-white/10 p-6 py-8 sm:p-8 md:p-10 lg:p-12 rounded-2xl transition-all duration-200 animate-fadeInUp">
           {/* Logo Section - Wider Logo with Scale */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-6 scale-125 md:scale-150">
@@ -88,10 +90,10 @@ export default function SignIn() {
                 decoding="sync"
               />
             </div>
-            <h2 className="text-2xl sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl sm:text-xl font-semibold text-foreground mb-2">
               Welcome back
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-muted">
               Sign in to your account to continue
             </p>
           </div>
@@ -102,16 +104,19 @@ export default function SignIn() {
               onClick={handleGoogleAuth}
               isLoading={isGoogleLoading}
               text="Continue with Google"
+              variant="frosted"
             />
           </div>
 
           {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+              <div className="w-full border-t border-card-border" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white/80 dark:bg-gray-900/80 text-gray-400 dark:text-gray-500">Or continue with email</span>
+              <span className="px-4 bg-transparent text-muted">
+                Or continue with email
+              </span>
             </div>
           </div>
 
@@ -121,7 +126,7 @@ export default function SignIn() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
+                className="block text-sm font-medium text-foreground mb-1.5"
               >
                 Email address
               </label>
@@ -129,6 +134,7 @@ export default function SignIn() {
                 id="email"
                 type="email"
                 autoComplete="email"
+                className="auth-frosted-input w-full h-12 px-4 rounded-xl placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-indigo-400/60 dark:focus:ring-blue-400/50 transition-all duration-200 text-sm"
                 {...register('email', {
                   required: 'Email is required',
                   validate: {
@@ -149,7 +155,6 @@ export default function SignIn() {
                     }
                   }
                 })}
-                className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
                 placeholder="you@example.com"
                 aria-invalid={errors.email ? 'true' : 'false'}
                 aria-describedby={errors.email ? 'email-error' : undefined}
@@ -181,13 +186,13 @@ export default function SignIn() {
               <div className="flex items-center justify-between mb-1.5">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="block text-sm font-medium text-foreground"
                 >
                   Password
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline font-medium transition-colors"
+                  className="text-xs text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 hover:underline font-medium transition-all duration-200"
                 >
                   Forgot password?
                 </Link>
@@ -207,7 +212,7 @@ export default function SignIn() {
                       noOnlySpaces: (value) => value.trim().length > 0 || 'Password cannot be only spaces',
                     }
                   })}
-                  className="w-full h-12 px-4 pr-11 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200 text-sm"
+                  className="auth-frosted-input w-full h-12 px-4 pr-11 rounded-xl placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-indigo-400/60 dark:focus:ring-blue-400/50 transition-all duration-200 text-sm"
                   placeholder="••••••••"
                   aria-invalid={errors.password ? 'true' : 'false'}
                   aria-describedby={errors.password ? 'password-error' : undefined}
@@ -223,7 +228,7 @@ export default function SignIn() {
                       setShowPassword((p) => !p)
                     }
                   }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer select-none outline-none focus:outline-none"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 text-muted hover:text-foreground cursor-pointer select-none outline-none focus:outline-none transition-all duration-200"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
@@ -255,7 +260,7 @@ export default function SignIn() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 text-base font-medium bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl hover:opacity-90 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-md hover:shadow-lg"
+              className="w-full h-12 text-base font-medium bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-blue-500 dark:to-blue-600 text-white rounded-xl hover:opacity-90 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-indigo-400/60 dark:focus:ring-blue-400/50 focus:ring-offset-2 focus:ring-offset-white/50 dark:focus:ring-offset-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-md dark:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:shadow-lg"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -288,11 +293,11 @@ export default function SignIn() {
           </form>
 
           {/* Sign Up Link */}
-          <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?{' '}
+          <p className="mt-8 text-center text-sm text-muted">
+            Don&apos;t have an account?{' '}
             <Link
               to="/signup"
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline font-medium transition-colors"
+              className="text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 hover:underline font-medium transition-all duration-200"
             >
               Sign up
             </Link>
