@@ -98,7 +98,7 @@ model JobPost {
   title       String
   companyName String // Company name for the job post
   description String?
-  experience  Int? // Minimum years of experience
+  experience  Float? // Minimum years of experience
   location    String? // Job location
   skills      String? // JSON array of skills
   companyId   String
@@ -172,7 +172,7 @@ model JobSeekerProfile {
   userId             String   @unique
   fullName           String
   email              String
-  experience         Int? // Years of experience
+  experience         Float? // Years of experience
   primaryRole        String? // Current or primary role / designation
   skills             String? // JSON array or comma-separated
   jobPreferences     String? // Preferred job role/title (or JSON array for preferredJobRoles)

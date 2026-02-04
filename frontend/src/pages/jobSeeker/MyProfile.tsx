@@ -275,9 +275,10 @@ export default function MyProfile() {
             <input
               type="number"
               min={0}
+              step="0.1"
               {...register('experience')}
               disabled={!isEditing}
-              placeholder="e.g. 5"
+              placeholder="e.g. 5 or 2.5"
               className="w-full h-11 px-4 rounded-xl border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 disabled:bg-gray-50 disabled:text-gray-600 focus:ring-2 focus:ring-[#4A4CF0]/30 focus:border-[#4A4CF0]"
             />
           </div>

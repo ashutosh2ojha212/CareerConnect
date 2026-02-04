@@ -222,10 +222,6 @@ export default function ReferralForm({ employee, jobPostId, onBack, onSuccess }:
                   isPositive: (value: number) => {
                     if (isNaN(value)) return true // Let required handle empty
                     return value >= 0 || 'Years of experience cannot be negative'
-                  },
-                  isInteger: (value: number) => {
-                    if (isNaN(value)) return true
-                    return Number.isInteger(value) || 'Years of experience must be a whole number'
                   }
                 }
               }
@@ -256,7 +252,7 @@ export default function ReferralForm({ employee, jobPostId, onBack, onSuccess }:
                     <input
                       type={field.type}
                       min={field.type === 'number' ? 0 : undefined}
-                      step={field.type === 'number' ? 1 : undefined}
+                      step={field.type === 'number' ? '0.1' : undefined}
                       {...register(field.id, getValidationRules())}
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none bg-white text-gray-900 placeholder:text-gray-400 ${
                         errors[field.id] ? 'border-red-300' : 'border-gray-300'

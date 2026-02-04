@@ -169,6 +169,7 @@ export default function EditJobPost() {
               <input
                 type="number"
                 min="0"
+                step="0.1"
                 {...register('experience', {
                   required: 'Minimum years of experience is required',
                   valueAsNumber: true,
@@ -180,7 +181,7 @@ export default function EditJobPost() {
                   },
                 })}
                 className="w-full h-12 px-4 border border-gray-200 rounded-xl bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:shadow-md transition-all duration-200"
-                placeholder="e.g., 2"
+                placeholder="e.g., 2 or 2.5"
               />
               {errors.experience && (
                 <p className="mt-1.5 text-sm text-red-600">{errors.experience.message}</p>
