@@ -45,6 +45,7 @@ function ChipAddSection({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
+          onBlur={handleAdd}
           disabled={disabled}
           placeholder={placeholder}
           className="flex-1 min-w-[120px] h-11 px-4 rounded-xl border border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 disabled:bg-gray-50 disabled:text-gray-600 focus:ring-2 focus:ring-[#4A4CF0]/30 focus:border-[#4A4CF0]"
