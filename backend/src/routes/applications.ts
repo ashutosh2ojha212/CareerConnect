@@ -425,29 +425,37 @@ router.delete('/:applicationId/revoke', authenticate, async (req: AuthRequest, r
   }
 })
 
-// Delete application (soft delete - only accepted/rejected applications can be deleted)
+// Delete application (soft delete)
+// - Job seeker: can delete their own accepted/rejected applications (use revoke for pending)
+// - Employee (job owner): can delete any application (pending, approved, rejected) for their job
 router.delete('/:applicationId', authenticate, async (req: AuthRequest, res, next) => {
   try {
     const { applicationId } = req.params
     const userId = req.user!.id
 
-    // Find the application and verify ownership
     const application = await prisma.referralApplication.findUnique({
       where: { id: applicationId },
+      include: {
+        jobPost: { select: { userId: true } },
+      },
     })
 
     if (!application) {
       return res.status(404).json({ message: 'Application not found' })
     }
 
-    // Verify user owns the application (job seeker can delete their own applications)
-    if (application.userId !== userId) {
-      return res.status(403).json({ message: 'Unauthorized: You can only delete your own applications' })
-    }
+    const isJobSeekerOwner = application.userId === userId
+    const isJobOwner = application.jobPost?.userId === userId
 
-    // Only allow deleting accepted or rejected applications
-    if (application.status === 'pending') {
-      return res.status(400).json({ message: 'Pending applications cannot be deleted. Use revoke instead.' })
+    if (isJobOwner) {
+      // Employee managing their job: allow delete for any status (pending, approved, rejected)
+    } else if (isJobSeekerOwner) {
+      // Job seeker: only allow deleting accepted or rejected (use revoke for pending)
+      if (application.status === 'pending') {
+        return res.status(400).json({ message: 'Pending applications cannot be deleted. Use revoke instead.' })
+      }
+    } else {
+      return res.status(403).json({ message: 'Unauthorized: You can only delete your own applications' })
     }
 
     // Soft delete the application
