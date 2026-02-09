@@ -160,7 +160,7 @@ export default function JobSeekerDashboard() {
             <img src="/logo.png" alt="CareerConnect" className="h-9 sm:h-10 w-auto object-contain" />
           </div>
 
-          {/* Center: Search bar — hidden on small mobile, shown from sm */}
+          {/* Center: Search bar — desktop: in navbar; mobile: row below (see below) */}
           <div className="flex-1 max-w-2xl mx-2 sm:mx-4 min-w-0 hidden sm:block">
             {showNavbarSearch && (
               <SearchBar
@@ -212,19 +212,21 @@ export default function JobSeekerDashboard() {
           </div>
         </div>
 
-        {/* Mobile menu overlay */}
+        {/* Mobile: search bar outside menu — full-width row below logo/hamburger */}
+        {showNavbarSearch && (
+          <div className="sm:hidden mt-3 min-w-0">
+            <SearchBar
+              mode={isCompanyDetails ? 'job-search' : isBrowseCompanies ? 'company' : 'jobpost'}
+              placeholder={getSearchPlaceholder()}
+              onSearch={handleNavbarSearch}
+              initialValue={navbarSearch}
+            />
+          </div>
+        )}
+
+        {/* Mobile menu overlay — nav links only */}
         {mobileMenuOpen && (
           <div className="sm:hidden mt-3 pt-3 border-t border-gray-200/60">
-            {showNavbarSearch && (
-              <div className="mb-3">
-                <SearchBar
-                  mode={isCompanyDetails ? 'job-search' : isBrowseCompanies ? 'company' : 'jobpost'}
-                  placeholder={getSearchPlaceholder()}
-                  onSearch={handleNavbarSearch}
-                  initialValue={navbarSearch}
-                />
-              </div>
-            )}
             <div className="flex flex-col gap-1">
               <button onClick={() => { startTransition(() => navigate('/employee')); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-medium text-sm">Employee Dashboard</button>
               <Link to="/job-seeker/profile" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 text-sm font-medium">Profile</Link>

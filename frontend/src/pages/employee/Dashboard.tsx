@@ -166,14 +166,17 @@ export default function EmployeeDashboard() {
           </div>
         </div>
 
+        {/* Mobile: search bar outside menu — full-width row below logo/hamburger */}
+        {(activeTab === 'browse-candidates' || activeTab === 'my-job-posts') && (
+          <div className="sm:hidden mt-3 min-w-0">
+            {activeTab === 'browse-candidates' && <SearchBar mode="candidate" placeholder="Search job seekers..." onSearch={handleCandidateSearch} initialValue={candidateSearchQuery} />}
+            {activeTab === 'my-job-posts' && <SearchBar mode="jobpost" placeholder="Search your job posts..." onSearch={handleJobPostSearch} initialValue={jobPostSearchQuery} />}
+          </div>
+        )}
+
+        {/* Mobile menu overlay — nav links only */}
         {mobileMenuOpen && (
           <div className="sm:hidden mt-3 pt-3 border-t border-gray-200/60">
-            {(activeTab === 'browse-candidates' || activeTab === 'my-job-posts') && (
-              <div className="mb-3">
-                {activeTab === 'browse-candidates' && <SearchBar mode="candidate" placeholder="Search job seekers..." onSearch={handleCandidateSearch} initialValue={candidateSearchQuery} />}
-                {activeTab === 'my-job-posts' && <SearchBar mode="jobpost" placeholder="Search your job posts..." onSearch={handleJobPostSearch} initialValue={jobPostSearchQuery} />}
-              </div>
-            )}
             <div className="flex flex-col gap-1">
               <button onClick={() => { startTransition(() => navigate('/job-seeker')); setMobileMenuOpen(false); }} className="w-full text-left px-4 py-3 rounded-xl bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] text-white font-medium text-sm">Find Jobs</button>
               <Link to="/help" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 text-sm font-medium">Help</Link>
@@ -183,10 +186,10 @@ export default function EmployeeDashboard() {
         )}
       </nav>
 
-      {/* Main Content Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 overflow-x-hidden">
+      {/* Main Content Container — no overflow-x-hidden so tabs can scroll on mobile */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Premium Tabs — horizontal scroll on mobile */}
-        <div className="w-full flex items-center gap-4 sm:gap-8 mt-6 sm:mt-10 mb-1 border-b-2 border-gray-200 overflow-x-auto pb-px scrollbar-hide flex-nowrap">
+        <div className="w-full flex items-center gap-4 sm:gap-8 mt-6 sm:mt-10 mb-1 border-b-2 border-gray-200 overflow-x-auto overflow-y-hidden pb-px scrollbar-hide flex-nowrap min-w-0 -mx-4 sm:mx-0 px-4 sm:px-0">
           <button
             onClick={() => startTransition(() => navigate('/employee/job-seekers'))}
             data-active={isActive('/employee/job-seekers')}
@@ -220,7 +223,7 @@ export default function EmployeeDashboard() {
         </div>
 
         {/* Routes Content */}
-        <main className="mt-8">
+        <main className="mt-8 overflow-x-hidden">
           <Routes>
             <Route path="job-seekers" element={<JobSeekers searchQuery={candidateSearchQuery} />} />
             <Route index element={<JobPosts searchQuery={jobPostSearchQuery} />} />
