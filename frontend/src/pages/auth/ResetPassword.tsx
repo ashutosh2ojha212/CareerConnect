@@ -323,11 +323,11 @@ export default function ResetPassword() {
             </button>
           </form>
 
-          {/* Sign In Link */}
+          {/* Login link */}
           <p className="mt-8 text-center text-sm text-muted">
             Remember your password?{' '}
             <Link to="/signin" className="text-blue-600 hover:text-blue-700 hover:underline font-medium transition-colors">
-              Sign in
+              Log In
             </Link>
           </p>
         </div>

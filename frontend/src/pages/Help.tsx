@@ -28,7 +28,7 @@ export default function Help() {
               to="/signin"
               className="text-sm font-medium text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 transition-all duration-200"
             >
-              Sign in
+              Log In
             </Link>
           )}
         </div>

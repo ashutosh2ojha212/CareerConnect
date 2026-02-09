@@ -103,7 +103,7 @@ export default function ForgotPassword() {
               to="/signin"
               className="inline-flex items-center justify-center w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-2xl hover:opacity-90 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 transition-all duration-200 shadow-lg shadow-blue-500/20"
             >
-              Back to Sign In
+              Back to Log In
             </Link>
           </div>
         </div>
@@ -276,14 +276,14 @@ export default function ForgotPassword() {
             </button>
           </form>
 
-          {/* Sign In Link */}
+          {/* Login link */}
           <p className="mt-8 text-center text-sm text-muted">
             Remember your password?{' '}
             <Link
               to="/signin"
               className="text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 hover:underline font-medium transition-all duration-200"
             >
-              Sign in
+              Log In
             </Link>
           </p>
         </div>

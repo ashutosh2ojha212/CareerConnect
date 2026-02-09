@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, startTransition } from 'react'
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { authService } from '../../lib/auth'
+import api from '../../lib/api'
 import SearchBar from '../../components/SearchBar'
 import JobSeekers from './JobSeekers'
 import JobPosts from './JobPosts'
@@ -18,7 +19,9 @@ export default function EmployeeDashboard() {
   const [candidateSearchQuery, setCandidateSearchQuery] = useState('')
   const [jobPostSearchQuery, setJobPostSearchQuery] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [hasReferralForm, setHasReferralForm] = useState<boolean | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const isOnSetupFormPage = location.pathname === '/employee/setup-form'
 
   // Get user initials for avatar
   const getUserInitials = () => {
@@ -109,6 +112,21 @@ export default function EmployeeDashboard() {
       setJobPostSearchQuery('')
     }
   }, [activeTab])
+
+  // Check if employee has created a referral form (prompt to create on first visit)
+  useEffect(() => {
+    let cancelled = false
+    api.get('/referrer/form')
+      .then(({ data }) => {
+        if (cancelled) return
+        const hasForm = data != null && Array.isArray(data.fields) && data.fields.length > 0
+        setHasReferralForm(hasForm)
+      })
+      .catch(() => {
+        if (!cancelled) setHasReferralForm(false)
+      })
+    return () => { cancelled = true }
+  }, [location.pathname])
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fefefe] via-[#faf9f7] to-[#f5f4f2]">
@@ -221,6 +239,35 @@ export default function EmployeeDashboard() {
             )}
           </button>
         </div>
+
+        {/* Referral form prompt — when employee hasn't set up form yet (like job seeker profile prompt) */}
+        {hasReferralForm === false && !isOnSetupFormPage && (
+          <div className="mt-6 rounded-2xl bg-gradient-to-r from-indigo-50 via-white to-purple-50 border border-indigo-100/80 shadow-sm overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-5">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm sm:text-base">Set up your referral application form</p>
+                  <p className="text-gray-600 text-sm mt-0.5">Create your custom form so job seekers can apply when they request referrals from you.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => startTransition(() => navigate('/employee/setup-form'))}
+                className="flex-shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold shadow-md hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200"
+              >
+                Create referral form
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Routes Content */}
         <main className="mt-8 overflow-x-hidden">

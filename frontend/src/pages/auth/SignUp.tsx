@@ -391,14 +391,14 @@ export default function SignUp() {
             </button>
           </form>
 
-          {/* Sign In Link */}
+          {/* Login link */}
           <p className="mt-8 text-center text-sm text-muted">
             Already have an account?{' '}
             <Link
               to="/signin"
               className="text-primary-500 hover:text-primary-600 dark:text-blue-400 hover:text-blue-300 hover:underline font-medium transition-all duration-200"
             >
-              Sign in
+              Log In
             </Link>
           </p>
         </div>
