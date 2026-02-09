@@ -339,51 +339,41 @@ router.patch('/:applicationId/status', authenticate, async (req: AuthRequest, re
 })
 
 // Get form fields for employee (for job seeker to see what fields to fill)
+// Uses the employee's ReferralForm from setup-form, not job-level custom fields.
 router.get('/:employeeId/form-fields', authenticate, async (req, res, next) => {
   try {
     const { employeeId } = req.params
 
-    // Get employee's company and latest job post
     const employee = await prisma.employeeProfile.findUnique({
       where: { userId: employeeId },
-      include: {
-        company: {
-          include: {
-            jobPosts: {
-              take: 1,
-              orderBy: {
-                createdAt: 'desc',
-              },
-              include: {
-                customFormFields: {
-                  orderBy: {
-                    order: 'asc',
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      select: { userId: true },
     })
 
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' })
     }
 
-    const formFields = employee.company.jobPosts[0]?.customFormFields || []
+    const referralForm = await prisma.referralForm.findUnique({
+      where: { userId: employeeId },
+    })
 
-    // Default fields if none exist
-    if (formFields.length === 0) {
-      res.json([
-        { id: 'name', label: 'Full Name', type: 'text', required: true },
-        { id: 'email', label: 'Email', type: 'email', required: true },
-        { id: 'phone', label: 'Phone Number', type: 'tel', required: false },
-        { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true },
+    if (!referralForm || !referralForm.fields) {
+      return res.json([
+        { id: 'name', label: 'Full Name', type: 'text', required: true, order: 0 },
+        { id: 'email', label: 'Email', type: 'text', required: true, order: 1 },
+        { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true, order: 2 },
       ])
-    } else {
-      res.json(formFields)
     }
+
+    const fields = JSON.parse(referralForm.fields) as Array<{ id: string; label: string; type: string }>
+    const withOrder = (Array.isArray(fields) ? fields : []).map((f, i) => ({
+      id: f.id,
+      label: f.label,
+      type: f.type || 'text',
+      required: true,
+      order: i,
+    }))
+    res.json(withOrder)
   } catch (error) {
     next(error)
   }

@@ -83,11 +83,10 @@ export default function SetupReferralForm() {
       if (response.data) {
         // Convert any invalid field types to 'text' (for backward compatibility)
         const sanitizedFields = response.data.fields.map((field: FormField) => {
-          if (field.type === 'text' || field.type === 'number' || field.type === 'file') {
-            return field
-          }
-          // Convert invalid types to 'text'
-          return { ...field, type: 'text' as const }
+          const base = field.type === 'text' || field.type === 'number' || field.type === 'file'
+            ? field
+            : { ...field, type: 'text' as const }
+          return { ...base, required: true }
         })
         setValue('fields', sanitizedFields)
         setHasExistingForm(true)
@@ -104,7 +103,8 @@ export default function SetupReferralForm() {
   const onSubmit = async (data: ReferralFormData) => {
     setIsSubmitting(true)
     try {
-      await api.post('/referrer/form', { fields: data.fields })
+      const fieldsWithRequired = data.fields.map((f) => ({ ...f, required: true }))
+      await api.post('/referrer/form', { fields: fieldsWithRequired })
       toast.success('Referral form saved successfully!')
       navigate('/employee')
     } catch (error: any) {
@@ -120,7 +120,7 @@ export default function SetupReferralForm() {
       id: `field_${Date.now()}`,
       label: '',
       type: 'text',
-      required: false,
+      required: true,
     })
   }
 
@@ -264,15 +264,7 @@ export default function SetupReferralForm() {
                           </select>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            {...register(`fields.${index}.required` as const)}
-                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
-                          />
-                          <span className="ml-2 text-sm text-gray-700">Required</span>
-                        </label>
+                      <div className="flex justify-end items-center">
                         {fields.length > 1 && (
                           <button
                             type="button"

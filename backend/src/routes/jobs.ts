@@ -410,19 +410,49 @@ router.put('/:jobId', authenticate, async (req: AuthRequest, res, next) => {
   }
 })
 
-// Get form fields for a job
+// Get form fields for a job (used when job seeker applies to a specific job).
+// Uses job's custom form fields if any; otherwise the job owner's ReferralForm from setup-form.
 router.get('/:jobId/form-fields', authenticate, async (req, res, next) => {
   try {
     const { jobId } = req.params
 
     const formFields = await prisma.jobCustomFormField.findMany({
       where: { jobPostId: jobId },
-      orderBy: {
-        order: 'asc',
-      },
+      orderBy: { order: 'asc' },
     })
 
-    res.json(formFields)
+    if (formFields.length > 0) {
+      return res.json(formFields)
+    }
+
+    const jobPost = await prisma.jobPost.findUnique({
+      where: { id: jobId },
+      select: { userId: true },
+    })
+    if (!jobPost) {
+      return res.status(404).json({ message: 'Job not found' })
+    }
+
+    const referralForm = await prisma.referralForm.findUnique({
+      where: { userId: jobPost.userId },
+    })
+    if (!referralForm || !referralForm.fields) {
+      return res.json([
+        { id: 'name', label: 'Full Name', type: 'text', required: true, order: 0 },
+        { id: 'email', label: 'Email', type: 'text', required: true, order: 1 },
+        { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true, order: 2 },
+      ])
+    }
+
+    const fields = JSON.parse(referralForm.fields) as Array<{ id: string; label: string; type: string }>
+    const withOrder = (Array.isArray(fields) ? fields : []).map((f, i) => ({
+      id: f.id,
+      label: f.label,
+      type: f.type || 'text',
+      required: true,
+      order: i,
+    }))
+    res.json(withOrder)
   } catch (error) {
     next(error)
   }
