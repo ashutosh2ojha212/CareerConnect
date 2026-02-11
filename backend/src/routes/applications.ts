@@ -361,7 +361,9 @@ router.get('/:employeeId/form-fields', authenticate, async (req, res, next) => {
       return res.json([
         { id: 'name', label: 'Full Name', type: 'text', required: true, order: 0 },
         { id: 'email', label: 'Email', type: 'text', required: true, order: 1 },
-        { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true, order: 2 },
+        { id: 'phone', label: 'Phone Number', type: 'text', required: true, order: 2 },
+        { id: 'experience', label: 'Years of Experience', type: 'number', required: true, order: 3 },
+        { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true, order: 4 },
       ])
     }
 

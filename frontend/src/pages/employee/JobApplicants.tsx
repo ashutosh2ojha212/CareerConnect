@@ -137,12 +137,17 @@ export default function JobApplicants() {
     }
   }
 
+  const getStatusDisplayLabel = (status: string) => {
+    if (status === 'approved') return 'Referred'
+    return status.charAt(0).toUpperCase() + status.slice(1)
+  }
+
   const getEmptyStateMessage = (status: TabStatus) => {
     switch (status) {
       case 'pending':
         return 'No pending applicants yet.'
       case 'approved':
-        return 'No approved applicants yet.'
+        return 'No referred applicants yet.'
       case 'rejected':
         return 'No rejected applicants yet.'
       default:
@@ -213,7 +218,7 @@ export default function JobApplicants() {
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                     </svg>
                   )}
-                  {selectedApplicant.status.charAt(0).toUpperCase() + selectedApplicant.status.slice(1)}
+                  {getStatusDisplayLabel(selectedApplicant.status)}
                 </span>
               </div>
             </div>
@@ -356,7 +361,7 @@ export default function JobApplicants() {
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                   </svg>
-                  Approve Application
+                  Refer Applicant
                 </button>
                 <button
                   onClick={() => updateStatus(selectedApplicant.id, 'rejected')}
@@ -414,7 +419,7 @@ export default function JobApplicants() {
                 }
               `}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {getStatusDisplayLabel(tab)}
               {activeTab === tab && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#4A4CF0] to-[#6366F1] rounded-full"></div>
               )}
@@ -486,7 +491,7 @@ export default function JobApplicants() {
                         : 'bg-[#ffcc00] text-gray-900'
                     }`}
                   >
-                    {applicant.status.charAt(0).toUpperCase() + applicant.status.slice(1)}
+                    {getStatusDisplayLabel(applicant.status)}
                   </span>
                   <button
                     onClick={(e) => {

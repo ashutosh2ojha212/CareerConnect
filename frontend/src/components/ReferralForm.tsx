@@ -83,18 +83,18 @@ export default function ReferralForm({ employee, jobPostId, onBack, onSuccess }:
       } else {
         setFormFields([
           { id: 'name', label: 'Full Name', type: 'text', required: true },
-          { id: 'email', label: 'Email', type: 'email', required: true },
-          { id: 'phone', label: 'Phone Number', type: 'tel', required: false },
-          { id: 'experience', label: 'Years of Experience', type: 'number', required: false },
+          { id: 'email', label: 'Email', type: 'text', required: true },
+          { id: 'phone', label: 'Phone Number', type: 'text', required: true },
+          { id: 'experience', label: 'Years of Experience', type: 'number', required: true },
           { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true },
         ])
       }
     } catch (error) {
       setFormFields([
         { id: 'name', label: 'Full Name', type: 'text', required: true },
-        { id: 'email', label: 'Email', type: 'email', required: true },
-        { id: 'phone', label: 'Phone Number', type: 'tel', required: false },
-        { id: 'experience', label: 'Years of Experience', type: 'number', required: false },
+        { id: 'email', label: 'Email', type: 'text', required: true },
+        { id: 'phone', label: 'Phone Number', type: 'text', required: true },
+        { id: 'experience', label: 'Years of Experience', type: 'number', required: true },
         { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true },
       ])
     } finally {

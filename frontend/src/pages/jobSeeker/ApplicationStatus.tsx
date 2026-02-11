@@ -91,6 +91,11 @@ export default function ApplicationStatus({ searchQuery: propSearch = '' }: Appl
     }
   }
 
+  const getStatusDisplayLabel = (status: string) => {
+    if (status === 'approved') return 'Referred'
+    return status.charAt(0).toUpperCase() + status.slice(1)
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -130,7 +135,7 @@ export default function ApplicationStatus({ searchQuery: propSearch = '' }: Appl
               : 'text-gray-600 border-transparent hover:text-[#4A4CF0]'
           }`}
         >
-          Accepted ({approvedCount})
+          Referred ({approvedCount})
         </button>
         <button
           onClick={() => setActiveTab('rejected')}
@@ -157,7 +162,7 @@ export default function ApplicationStatus({ searchQuery: propSearch = '' }: Appl
               : activeTab === 'pending'
               ? 'No pending applications'
               : activeTab === 'approved'
-              ? 'No accepted applications'
+              ? 'No referred applications'
               : 'No rejected applications'}
           </h2>
           <p className="text-gray-600 text-base max-w-md">
@@ -192,7 +197,7 @@ export default function ApplicationStatus({ searchQuery: propSearch = '' }: Appl
                       app.status
                     )}`}
                   >
-                    {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                    {getStatusDisplayLabel(app.status)}
                   </span>
                   {app.status === 'pending' ? (
                     <button

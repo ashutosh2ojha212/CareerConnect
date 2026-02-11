@@ -32,6 +32,9 @@ export default function SetupReferralForm() {
     defaultValues: {
       fields: [
         { id: 'name', label: 'Full Name', type: 'text', required: true },
+        { id: 'email', label: 'Email', type: 'text', required: true },
+        { id: 'phone', label: 'Phone Number', type: 'text', required: true },
+        { id: 'experience', label: 'Years of Experience', type: 'number', required: true },
         { id: 'resume', label: 'Resume (PDF)', type: 'file', required: true },
       ],
     },

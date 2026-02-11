@@ -273,7 +273,7 @@ export async function sendApplicationStatusNotification(params: {
   status: 'approved' | 'rejected'
   timestamp: Date
 }): Promise<{ success: boolean; messageId?: string }> {
-  const statusLabel = params.status === 'approved' ? 'Approved' : 'Not selected'
+  const statusLabel = params.status === 'approved' ? 'Referred' : 'Not selected'
   const statusColor = params.status === 'approved' ? '#34c759' : '#6b7280'
   const applicationsUrl = `${FRONTEND_URL}/job-seeker/applications`
   const content = `
@@ -290,9 +290,10 @@ export async function sendApplicationStatusNotification(params: {
   `
   const html = emailWrapper('Application Update', content)
   const text = `Your application for ${params.jobTitle} was ${statusLabel}. Updated at: ${params.timestamp.toLocaleString()}. View: ${applicationsUrl}`
+  const subjectStatus = params.status === 'approved' ? 'Referred' : 'Update'
   return sendEmail(
     params.toEmail,
-    `Application ${statusLabel}: ${params.jobTitle}`,
+    `Application ${subjectStatus}: ${params.jobTitle}`,
     html,
     text,
     'application_status',

@@ -91,7 +91,7 @@ export default function AdminApplications() {
                             : 'bg-amber-100 text-amber-800'
                       }`}
                     >
-                      {a.status}
+                      {a.status === 'approved' ? 'referred' : a.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
