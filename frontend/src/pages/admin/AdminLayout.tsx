@@ -41,9 +41,9 @@ export default function AdminLayout() {
       <aside
         className={`${
           sidebarOpen ? 'w-56' : 'w-16'
-        } flex flex-col fixed left-0 top-0 h-full z-40 bg-white/90 backdrop-blur-xl border-r border-gray-200/60 shadow-lg transition-all duration-200 
-        max-lg:transform max-lg:transition-transform max-lg:duration-200
-        ${!mobileSidebarOpen ? 'max-lg:-translate-x-full' : 'max-lg:translate-x-0 max-lg:z-50 max-lg:shadow-2xl'}`}
+        } flex flex-col fixed left-0 top-0 h-full z-40 bg-white/95 backdrop-blur-xl border-r border-gray-200/60 shadow-lg transition-all duration-200 
+        max-lg:transform max-lg:transition-transform max-lg:duration-200 max-lg:w-64 max-lg:shadow-2xl
+        ${!mobileSidebarOpen ? 'max-lg:-translate-x-full' : 'max-lg:translate-x-0 max-lg:z-50'}`}
       >
         <div className="p-4 border-b border-gray-200/60 flex items-center justify-between">
           {sidebarOpen && (
@@ -52,7 +52,7 @@ export default function AdminLayout() {
           <button
             type="button"
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600"
+            className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 min-h-[44px] min-w-[44px] flex items-center justify-center lg:min-h-0 lg:min-w-0 lg:p-1.5"
             aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
           >
             <svg
@@ -73,7 +73,7 @@ export default function AdminLayout() {
               end={end}
               onClick={() => setMobileSidebarOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                `flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-colors min-h-[44px] touch-manipulation ${
                   isActive
                     ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
@@ -93,7 +93,7 @@ export default function AdminLayout() {
           )}
           <Link
             to="/help"
-            className="w-full flex items-center justify-center gap-2 text-indigo-600 hover:text-indigo-700 px-4 py-2.5 rounded-lg font-medium hover:bg-indigo-50 transition-colors"
+            className="w-full flex items-center justify-center gap-2 text-indigo-600 hover:text-indigo-700 px-4 py-3 rounded-lg font-medium hover:bg-indigo-50 transition-colors min-h-[44px] touch-manipulation"
           >
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -103,7 +103,7 @@ export default function AdminLayout() {
           <button
             type="button"
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 bg-red-500 text-white px-4 py-2.5 rounded-lg shadow-sm font-semibold hover:bg-red-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            className="w-full flex items-center justify-center gap-2 bg-red-500 text-white px-4 py-3 rounded-lg shadow-sm font-semibold hover:bg-red-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 min-h-[44px] touch-manipulation"
           >
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -113,21 +113,24 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* Mobile menu button */}
-      <button
-        type="button"
-        onClick={() => setMobileSidebarOpen((o) => !o)}
-        className="lg:hidden fixed top-4 left-4 z-20 p-2 rounded-lg bg-white/90 shadow-md border border-gray-200 hover:bg-gray-50"
-        aria-label="Toggle menu"
-      >
-        <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
+      {/* Mobile header bar — fixed top with menu + title */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-20 h-14 flex items-center gap-3 px-4 bg-white/95 backdrop-blur-xl border-b border-gray-200/60 shadow-sm">
+        <button
+          type="button"
+          onClick={() => setMobileSidebarOpen((o) => !o)}
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 touch-manipulation"
+          aria-label="Toggle menu"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <span className="font-semibold text-gray-800">Admin</span>
+      </header>
 
       {/* Main content */}
       <main className={`flex-1 ${sidebarOpen ? 'ml-56' : 'ml-16'} max-lg:ml-0 transition-all duration-200 min-h-screen`}>
-        <div className="p-4 sm:p-6 lg:p-8 pt-16 lg:pt-6">
+        <div className="p-4 sm:p-6 lg:p-8 pt-20 lg:pt-6 min-w-0">
           <Routes>
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />

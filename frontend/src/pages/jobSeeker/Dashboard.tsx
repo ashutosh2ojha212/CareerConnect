@@ -164,6 +164,7 @@ export default function JobSeekerDashboard() {
           <div className="flex-1 max-w-2xl mx-2 sm:mx-4 min-w-0 hidden sm:block">
             {showNavbarSearch && (
               <SearchBar
+                key={isCompanyDetails ? 'job-search' : isBrowseCompanies ? 'company' : 'jobpost'}
                 mode={isCompanyDetails ? 'job-search' : isBrowseCompanies ? 'company' : 'jobpost'}
                 placeholder={getSearchPlaceholder()}
                 onSearch={handleNavbarSearch}
@@ -216,6 +217,7 @@ export default function JobSeekerDashboard() {
         {showNavbarSearch && (
           <div className="sm:hidden mt-3 min-w-0">
             <SearchBar
+              key={isCompanyDetails ? 'job-search' : isBrowseCompanies ? 'company' : 'jobpost'}
               mode={isCompanyDetails ? 'job-search' : isBrowseCompanies ? 'company' : 'jobpost'}
               placeholder={getSearchPlaceholder()}
               onSearch={handleNavbarSearch}

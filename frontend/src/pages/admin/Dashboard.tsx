@@ -49,9 +49,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Platform Analytics</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="min-w-0">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">Platform Analytics</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
         <StatCard label="Total Users" value={stats.totalUsers} />
         <StatCard label="Employees" value={stats.employees} />
         <StatCard label="Job Seekers" value={stats.jobSeekers} />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDebounce } from '../hooks/useDebounce'
 
 interface SearchBarProps {
@@ -19,18 +19,15 @@ export default function SearchBar({
   const [searchQuery, setSearchQuery] = useState(initialValue)
   const debouncedSearch = useDebounce(searchQuery, debounce)
 
-  // Call onSearch when debounced value changes
-  useEffect(() => {
-    onSearch(debouncedSearch)
-  }, [debouncedSearch, onSearch])
+  // Keep a stable ref to onSearch so the effect only fires when debouncedSearch changes,
+  // not when the parent re-renders and creates a new callback reference.
+  const onSearchRef = useRef(onSearch)
+  onSearchRef.current = onSearch
 
-  // Sync with initialValue when it changes externally (e.g., when tab switches)
+  // Call onSearch ONLY when the debounced value actually changes
   useEffect(() => {
-    if (initialValue !== searchQuery) {
-      setSearchQuery(initialValue)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValue])
+    onSearchRef.current(debouncedSearch)
+  }, [debouncedSearch])
 
   if (mode === 'hidden') {
     return null
