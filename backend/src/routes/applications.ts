@@ -149,17 +149,19 @@ router.post(
         formData[key] = req.body[key]
       })
       
-      // Process uploaded files and add to formData
+      // Process uploaded files and add to formData (store original filename for download)
       let fileUrl: string | null = null
       if (files && files.length > 0) {
         files.forEach((uploadedFile) => {
           const fileUrlValue = `/uploads/${uploadedFile.filename}`
           const fieldName = uploadedFile.fieldname || 'resume'
-          
-          // Add file URL to formData with the field name
+          const originalName = (uploadedFile.originalname || 'Resume.pdf').replace(/[^\w\s\-_.]/g, '_').trim() || 'Resume.pdf'
+          if (!originalName.toLowerCase().endsWith('.pdf')) {
+            formData[fieldName + 'OriginalFilename'] = originalName + '.pdf'
+          } else {
+            formData[fieldName + 'OriginalFilename'] = originalName
+          }
           formData[fieldName] = fileUrlValue
-          
-          // Store first file URL in resumeUrl for backward compatibility
           if (!fileUrl) {
             fileUrl = fileUrlValue
           }
@@ -525,9 +527,17 @@ router.get('/:applicationId/files/:fieldId', authenticate, async (req: AuthReque
       return res.status(404).json({ message: 'File not available' })
     }
 
-    // Set headers for PDF download
+    // Prefer original filename from formData so downloads use the name the user uploaded
+    const originalFilename = parsedFormData[fieldId + 'OriginalFilename']
+    const safeFilename = typeof originalFilename === 'string' && originalFilename
+      ? originalFilename.replace(/[^\w\s\-_.]/g, '_').trim() || path.basename(filePath)
+      : path.basename(filePath)
+    const downloadFilename = safeFilename.toLowerCase().endsWith('.pdf') ? safeFilename : safeFilename + '.pdf'
+
     res.setHeader('Content-Type', 'application/pdf')
-    res.setHeader('Content-Disposition', `attachment; filename="${path.basename(filePath)}"`)
+    res.setHeader('Content-Disposition', `attachment; filename="${downloadFilename}"`)
+    // Expose so frontend can read filename for download attribute (CORS)
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition')
 
     // Stream the file
     const fileStream = fs.createReadStream(filePath)

@@ -232,8 +232,9 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
       const formDataKeys = new Set(Object.keys(parsedFormData))
       const fieldMap = new Map(baseFormFields.map(f => [f.id, f]))
       
-      // Add any fields from formData that aren't in baseFormFields
+      // Add any fields from formData that aren't in baseFormFields (skip metadata like resumeOriginalFilename)
       formDataKeys.forEach(key => {
+        if (key.endsWith('OriginalFilename')) return
         if (!fieldMap.has(key) && key !== 'jobPostId' && key !== 'employeeId') {
           const rawValue = parsedFormData[key]
           const strVal = rawValue != null ? String(rawValue).trim() : ''

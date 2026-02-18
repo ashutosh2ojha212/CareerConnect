@@ -9,6 +9,8 @@ interface ApplicationFieldRowProps {
   fileUrl?: string
   applicationId?: string
   fieldId?: string
+  /** Original filename when uploaded (e.g. from formData.resumeOriginalFilename) — used for download name */
+  fileOriginalName?: string | null
 }
 
 export default function ApplicationFieldRow({
@@ -18,6 +20,7 @@ export default function ApplicationFieldRow({
   fileUrl,
   applicationId,
   fieldId,
+  fileOriginalName,
 }: ApplicationFieldRowProps) {
   const [isDownloading, setIsDownloading] = useState(false)
 
@@ -44,22 +47,35 @@ export default function ApplicationFieldRow({
       // If we have applicationId and fieldId, use the secure download endpoint
       if (applicationId && fieldId) {
         try {
-          // Use api instance for authenticated request, but get blob response
           const response = await api.get(`/applications/${applicationId}/files/${fieldId}`, {
             responseType: 'blob',
           })
 
-          // Check if it's a PDF
           if (response.data.type !== 'application/pdf' && !response.data.type.includes('pdf')) {
             toast.error('Invalid file format')
             return
           }
 
-          // Create download link
+          // Prefer prop from API (formData.resumeOriginalFilename), then Content-Disposition header
+          let downloadFilename = `${label.replace(/\s+/g, '_')}.pdf`
+          if (fileOriginalName && typeof fileOriginalName === 'string') {
+            const name = fileOriginalName.trim()
+            downloadFilename = name.toLowerCase().endsWith('.pdf') ? name : name + '.pdf'
+          } else {
+            const contentDisposition = response.headers?.['content-disposition']
+            if (contentDisposition) {
+              const match = contentDisposition.match(/filename\*?=(?:UTF-8'')?"?([^";\n]+)"?/i)
+              if (match?.[1]) {
+                downloadFilename = decodeURIComponent(match[1].trim().replace(/^"|"$/g, ''))
+                if (!downloadFilename.toLowerCase().endsWith('.pdf')) downloadFilename += '.pdf'
+              }
+            }
+          }
+
           const url = window.URL.createObjectURL(response.data)
           const link = document.createElement('a')
           link.href = url
-          link.download = `${label.replace(/\s+/g, '_')}.pdf`
+          link.download = downloadFilename
           document.body.appendChild(link)
           link.click()
           document.body.removeChild(link)
@@ -89,7 +105,7 @@ export default function ApplicationFieldRow({
         downloadUrl = `${baseUrl}${downloadUrl}`
       }
 
-      // Create a temporary anchor element to trigger download
+      // Direct URL: use label-based name (original filename only available via secure endpoint)
       const link = document.createElement('a')
       link.href = downloadUrl
       link.download = `${label.replace(/\s+/g, '_')}.pdf`

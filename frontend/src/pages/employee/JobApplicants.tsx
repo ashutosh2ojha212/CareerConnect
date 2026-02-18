@@ -296,13 +296,14 @@ export default function JobApplicants() {
                       fileUrl={fileUrl}
                       applicationId={selectedApplicant.id}
                       fieldId={field.id}
+                      fileOriginalName={field.type === 'file' ? selectedApplicant.formData[field.id + 'OriginalFilename'] : undefined}
                     />
                   )
                 })
               ) : (
                 // Fallback to raw form data if no form fields metadata
                 Object.entries(selectedApplicant.formData)
-                  .filter(([key]) => key !== 'jobPostId' && key !== 'employeeId')
+                  .filter(([key]) => key !== 'jobPostId' && key !== 'employeeId' && !key.endsWith('OriginalFilename'))
                   .map(([key, value]) => {
                     const strVal = value != null ? String(value).trim() : ''
                     let fieldType: 'text' | 'file' | 'email' | 'tel' | 'number' | 'textarea' = 'text'
@@ -343,6 +344,7 @@ export default function JobApplicants() {
                         fileUrl={fileUrl}
                         applicationId={selectedApplicant.id}
                         fieldId={key}
+                        fileOriginalName={fieldType === 'file' ? selectedApplicant.formData[key + 'OriginalFilename'] : undefined}
                       />
                     )
                   })
@@ -360,6 +362,7 @@ export default function JobApplicants() {
                   fileUrl={selectedApplicant.resumeUrl}
                   applicationId={selectedApplicant.id}
                   fieldId="resume"
+                  fileOriginalName={selectedApplicant.formData['resumeOriginalFilename']}
                 />
               )}
             </div>
