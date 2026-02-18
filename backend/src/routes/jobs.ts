@@ -235,21 +235,55 @@ router.get('/:jobId/applicants', authenticate, async (req: AuthRequest, res, nex
       // Add any fields from formData that aren't in baseFormFields
       formDataKeys.forEach(key => {
         if (!fieldMap.has(key) && key !== 'jobPostId' && key !== 'employeeId') {
-          // Infer field type and label from key name
+          const rawValue = parsedFormData[key]
+          const strVal = rawValue != null ? String(rawValue).trim() : ''
+          // Infer type and human-readable label (fixes FIELD_1770213202030-style keys)
           let type = 'text'
-          const label = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')
-          
-          if (key.toLowerCase().includes('email')) type = 'email'
-          else if (key.toLowerCase().includes('phone') || key.toLowerCase().includes('tel')) type = 'tel'
-          else if (key.toLowerCase().includes('experience') || key.toLowerCase().includes('year')) type = 'number'
-          else if (key.toLowerCase().includes('resume') || key.toLowerCase().includes('file')) type = 'file'
-          
+          let label: string
+          if (/^FIELD_\d+$/i.test(key) && strVal) {
+            // Infer from value for auto-generated field ids
+            if (/^[\d+\s\-.]{8,15}$/.test(strVal) && /^\d[\d\s\-.]{7,}$/.test(strVal.replace(/\s/g, ''))) {
+              type = 'tel'
+              label = 'Phone Number'
+            } else if (/^\d+(\.\d+)?$/.test(strVal)) {
+              type = 'number'
+              label = 'Years of Experience'
+            } else if (strVal.includes('@') && strVal.includes('.')) {
+              type = 'email'
+              label = 'Email'
+            } else {
+              label = 'Additional field'
+            }
+          } else {
+            label = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')
+            if (key.toLowerCase().includes('email')) type = 'email'
+            else if (key.toLowerCase().includes('phone') || key.toLowerCase().includes('tel')) type = 'tel'
+            else if (key.toLowerCase().includes('experience') || key.toLowerCase().includes('year')) type = 'number'
+            else if (key.toLowerCase().includes('resume') || key.toLowerCase().includes('file')) type = 'file'
+          }
           fieldMap.set(key, { id: key, jobPostId: jobId, label, type, required: false, order: 999 })
         }
       })
 
       // Convert map to array and sort by order
       const allFormFields = Array.from(fieldMap.values()).sort((a, b) => (a.order || 0) - (b.order || 0))
+
+      // Override labels for FIELD_* ids so we never show "FIELD_1770213202030" (even if stored on job)
+      allFormFields.forEach((f) => {
+        if (!/^FIELD_\d+$/i.test(f.id)) return
+        const rawValue = parsedFormData[f.id]
+        const strVal = rawValue != null ? String(rawValue).trim() : ''
+        if (!strVal) return
+        if (/^[\d+\s\-.]{8,15}$/.test(strVal) && /^\d[\d\s\-.]{7,}$/.test(strVal.replace(/\s/g, ''))) {
+          f.label = 'Phone Number'
+        } else if (/^\d+(\.\d+)?$/.test(strVal)) {
+          f.label = 'Years of Experience'
+        } else if (strVal.includes('@') && strVal.includes('.')) {
+          f.label = 'Email'
+        } else if (f.label === f.id || /^Field_\d+$/i.test(f.label)) {
+          f.label = 'Additional field'
+        }
+      })
 
       // Ensure resume URL is in formData if it exists
       // Find the resume/file field in formFields

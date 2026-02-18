@@ -304,25 +304,40 @@ export default function JobApplicants() {
                 Object.entries(selectedApplicant.formData)
                   .filter(([key]) => key !== 'jobPostId' && key !== 'employeeId')
                   .map(([key, value]) => {
-                    // Determine type from key name
+                    const strVal = value != null ? String(value).trim() : ''
                     let fieldType: 'text' | 'file' | 'email' | 'tel' | 'number' | 'textarea' = 'text'
                     let fileUrl: string | undefined = undefined
-                    
-                    if (key.toLowerCase().includes('email')) {
-                      fieldType = 'email'
-                    } else if (key.toLowerCase().includes('phone') || key.toLowerCase().includes('tel')) {
-                      fieldType = 'tel'
-                    } else if (key.toLowerCase().includes('experience') || key.toLowerCase().includes('year')) {
-                      fieldType = 'number'
-                    } else if (key.toLowerCase().includes('resume') || key.toLowerCase().includes('file')) {
-                      fieldType = 'file'
-                      fileUrl = typeof value === 'string' ? value : selectedApplicant.resumeUrl
+                    let label: string
+
+                    // Human-readable labels for auto-generated keys (e.g. FIELD_1770213202030)
+                    if (/^FIELD_\d+$/i.test(key) && strVal) {
+                      if (/^[\d+\s\-.]{8,15}$/.test(strVal) && /^\d[\d\s\-.]{7,}$/.test(strVal.replace(/\s/g, ''))) {
+                        fieldType = 'tel'
+                        label = 'Phone Number'
+                      } else if (/^\d+(\.\d+)?$/.test(strVal)) {
+                        fieldType = 'number'
+                        label = 'Years of Experience'
+                      } else if (strVal.includes('@') && strVal.includes('.')) {
+                        fieldType = 'email'
+                        label = 'Email'
+                      } else {
+                        label = 'Additional field'
+                      }
+                    } else {
+                      label = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')
+                      if (key.toLowerCase().includes('email')) fieldType = 'email'
+                      else if (key.toLowerCase().includes('phone') || key.toLowerCase().includes('tel')) fieldType = 'tel'
+                      else if (key.toLowerCase().includes('experience') || key.toLowerCase().includes('year')) fieldType = 'number'
+                      else if (key.toLowerCase().includes('resume') || key.toLowerCase().includes('file')) {
+                        fieldType = 'file'
+                        fileUrl = typeof value === 'string' ? value : selectedApplicant.resumeUrl
+                      }
                     }
-                    
+
                     return (
                       <ApplicationFieldRow
                         key={key}
-                        label={key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                        label={label}
                         value={value}
                         type={fieldType}
                         fileUrl={fileUrl}
