@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import api from '../lib/api'
+import ResumePreviewModal from './ResumePreviewModal'
 
 interface ApplicationFieldRowProps {
   label: string
@@ -23,6 +24,7 @@ export default function ApplicationFieldRow({
   fileOriginalName,
 }: ApplicationFieldRowProps) {
   const [isDownloading, setIsDownloading] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -168,22 +170,45 @@ export default function ApplicationFieldRow({
           </div>
         )}
       </div>
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 flex items-center gap-1">
         {type === 'file' ? (
-          <button
-            onClick={handleDownload}
-            disabled={isDownloading || (!fileUrl && !applicationId)}
-            className="ml-4 p-2.5 text-[#4A4CF0] hover:text-[#6366F1] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200 disabled:text-gray-300 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-            title="Download file"
-          >
-            {isDownloading ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#4A4CF0]"></div>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+          <>
+            {applicationId && fieldId && (
+              <>
+                <button
+                  onClick={() => setShowPreview(true)}
+                  className="ml-4 p-2.5 text-[#4A4CF0] hover:text-[#6366F1] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200"
+                  title="Preview"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
+                <ResumePreviewModal
+                  open={showPreview}
+                  onClose={() => setShowPreview(false)}
+                  applicationId={applicationId}
+                  fieldId={fieldId}
+                  title={label}
+                />
+              </>
             )}
-          </button>
+            <button
+              onClick={handleDownload}
+              disabled={isDownloading || (!fileUrl && !applicationId)}
+              className="p-2.5 text-[#4A4CF0] hover:text-[#6366F1] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200 disabled:text-gray-300 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+              title="Download file"
+            >
+              {isDownloading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#4A4CF0]"></div>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              )}
+            </button>
+          </>
         ) : (
           <button
             onClick={() => copyToClipboard(displayValue)}

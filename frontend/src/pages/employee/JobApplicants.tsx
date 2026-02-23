@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import api from '../../lib/api'
 import ApplicationFieldRow from '../../components/ApplicationFieldRow'
+import ResumePreviewModal from '../../components/ResumePreviewModal'
 
 interface FormField {
   id: string
@@ -45,6 +46,7 @@ export default function JobApplicants() {
   const [activeTab, setActiveTab] = useState<TabStatus>('pending')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [previewApplicant, setPreviewApplicant] = useState<Applicant | null>(null)
 
   useEffect(() => {
     if (jobId) {
@@ -500,6 +502,22 @@ export default function JobApplicants() {
                   </p>
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-2 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                  {applicant.resumeUrl && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setPreviewApplicant(applicant)
+                      }}
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 text-[#4A4CF0] hover:bg-[#4A4CF0]/10 rounded-xl transition-all duration-200 touch-manipulation"
+                      title="Preview resume"
+                      aria-label="Preview resume"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                  )}
                   <span
                     className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold shadow-sm ${
                       applicant.status === 'approved'
@@ -529,6 +547,17 @@ export default function JobApplicants() {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Resume Preview Modal (from list) */}
+      {previewApplicant && (
+        <ResumePreviewModal
+          open={!!previewApplicant}
+          onClose={() => setPreviewApplicant(null)}
+          applicationId={previewApplicant.id}
+          fieldId="resume"
+          title={`Resume — ${previewApplicant.name}`}
+        />
       )}
 
       {/* Delete Confirmation Dialog */}
