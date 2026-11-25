@@ -1,9 +1,7 @@
 import express from 'express'
 import { prisma } from '../lib/prisma'
 import { authenticate, AuthRequest } from '../middleware/auth'
-import { upload } from '../utils/upload'
-import path from 'path'
-import fs from 'fs'
+import { upload, uploadToSupabaseStorage } from '../utils/upload'
 import {
   sendJobApplicationNotification,
   sendApplicationStatusNotification,
@@ -149,11 +147,10 @@ router.post(
         formData[key] = req.body[key]
       })
       
-      // Process uploaded files and add to formData (store original filename for download)
+      // Process uploaded files and upload to Supabase Storage
       let fileUrl: string | null = null
       if (files && files.length > 0) {
-        files.forEach((uploadedFile) => {
-          const fileUrlValue = `/uploads/${uploadedFile.filename}`
+        for (const uploadedFile of files) {
           const fieldName = uploadedFile.fieldname || 'resume'
           const originalName = (uploadedFile.originalname || 'Resume.pdf').replace(/[^\w\s\-_.]/g, '_').trim() || 'Resume.pdf'
           if (!originalName.toLowerCase().endsWith('.pdf')) {
@@ -161,11 +158,18 @@ router.post(
           } else {
             formData[fieldName + 'OriginalFilename'] = originalName
           }
-          formData[fieldName] = fileUrlValue
+
+          // Upload file buffer to Supabase Storage
+          const publicUrl = await uploadToSupabaseStorage(
+            uploadedFile.buffer,
+            originalName,
+            uploadedFile.mimetype
+          )
+          formData[fieldName] = publicUrl
           if (!fileUrl) {
-            fileUrl = fileUrlValue
+            fileUrl = publicUrl
           }
-        })
+        }
       }
       
       // Store form data as JSON string
@@ -515,23 +519,12 @@ router.get('/:applicationId/files/:fieldId', authenticate, async (req: AuthReque
       return res.status(404).json({ message: 'File not found' })
     }
 
-    // Remove leading slash if present and construct full path (same base as multer/static)
-    const uploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads')
-    const fileName = fileUrl.startsWith('/uploads/') 
-      ? fileUrl.replace('/uploads/', '') 
-      : fileUrl
-    const filePath = path.join(uploadDir, fileName)
-
-    // Check if file exists
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ message: 'File not available' })
-    }
-
+    // fileUrl is already a Supabase public URL — redirect to it
     // Prefer original filename from formData so downloads use the name the user uploaded
     const originalFilename = parsedFormData[fieldId + 'OriginalFilename']
     const safeFilename = typeof originalFilename === 'string' && originalFilename
-      ? originalFilename.replace(/[^\w\s\-_.]/g, '_').trim() || path.basename(filePath)
-      : path.basename(filePath)
+      ? originalFilename.replace(/[^\w\s\-_.]/g, '_').trim() || 'Resume.pdf'
+      : 'Resume.pdf'
     const downloadFilename = safeFilename.toLowerCase().endsWith('.pdf') ? safeFilename : safeFilename + '.pdf'
 
     res.setHeader('Content-Type', 'application/pdf')
@@ -539,9 +532,8 @@ router.get('/:applicationId/files/:fieldId', authenticate, async (req: AuthReque
     // Expose so frontend can read filename for download attribute (CORS)
     res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition')
 
-    // Stream the file
-    const fileStream = fs.createReadStream(filePath)
-    fileStream.pipe(res)
+    // Redirect to Supabase public URL
+    res.redirect(fileUrl)
   } catch (error) {
     next(error)
   }
